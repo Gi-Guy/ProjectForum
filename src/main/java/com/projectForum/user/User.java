@@ -3,6 +3,7 @@ package com.projectForum.user;
 import java.sql.Date;
 //import java.util.Collection;
 import java.time.LocalDateTime;
+import java.util.List;
 
 //import javax.management.relation.Role; //TODO: SOLVE THIS
 import javax.persistence.Column;
@@ -10,9 +11,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+
+import com.projectForum.post.Post;
+import com.projectForum.topic.Topic;
 
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.userdetails.UserDetails;
@@ -52,9 +57,14 @@ public class User {
 	private LocalDateTime joiningDate;
 	private LocalDateTime lastLogin;
 	
+	/*Consider to remove those*/
+	@OneToMany(mappedBy = "user")
+	private List<Topic> topics;
+	
+	@OneToMany(mappedBy = "user")
+	private List<Post> posts;
+	
 	//TODO: ADD ROLE OPTION - FOR ADMINS
-	//TODO: Add forum messages list
-	//TODO: Add topics list
 	//TODO: Add private messages list
 	
 	
@@ -146,6 +156,23 @@ public class User {
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
 	}
+
+	public List<Topic> getTopics() {
+		return topics;
+	}
+
+	public void setTopics(List<Topic> topics) {
+		this.topics = topics;
+	}
+
+	public List<Post> getPosts() {
+		return posts;
+	}
+
+	public void setPosts(List<Post> posts) {
+		this.posts = posts;
+	}
+	
 	
 
 	

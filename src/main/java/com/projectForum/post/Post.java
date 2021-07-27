@@ -40,6 +40,11 @@ public class Post {
 	//TODO Add topics list
 	//EACH POST HAS TO BE ATTCHED TO A TOPIC
 	
+	@PreUpdate
+	protected void onUpdate() {
+		this.lastActivity = LocalDateTime.now();
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -69,10 +74,6 @@ public class Post {
 		return lastActivity;
 	}
 
-	@PreUpdate
-	protected void onUpdate() {
-		this.lastActivity = LocalDateTime.now();
-	}
 
 	public User getUser() {
 		return user;
