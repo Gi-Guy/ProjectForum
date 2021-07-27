@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"> <!-- Declaring  XML using-->
+<head>
+    <meta charset="UTF-8">
+    <title>הרשמה</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container text-center">
+		<div>
+			<h1>הרשמה </h1>
+		</div>
+	</div>
+		
+	<div class="container text-right">
+		<div>
+		<!-- Using form to specify our actions - url process 
+		th:action - our action
+		th:object - Our model-->
+			<form th:action = "@{/process_register}" method = "post"
+			style ="max-width:600px; margin: 0 auto;"
+			th:object = "${user}">
+				<div class ="m-3">
+										<!-- Username -->
+					<div class= "form-group row">
+						
+						<div class="col-8">
+							<input type="text" class="form-control"  th:field="*{username}" required
+							minlength="4" maxlength="10"/>
+						</div>
+						<Label class = "col-form Label col-4">שם משתמש</Label>
+					</div>
+										<!-- Password -->
+					<div class= "form-group row">
+						
+						<div class="col-8">
+							<input type="password" class="form-control"  th:field="*{password}" required
+							minlength="8" maxlength="60"/>
+						</div>
+						<Label class = "col-form Label col-4">סיסמה</Label>
+					</div>
+										<!-- First Name -->
+					<div class= "form-group row">
+						
+						<div class="col-8">
+							<input type="text" class="form-control"  th:field="*{firstName}" required
+							minlength="1" maxlength="15"/>
+						</div>
+						<Label class = "col-form Label col-4">שם פרטי</Label>
+					</div>
+										<!-- last name-->
+					<div class= "form-group row">
+						
+						<div class="col-8">
+							<input type="text" class="form-control"  th:field="*{lastName}" required
+							minlength="1" maxlength="15"/>
+						</div>
+						<Label class = "col-form Label col-4">שם משפחה</Label>
+					</div>
+										<!-- Email -->
+					<div class= "form-group row">
+						
+						<div class="col-8">
+							<input type="email" class="form-control"  th:field="*{email}" required
+							minlength="1" maxlength="64"/>
+						</div>
+						<Label class = "col-form Label col-4">אימייל</Label>
+					</div>
+					
+					<!-- sumbit button -->
+					<div class="container text-left">
+						<button type="sumbit" class = "btn btn-primary">הרשמה</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		
+	</div>
+</body>
+</html>
