@@ -43,7 +43,7 @@ public class RegisterController {
 	/**
 	 * Creating new user in database. If success then moving to completed page*/
 	
-	//TODO: Sovle the issue with exists users
+	//TODO: Sovle the issue with exists users. YOU HAVE TO NOTIFY THE USER IF ACCOUNT ALREADY EXIST.
 	@PostMapping("/register")
 	public String processRegistration(@Valid User user, BindingResult bindingResult) {
 		if(!bindingResult.hasErrors()) {
@@ -69,23 +69,6 @@ public class RegisterController {
 		return "register_success";
 	}
 	
-	/*
-	 * @PostMapping("/process_register")
-	public String processRegistration(User user) {
-		if (userRepo.findByEmail(user.getEmail()) == null){
-			if(userRepo.findByUsername(user.getUsername()) == null) {
-				user.setPassword(passwordEncoder.encode(user.getPassword()));
-				user.setJoiningDate(LocalDateTime.now());
-				userRepo.save(user);	
-				}
-			//TODO add failure messages.
-			else return "register";
-			}
-		else return "register";
-
-		return "register_success";
-	}
-*/
 
 
 }

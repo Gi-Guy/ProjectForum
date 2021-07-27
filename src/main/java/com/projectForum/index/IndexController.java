@@ -33,25 +33,6 @@ public class IndexController {
 		return "index";
 	}
 	
-	//register procces
-	//Sending user to register page
-	//We are using Model to send user object
-	/*@GetMapping("/register")
-	public String showRegisterForm(Model model) {
-		model.addAttribute("user", new User());
-		return "register_form";
-	}*/
-	
-	/*@PostMapping("/process_register")
-	public String processRegistration(User user) {
-	    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-	    String encodedPassword = passwordEncoder.encode(user.getPassword());
-	    user.setPassword(encodedPassword);
-		userReop.save(user);
-		return "register_success";
-	}*/
-	
-	
 	/*
 	 * This method create an page of all users.*/
 	@GetMapping("/list_users")
