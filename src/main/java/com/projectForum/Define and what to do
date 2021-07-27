@@ -1,0 +1,18 @@
+Post = a single message
+Topic = a collection of post
+Forum = a collection of topics
+
+------------------------
+TO CREATE:
+Forum Entity (+ Controller and Repository + Pages)
+Topic Entity (+ Controller and Repository + Pages)
+Post Entity (+ Controller and Repository  + pages)
+User Profile ( UserProfileController and etc)
+Management Control Panel (Not an Entity, Create an HTML page and contoller) <-YOU MUST FINISH: POST, TOPIC, FORUM BEFORE THAT)
+Private messaging system (+ Controller and Repository + Pages)
+
+
+------------------------
+TO FINISH
+Registration procces (need to add warning mesagges when user is exist)
+ 
