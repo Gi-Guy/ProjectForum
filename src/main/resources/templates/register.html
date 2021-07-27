@@ -50,7 +50,7 @@
 						
 						<div class="col-8">
 							<input type="text" class="form-control"  th:field="*{username}" required
-							minlength="4" maxlength="10" th:errorClass="is-invalid"/>
+							minlength="4" maxlength="15" th:errorClass="is-invalid"/>
 							<div th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
 						</div>
 						<!-- <Label class = "col-form Label col-4">שם משתמש</Label> -->

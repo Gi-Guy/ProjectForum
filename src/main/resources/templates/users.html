@@ -48,6 +48,7 @@
 							<th>Email</th>
 							<th>שם פרטי</th>
 							<th>שם משפחה</th>
+							<th>תאריך הצטרפות</th>
 							<th>הסר</th>
 						</tr>
 				</thead>
@@ -58,10 +59,11 @@
 						<td th:text = "${user.email}">Email</td>
 						<td th:text = "${user.firstName}">שם פרטי</td>
 						<td th:text = "${user.lastName}">שם משפחה</td>
+						<td th:text = "${user.joiningDate}">joining date</td>
 						<td>
 						
 						<a th:href="@{/deleteUser(username=${user.username})}" class = "button button5">
-							מחק
+							מחק משתמש
 						</a>
 
 						</td>		

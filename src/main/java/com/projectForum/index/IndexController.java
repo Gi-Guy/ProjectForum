@@ -51,6 +51,9 @@ public class IndexController {
 		return "register_success";
 	}*/
 	
+	
+	/*
+	 * This method create an page of all users.*/
 	@GetMapping("/list_users")
 	public String listofUsers(Model model) {
 	    List<User> listofUsers = userReop.findAll();
@@ -58,9 +61,11 @@ public class IndexController {
 	     
 	    return "users";
 	}
+	
+	/**
+	 * This methode will delete a user in users list by button active*/
 	@GetMapping("/deleteUser")
 	public String deleteUser(@RequestParam(name="username") String username) {
-		System.out.println("i'm here! " + username);
 		userReop.delete(userReop.findByUsername(username));
 		return "redirect:/list_users";
 	}
