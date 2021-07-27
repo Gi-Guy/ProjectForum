@@ -6,6 +6,22 @@
     <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
     <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    
+    <style>
+	.button {
+  		background-color: #04AA6D; /* Green */
+  		border: none;	  
+  		color: white;
+  		padding: 20px;
+  		text-align: center;
+  		text-decoration: none;
+  		display: inline-block;
+  		font-size: 16px;
+  		margin: 4px 2px;
+ 	 	cursor: pointer;
+	}
+	.button5 {border-radius: 15%;}
+	</style>
 </head>
 <body>
 	<div class="container text-center">
@@ -32,6 +48,7 @@
 							<th>Email</th>
 							<th>שם פרטי</th>
 							<th>שם משפחה</th>
+							<th>הסר</th>
 						</tr>
 				</thead>
 				<tbody>
@@ -41,6 +58,13 @@
 						<td th:text = "${user.email}">Email</td>
 						<td th:text = "${user.firstName}">שם פרטי</td>
 						<td th:text = "${user.lastName}">שם משפחה</td>
+						<td>
+						
+						<a th:href="@{/deleteUser(username=${user.username})}" class = "button button5">
+							מחק
+						</a>
+
+						</td>		
 					</tr>
 					
 				</tbody>

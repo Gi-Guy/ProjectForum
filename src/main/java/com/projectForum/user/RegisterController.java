@@ -2,10 +2,15 @@ package com.projectForum.user;
 
 import java.time.LocalDateTime;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +42,35 @@ public class RegisterController {
 	
 	/**
 	 * Creating new user in database. If success then moving to completed page*/
-	@PostMapping("/process_register")
+	
+	//TODO: Sovle the issue with exists users
+	@PostMapping("/register")
+	public String processRegistration(@Valid User user, BindingResult bindingResult) {
+		if(!bindingResult.hasErrors()) {
+			//Checking if Email is exist in database
+			if (userRepo.findByEmail(user.getEmail()) == null){
+				//Checking if username is exist in database
+				if(userRepo.findByUsername(user.getUsername()) == null) {
+					user.setPassword(passwordEncoder.encode(user.getPassword()));
+					user.setJoiningDate(LocalDateTime.now());
+					userRepo.save(user);	
+					}
+				else {//Username already exists.
+					bindingResult.addError(new FieldError("user", "username", "Username already exists, Please try new username."));
+					return "redirect:/register";
+					}
+				}
+			else {//Email already exists
+				bindingResult.addError(new FieldError("user", "email", "Email already exists, Please try new Email."));
+				return "redirect:/register";
+			}
+		}
+
+		return "register_success";
+	}
+	
+	/*
+	 * @PostMapping("/process_register")
 	public String processRegistration(User user) {
 		if (userRepo.findByEmail(user.getEmail()) == null){
 			if(userRepo.findByUsername(user.getUsername()) == null) {
@@ -52,7 +85,7 @@ public class RegisterController {
 
 		return "register_success";
 	}
-	
+*/
 
 
 }

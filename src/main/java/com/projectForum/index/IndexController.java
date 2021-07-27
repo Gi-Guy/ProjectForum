@@ -9,7 +9,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.projectForum.user.User;
 import com.projectForum.user.UserRepository;
@@ -55,6 +57,12 @@ public class IndexController {
 	    model.addAttribute("listofUsers", listofUsers);
 	     
 	    return "users";
+	}
+	@GetMapping("/deleteUser")
+	public String deleteUser(@RequestParam(name="username") String username) {
+		System.out.println("i'm here! " + username);
+		userReop.delete(userReop.findByUsername(username));
+		return "redirect:/list_users";
 	}
 	
 }
