@@ -20,7 +20,7 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
- 
+
     @Override
     public String getPassword() {
         return user.getPassword();
@@ -28,7 +28,8 @@ public class CustomUserDetails implements UserDetails {
  
     @Override
     public String getUsername() {
-        return user.getEmail();
+        //return user.getEmail();
+    	return user.getUsername();
     }
  
     @Override

@@ -29,5 +29,15 @@ public class CustomUserDetailsService  implements UserDetailsService {
 			throw new UsernameNotFoundException("Could not find user");}
 		return new CustomUserDetails(user);
 	}
+	/*TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP */
+	// TODO remove this
+	public User findUserByUsername(String username) {
+		User user = repo.findByUsername(username);
+		if(user == null) {
+			System.out.println("##################################################");
+			System.out.println("We have a problem");
+		}
+		return user;
+	}
 
 }

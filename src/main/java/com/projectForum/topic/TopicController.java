@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+
 import com.projectForum.post.Post;
 import com.projectForum.post.PostRepository;
-import com.projectForum.user.User;
+
 import com.projectForum.user.UserRepository;
 
 
