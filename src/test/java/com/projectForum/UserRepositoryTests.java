@@ -13,10 +13,9 @@ import org.springframework.test.annotation.Rollback;
 import com.projectForum.user.User;
 import com.projectForum.user.UserRepository;
 
-
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)//Defining to use the real DB
-@Rollback(false)//We are commit to changes.
+@AutoConfigureTestDatabase(replace = Replace.NONE) // Using the real DB
+@Rollback(false) // Committing the changes TODO make sure tests don't commit changes
 public class UserRepositoryTests {
 	
 	@Autowired
@@ -49,7 +48,7 @@ public class UserRepositoryTests {
 	
 	@Test
 	public void testFindUserByEmail() {
-		String email = "test@test.com";
+		String email = "itayk747@gmail.com";
 		User user = repo.findByEmail(email);
 		
 		assertThat(user).isNotNull();
@@ -57,7 +56,7 @@ public class UserRepositoryTests {
 	
 	@Test
 	public void testFindUserByUsername() {
-		String username = "Guy950";
+		String username = "itaykirsh";
 		User user = repo.findByUsername(username);
 		
 		assertThat(user).isNotNull();
