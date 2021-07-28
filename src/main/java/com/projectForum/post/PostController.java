@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Delete a post by id
  * */
 
-
 @Controller
 @RequestMapping(value = "/post")
 public class PostController {
@@ -31,5 +30,4 @@ public class PostController {
 		// TODO finish this method.
 		return "";
 	}
-	
 }

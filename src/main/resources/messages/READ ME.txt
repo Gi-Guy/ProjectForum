@@ -1,6 +1,6 @@
 
 ##################################################################################################################################
 		This project will work only in Hebrew 
-		Which mean the entire project is built from right to left and not from left to right
-		Therefore you can't translate it to english or any other language that written from left to right
+		Which means the entire project is built from right to left and not from left to right
+		Therefore you can't translate it to English or any other language that is written from left to right
 ##################################################################################################################################

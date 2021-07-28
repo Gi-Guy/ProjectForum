@@ -2,8 +2,7 @@ package com.projectForum.Security;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-
-//THIS IS FOR TESTING FOR NOW
+// TODO: remove this temporary class that is used for testing
 public class PasswordEncoder {
 	public static void main(String[] args) {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -12,5 +11,4 @@ public class PasswordEncoder {
 		System.out.println(encoderPassword);
 		
 	}
-
 }

@@ -1,6 +1,5 @@
 package com.projectForum.user;
 
-import java.sql.Date;
 //import java.util.Collection;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,8 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;
@@ -22,13 +19,10 @@ import com.projectForum.topic.Topic;
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.userdetails.UserDetails;
 
-
 @Entity
 @Table(name =  "user")
 //public class User implements UserDetails{
 public class User {
-	
-
 
 	private static final long serialVersionUID = 1L;
 
@@ -42,10 +36,10 @@ public class User {
 	@Column (unique = true, nullable = false, length = 64)
 	private String email;
 	
-	@Column (name="First_name" , nullable = false , length = 15)
+	@Column (name="First_name", nullable = false, length = 15)
 	private String firstName;
 	
-	@Column (name="Last_name" ,nullable = false,  length = 15)
+	@Column (name="Last_name", nullable = false, length = 15)
 	private String lastName;
 	
 	@Column(nullable = false, length = 60)
@@ -57,7 +51,7 @@ public class User {
 	private LocalDateTime joiningDate;
 	private LocalDateTime lastLogin;
 	
-	/*Consider to remove those*/
+	/* Consider removing these */
 	@OneToMany(mappedBy = "user")
 	private List<Topic> topics;
 	
@@ -67,20 +61,22 @@ public class User {
 	//TODO: ADD ROLE OPTION - FOR ADMINS
 	//TODO: Add private messages list
 	
-	
 	public boolean isActive() {
 		return isActive;
 	}
 	
 	public void SetInactive() {
-		this.isActive = false;
+		setActive(false);
 	}
 	
 	public void SetActive() {
-		this.isActive = true;
+		setActive(true);
 	}
 
-	
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -135,28 +131,22 @@ public class User {
 		return serialVersionUID;
 	}
 	
-	
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-
 	public String getUsername() {
 		return username;
 	}
 
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
 	public String getPassword() {
 		return password;
 	}
 
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
+	public void setPassword(String password) {
+		this.password = password;
 	}
-
+	
 	public List<Topic> getTopics() {
 		return topics;
 	}
@@ -172,9 +162,4 @@ public class User {
 	public void setPosts(List<Post> posts) {
 		this.posts = posts;
 	}
-	
-	
-
-	
-	
 }
