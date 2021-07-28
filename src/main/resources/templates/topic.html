@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"> <!-- Declaring  XML using-->
+<head>
+    <meta charset="UTF-8">
+    <title>A Topic</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+
+
+<body>
+	<div class="container">
+		<div>
+			<h1>This is a topic</h1>
+		</div>
+	</div>
+		
+	<div class="container text-right">
+		<div>
+			<form th:action = "@{/register/newTopic}" method = "post"
+			style ="max-width:600px; margin: 0 auto;"
+			th:object = "${topic}">
+			
+			
+			</form>
+		</div>
+		
+	</div>
+</body>
+</html>
