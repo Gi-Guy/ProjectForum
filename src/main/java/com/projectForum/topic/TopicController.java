@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.projectForum.post.Post;
 import com.projectForum.post.PostRepository;
 import com.projectForum.user.UserRepository;
 
@@ -36,11 +38,20 @@ public class TopicController {
 	}
 	// TODO finish this class
 	@GetMapping("{topicId}")
-	public String getTopicById() {
+	public String getTopicById(@PathVariable int topicId, Model model) {
 		
-		return "";
+		Topic topic = topicRepo.findTopicById(topicId);
+		//Each call we update the views counter by 1
+		topic.setViews(topic.getViews() + 1);
+		topicRepo.save(topic);
+		
+		model.addAttribute("topic", topic);
+		model.addAttribute("posts", postRepo.findPostsByTopicId(topicId));
+		model.addAttribute("newPost", new Post());
+		
+		return "topic";
 	}
-	
+	// TODO finish this method.
 	@GetMapping("{username}")
 	public String getTopicByUsername() {
 		
