@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import com.projectForum.topic.Topic;
 import com.projectForum.user.User;
 
 @Entity
@@ -37,8 +38,13 @@ public class Post {
 	
 	@Column (nullable = false,columnDefinition = "TEXT")
 	private String content;
-	//TODO Add topics list
+	
 	//EACH POST HAS TO BE ATTCHED TO A TOPIC
+	//EACH TOPIC CAN HAVE MANY POSTS
+	@ManyToOne
+	@JoinColumn(name = "id_topic")
+	 private Topic topic;
+	
 	
 	@PreUpdate
 	protected void onUpdate() {

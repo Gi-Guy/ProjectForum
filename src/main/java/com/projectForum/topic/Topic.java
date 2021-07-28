@@ -57,8 +57,9 @@ public class Topic {
 	@Column
 	private boolean closed;
 	
-	/*@OneToMany(mappedBy = "topic")
-	private List<Post> posts; */ //<-------Check out why this is not working!
+	//EACH TOPIC CAN HAVE {POSTS}* (0 or more)
+	@OneToMany(mappedBy = "topic")
+	private List<Post> posts;
 	
 	 @PrePersist
 	 protected void onCreate() {
