@@ -11,6 +11,7 @@ import com.projectForum.user.User;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
 	
+	Post findById(int i);
 	@Transactional
 	void deletePostById(int id);
 	

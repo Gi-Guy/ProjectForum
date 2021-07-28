@@ -51,6 +51,17 @@ public class Post {
 		this.lastActivity = LocalDateTime.now();
 	}
 	
+	
+	public Topic getTopic() {
+		return topic;
+	}
+
+
+	public void setTopic(Topic topic) {
+		this.topic = topic;
+	}
+
+
 	public int getId() {
 		return id;
 	}
@@ -59,11 +70,11 @@ public class Post {
 		this.id = id;
 	}
 
-	public String getConent() {
+	public String getContent() {
 		return content;
 	}
 
-	public void setConent(String conent) {
+	public void setContent(String conent) {
 		this.content = conent;
 	}
 

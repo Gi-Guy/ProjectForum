@@ -34,7 +34,7 @@ public class PostTest {
 	public void testCreatePost() {
 		User user = userRepo.findByEmail("Err@err.err");
 		Post post = new Post();
-		post.setConent("This is an expample test for a dummy post! Hello world!");
+		post.setContent("This is an expample test for a dummy post! Hello world!");
 		post.setCreatedDate(LocalDateTime.now());
 		post.setUser(user);
 		
