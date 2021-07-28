@@ -17,6 +17,7 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
 	
 	Set<Topic> findTopicsByUser(User user);
 	
+	@Query("SELECT t FROM Topic t WHERE t.id = ?1")
 	Topic findTopicById(int id);
 	
 	

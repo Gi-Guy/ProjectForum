@@ -2,6 +2,9 @@ package com.projectForum;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,5 +50,34 @@ public class TopicTest {
 		Topic savedTopic = topicRepo.save(topic);
 		Topic existTopic = entityManager.find(Topic.class, savedTopic.getId());
 		assertThat(topic.getId()).isEqualTo(existTopic.getId());
+	}
+	@Test
+	public void addPostToTopic() {
+		User user = userRepo.findByEmail("Err@err.err");
+		Topic topic = topicRepo.findTopicById(18);
+		Post post = new Post();
+		
+		//Add stuff to new post
+		post.setContent("Let's play a game!");
+		post.setCreatedDate(LocalDateTime.now());
+		post.setUser(user);
+		post.setTopic(topic);
+		postRepo.save(post);
+		
+	//	topic.setPosts(postRepo.findPostsByTopic(topic));
+		
+		//Topic savedTopic = topicRepo.save(topic);
+		//Topic existTopic = entityManager.find(Topic.class,topic.getId());
+		//assertThat(user.getId()).isEqualTo(topic.getId());
+	}
+	@Test
+	public void delete() {
+		
+		List<Post> posts = postRepo.findPostsByTopic(topicRepo.findTopicById(18));
+		for(int i=0; i<posts.size(); i++) {
+			System.err.println("deleting post id:  " + posts.get(i).getId());
+			postRepo.delete(posts.get(i));
+		}
+		topicRepo.delete(topicRepo.findTopicById(18));
 	}
 }

@@ -65,7 +65,6 @@ public class TopicController {
 		
 		return "";
 	}
-	
 	/**This method will add a new post to an exists topic*/
 	@PostMapping("{topicId}")
 	public String addNewPost(@Valid @ModelAttribute Post post, BindingResult bindingResult, @PathVariable int topicId,
@@ -119,7 +118,7 @@ public class TopicController {
 	// TODO finish this method.
 	/**This method will delete an exists method*/
 	@GetMapping("delete/{topicId}")
-	public String deleteTopic() {
+	public String deleteTopic(@PathVariable int topicId, Authentication authentication) {
 		return "";
 	}
 	
