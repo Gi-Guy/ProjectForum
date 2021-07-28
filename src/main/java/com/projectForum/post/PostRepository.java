@@ -1,5 +1,6 @@
 package com.projectForum.post;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 	void deletePostById(int id);
 	
 	Set<Post> findPostsByTopicId(int topicId);
-	Set<Post> findPostsByTopic(Topic topic);
+	List<Post> findPostsByTopic(Topic topic);
 	Set<Post> findPostsByUser(User user);
 }

@@ -58,10 +58,16 @@ public class Topic {
 	private boolean closed;
 	
 	//EACH TOPIC CAN HAVE {POSTS}* (0 or more)
-	@OneToMany(mappedBy = "topic")
-	private List<Post> posts;
+	//@OneToMany(mappedBy = "topic")
+	//private List<Post> posts;
 	
-	 @PrePersist
+	/* public List<Post> getPosts() {
+		return posts;
+	}
+	public void setPosts(List<Post> posts) {
+		this.posts = posts;
+	}*/
+	@PrePersist
 	 protected void onCreate() {
 		 this.createdDate = LocalDateTime.now();
 		 this.lastActivity = LocalDateTime.now();
