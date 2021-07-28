@@ -1,2 +1,2 @@
 # ProjectForum
- This is my final project in the university - a web application of forums system.
+ This is my final project in the university - A Java forum web application.
