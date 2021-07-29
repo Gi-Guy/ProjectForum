@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
@@ -43,6 +44,13 @@ public class Post {
 	@ManyToOne
 	@JoinColumn(name = "id_topic")
 	 private Topic topic;
+	
+	
+	@PrePersist
+	 protected void onCreate() {
+		 this.createdDate = LocalDateTime.now();
+		 this.lastActivity = LocalDateTime.now();
+	 }
 	
 	@PreUpdate
 	protected void onUpdate() {
