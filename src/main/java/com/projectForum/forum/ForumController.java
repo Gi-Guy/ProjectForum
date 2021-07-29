@@ -2,7 +2,9 @@ package com.projectForum.forum;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -39,8 +41,10 @@ public class ForumController {
 	
 	/**This method will display all topics that attached to {forumId}*/
 	@GetMapping("{forumId}")
-	public String getTopicsById() {
-		return "";
+	public String getTopicsById(@PathVariable int forumId, Model model) {
+		model.addAttribute("forums", forumRepo.findById(forumId));
+		model.addAttribute("topics", topicRepo.findTopicsByForumId(forumId));
+		return "forum";
 	}
 	
 	/**This method will lead user to create new forum page

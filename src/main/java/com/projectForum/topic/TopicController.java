@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
+import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
 import com.projectForum.post.PostRepository;
 
@@ -36,12 +36,15 @@ public class TopicController {
 	private UserRepository 	userReop;
 	private TopicRepository topicRepo;
 	private PostRepository 	postRepo;
+	private ForumRepository forumRepo;
 	
 	@Autowired
-	public TopicController(UserRepository userReop, TopicRepository topicRepo, PostRepository postRepo) {
+	public TopicController(UserRepository userReop, TopicRepository topicRepo, PostRepository postRepo,
+			ForumRepository forumRepo) {
 		this.userReop = userReop;
 		this.topicRepo = topicRepo;
 		this.postRepo = postRepo;
+		this.forumRepo = forumRepo;
 	}
 	
 	/**This method will display a full topic page including:
@@ -90,7 +93,8 @@ public class TopicController {
 	@GetMapping("newTopic")
 	public String createNewTopic(@Valid @ModelAttribute Topic topic, Model model) {
 		model.addAttribute("newTopic", new Topic());
-		// TODO: I think I need to add a forum --> EACH TOPIC HAS TO BE ATTACHED TO A FORUM.
+		model.addAttribute("forums",forumRepo.findAll());
+	
 		
 		return "new_Topic_page";
 	}
@@ -110,6 +114,7 @@ public class TopicController {
 		topic.setUser(userReop.findByUsername(authentication.getName()));
 		topic.setClosed(false);
 		topic.setViews(0);
+		//topic.setForum(forumRepo.findById(topic.getForum().getId())); // TODO <- test this!
 		topicRepo.save(topic);
 		
 		return "redirect:/topic/" + topic.getId();
@@ -139,6 +144,7 @@ public class TopicController {
 			//Something went wrong
 			return "redirect:/topic/" + topicId;
 		}
+		// TODO update this to "/forum/"
 		return "redirect:/topic";
 	}
 }

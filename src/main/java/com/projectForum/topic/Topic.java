@@ -13,6 +13,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import com.projectForum.forum.Forum;
 import com.projectForum.user.User;
 
 /** Topic is a collection of posts,
@@ -40,6 +41,10 @@ public class Topic {
 	@ManyToOne
 	@JoinColumn(name="user_id")
 	private User user;
+	
+	@ManyToOne
+	@JoinColumn(name="forum_id")
+	private Forum forum;
 	
 	@Column
 	private int views;
@@ -123,4 +128,13 @@ public class Topic {
 	public LocalDateTime getCreatedDate() {
 		return createdDate;
 	}
+
+	public Forum getForum() {
+		return forum;
+	}
+
+	public void setForum(Forum forum) {
+		this.forum = forum;
+	}
+	
 }
