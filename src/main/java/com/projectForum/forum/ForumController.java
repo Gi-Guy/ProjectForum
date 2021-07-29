@@ -30,7 +30,7 @@ import com.projectForum.user.UserRepository;
 	@RequestMapping("/forum/")
 public class ForumController {
 	
-	private UserRepository 	userReop;
+	private UserRepository 	userRepo;
 	private TopicRepository topicRepo;
 	private PostRepository 	postRepo;
 	private ForumRepository forumRepo;
@@ -38,7 +38,7 @@ public class ForumController {
 	@Autowired
 	public ForumController(UserRepository userReop, TopicRepository topicRepo, PostRepository postRepo,
 			ForumRepository forumRepo) {
-		this.userReop = userReop;
+		this.userRepo = userReop;
 		this.topicRepo = topicRepo;
 		this.postRepo = postRepo;
 		this.forumRepo = forumRepo;
