@@ -16,7 +16,7 @@ public class IndexController {
 	
 	// Autowired - Spring framework automatically creates a new instance of user repository and inject it into this class
 	@Autowired
-	private UserRepository userReop;
+	private UserRepository userRepo;
 	
 	// Defining the home page of the application
 	@GetMapping("")
@@ -33,7 +33,7 @@ public class IndexController {
 	 * This method creates a page of all users */
 	@GetMapping("/list_users")
 	public String listofUsers(Model model) {
-	    List<User> listofUsers = userReop.findAll();
+	    List<User> listofUsers = userRepo.findAll();
 	    model.addAttribute("listofUsers", listofUsers);
 	    return "users";
 	}
@@ -42,7 +42,7 @@ public class IndexController {
 	 * This method will delete a user in the users list by button active */
 	@GetMapping("/deleteUser")
 	public String deleteUser(@RequestParam(name="username") String username) {
-		userReop.delete(userReop.findByUsername(username));
+		userRepo.delete(userRepo.findByUsername(username));
 		return "redirect:/list_users";
 	}
 }
