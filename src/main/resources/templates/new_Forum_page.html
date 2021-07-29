@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"> <!-- Declaring  XML using-->
+<head>
+    <meta charset="UTF-8">
+    <title>New forum</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+
+
+
+<body>
+	<div class="container text-center">
+		<div>
+			<h1>צור פורום חדש</h1>
+		</div>
+	</div>
+		
+	<div class="container text-center">
+		<div>
+
+			<form th:action = "@{/forum/newForum}" method = "post"
+			style ="max-width:600px; margin: 0 auto;"
+			th:object = "${forum}">
+			
+			<!-- name -->
+				<div class ="row">
+					<div class="input-field col s12">
+						<input type="text" th:field="*{name}" class="validate" length="50" required/>
+						<label>כותרת</label>
+						<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="red-text">Incorrect name!</p>
+					</div>
+				</div>
+				
+			<!-- description -->
+			<!-- This one need a big texting area -->
+			<div class ="row">
+					<div class="input-field col s12">
+					<textarea name='description' th:field="*{description}" required></textarea>
+					<label>תוכן</label>
+					<p th:if="${#fields.hasErrors('description')}" th:errors="description" class="red-text">Incorrect description!</p>
+				</div>
+			</div>
+
+			<!-- Sumbit button -->
+			<div class="from-row py-1">
+				<input class="btn btn-primary" type="submit" value="Submit" />
+			</div>
+				
+			</form>
+		</div>
+		
+	</div>
+</body>
+</html>

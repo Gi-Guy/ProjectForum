@@ -38,6 +38,9 @@ public class Forum {
 	@Column(updatable = false, nullable = false)
 	private LocalDateTime createdDate;
 	
+	public Forum() {
+		
+	}
 	public Forum(String name, String description) {
 		this.name = name;
 		this.description = description;
