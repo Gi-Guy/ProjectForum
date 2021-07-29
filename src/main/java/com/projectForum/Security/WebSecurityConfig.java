@@ -1,7 +1,5 @@
 package com.projectForum.Security;
 
-
-
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
- 
 
 import com.projectForum.user.CustomUserDetailsService;
-
-
-
 
 @Configuration
 @EnableWebSecurity
@@ -29,19 +23,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private DataSource dataSource;
 	
 	
-	//creating the bean - spring framework automaticlly inject instance for autowired view
+	// Creating the bean - spring framework automatically inject instance for autowired view
 	@Bean
     public UserDetailsService userDetailsService() {
         return new CustomUserDetailsService();
     }
 	
-	//encoder for password -strong and better
+	// Password encoder
 	@Bean 
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-	//TODO GET RID OF THIS
-	//Video 1:09:14 - watch again
+	// TODO GET RID OF THIS
+	// Video 1:09:14 - watch again
 	@Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -56,9 +50,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.authenticationProvider(authenticationProvider());
 	}
 
-	//This is the most importent method.
-	//TODO Watch video 1:11:00
-	//Also explain again in 1:15:25
+	// This is the most important method.
+	// TODO Watch video 1:11:00
+	// Also explains again in 1:15:25
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -72,5 +66,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .logout().logoutSuccessUrl("/").permitAll();
     }
-	
 }

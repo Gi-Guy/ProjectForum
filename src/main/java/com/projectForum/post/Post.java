@@ -31,37 +31,32 @@ public class Post {
 	@Column(updatable = true, nullable = false)
 	private LocalDateTime lastActivity;
 	
-	/*User Author Information*/
+	/* User Author Information */
 	@ManyToOne
 	@JoinColumn(name="user_id")
 	private User user;
 	
-	@Column (nullable = false,columnDefinition = "TEXT")
+	@Column (nullable = false, columnDefinition = "TEXT")
 	private String content;
 	
-	//EACH POST HAS TO BE ATTCHED TO A TOPIC
-	//EACH TOPIC CAN HAVE MANY POSTS
+	// Each post has to be attached to a topic but each topic can have many posts
 	@ManyToOne
 	@JoinColumn(name = "id_topic")
 	 private Topic topic;
-	
 	
 	@PreUpdate
 	protected void onUpdate() {
 		this.lastActivity = LocalDateTime.now();
 	}
 	
-	
 	public Topic getTopic() {
 		return topic;
 	}
 
-
 	public void setTopic(Topic topic) {
 		this.topic = topic;
 	}
-
-
+	
 	public int getId() {
 		return id;
 	}
@@ -91,7 +86,6 @@ public class Post {
 		return lastActivity;
 	}
 
-
 	public User getUser() {
 		return user;
 	}
@@ -105,7 +99,7 @@ public class Post {
         return this.createdDate.format(formatter);
     }
     
-    //TODO upadte this methode after finishing Topics and Forums
+    //TODO update this method after finishing Topics and Forums
     /**
      * Doing a deep comparison of both objectives.*/
 	@Override
@@ -158,7 +152,5 @@ public class Post {
 		return true;
 	}
     
-    
-    //TODO add quick display for contect
-    
+    //TODO add quick display for content
 }

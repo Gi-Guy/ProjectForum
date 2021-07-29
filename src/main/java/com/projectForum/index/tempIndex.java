@@ -16,5 +16,4 @@ public class tempIndex {
 	public String toTest() {
 		return "404";
 	}
-
 }

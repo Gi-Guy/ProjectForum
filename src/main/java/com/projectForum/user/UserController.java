@@ -16,5 +16,4 @@ public class UserController {
 	
 	private UserRepository userRepository;
 	//Returns all Users in database
-	
 }

@@ -27,7 +27,6 @@ import com.projectForum.user.UserRepository;
  * Add new post to an exists Topic
  * Create new Topic
  * Delete topic - If this method isn't here, Check controlPanel Controller.*/
-
 @Controller
 @RequestMapping("/topic/")
 public class TopicController {
@@ -36,46 +35,48 @@ public class TopicController {
 	private TopicRepository topicRepo;
 	private PostRepository 	postRepo;
 	
-	
 	@Autowired
 	public TopicController(UserRepository userReop, TopicRepository topicRepo, PostRepository postRepo) {
 		this.userReop = userReop;
 		this.topicRepo = topicRepo;
 		this.postRepo = postRepo;
 	}
+	
 	@GetMapping("{topicId}")
 	public String getTopicById(@PathVariable int topicId, Model model) {
 		
 		Topic topic = topicRepo.findTopicById(topicId);
-		//Each call we update the views counter by 1
+		// Each call we update the views counter by 1
 		topic.setViews(topic.getViews() + 1);
 		topicRepo.save(topic);
 		
 		model.addAttribute("topic", topic);
-		//Each topic can have 0 or more posts in it
+		// Each topic can have 0 or more posts in it
 		model.addAttribute("posts", postRepo.findPostsByTopicId(topicId));
-		//in each topic there is an option to create a new post
+		// In each topic there is an option to create a new post
 		model.addAttribute("newPost", new Post());
 		
 		return "topic";
 	}
+	
 	// TODO finish this method.
 	@GetMapping("{username}")
 	public String getTopicByUsername() {
 		
 		return "";
 	}
+	
 	/**This method will add a new post to an exists topic*/
 	@PostMapping("{topicId}")
 	public String addNewPost(@Valid @ModelAttribute Post post, BindingResult bindingResult, @PathVariable int topicId,
 								Authentication authentication, Model model) {
-		//if hasErrors == true, then return to topic page.
+		// If hasErrors == true, then return to topic page.
 		if(bindingResult.hasErrors()) {
 			System.out.println("I'm here (New post)  and I don't know what to do with my life.");
 			// TODO: Solve this issue <------------------------------------------------------FIX THIS!
 		}
 		
-		//No errors, creating a new post in topic
+		// No errors, creating a new post in topic
 		// TODO check if new post register dates.
 		post.setUser(userReop.findByUsername(authentication.getName()));
 		post.setTopic(topicRepo.findTopicById(topicId));
@@ -85,7 +86,7 @@ public class TopicController {
 		return "redirect:/topic/" + topicId; //User will return to the same topic page
 	}
 	
-	/**This method will return a model and navigate the user to newTopic page*/
+	/** This method will return a model and navigate the user to newTopic page */
 	@GetMapping("newTopic")
 	public String createNewTopic(@Valid @ModelAttribute Topic topic, Model model) {
 		model.addAttribute("newTopic", new Topic());
@@ -94,17 +95,17 @@ public class TopicController {
 		return "new_Topic_page";
 	}
 	
-	/**This method will create a new topic and navigate the user to the new topic page.*/
+	/** This method will create a new topic and navigate the user to the new topic page. */
 	@PostMapping("newTopic")
 	public String proccesNewTopic(@Valid @ModelAttribute Topic topic, BindingResult bindingResult, Authentication authentication, Model model) {
 		
-		//if hasErrors == true, then return to topic page. something went wrong.
+		// If hasErrors == true, then return to topic page. something went wrong.
 		if(bindingResult.hasErrors()) {
-			System.out.println("I'm here (New Topic)  and I don't know what to do with my life.");
+			System.out.println("I'm here (New Topic) and I don't know what to do with my life.");
 			// TODO: Solve this issue <------------------------------------------------------FIX THIS!
 		}
 		
-		//No issues, Creating new Topic
+		// Creating new Topic
 		// TODO ERROR! ATTACHE IT TO A FORUM!
 		topic.setUser(userReop.findByUsername(authentication.getName()));
 		topic.setClosed(false);
@@ -116,10 +117,9 @@ public class TopicController {
 	
 	// TODO Move this method to control panel?
 	// TODO finish this method.
-	/**This method will delete an exists method*/
+	/** This method will delete an exists method */
 	@GetMapping("delete/{topicId}")
 	public String deleteTopic(@PathVariable int topicId, Authentication authentication) {
 		return "";
 	}
-	
 }
