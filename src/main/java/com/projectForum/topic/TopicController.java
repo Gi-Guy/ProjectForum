@@ -45,9 +45,9 @@ public class TopicController {
 	}
 	
 	/**This method will display a full topic page including:
-	 * @return	Topic object with all information
-	 * @return	List<Post> - list of all posts that in Topic object
-	 * @return	Post - new Post object for replay option
+	 * @return Model:	Topic object with all information
+	 * @return Model:	List<Post> - list of all posts that in Topic object
+	 * @return Model:	Post - new Post object for replay option
 	 * */
 	@GetMapping("{topicId}")
 	public String getTopicById(@PathVariable int topicId, Model model) {
@@ -65,13 +65,6 @@ public class TopicController {
 		
 		return "topic";
 	}
-	/*
-	// TODO finish this method.
-	@GetMapping("{username}")
-	public String getTopicByUsername() {
-		
-		return "";
-	}*/
 	
 	/**This method will add a new post to an exists topic*/
 	@PostMapping("{topicId}")
