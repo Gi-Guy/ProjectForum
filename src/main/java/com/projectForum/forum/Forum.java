@@ -78,4 +78,7 @@ public class Forum {
 		return createdDate;
 	}
 	
+	public Forum getForum() {
+		return this;
+	}
 }

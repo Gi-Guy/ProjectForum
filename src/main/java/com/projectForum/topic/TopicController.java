@@ -1,6 +1,7 @@
 package com.projectForum.topic;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -92,7 +93,8 @@ public class TopicController {
 	/** This method will return a model and navigate the user to newTopic page */
 	@GetMapping("newTopic")
 	public String createNewTopic(@Valid @ModelAttribute Topic topic, Model model) {
-		model.addAttribute("newTopic", new Topic());
+		//model.addAttribute("newTopic", new Topic());
+		model.addAttribute("newTopic", new NewTopicForm());
 		model.addAttribute("forums",forumRepo.findAll());
 	
 		
@@ -101,7 +103,8 @@ public class TopicController {
 	
 	/** This method will create a new topic and navigate the user to the new topic page. */
 	@PostMapping("newTopic")
-	public String proccesNewTopic(@Valid @ModelAttribute Topic topic, BindingResult bindingResult, Authentication authentication, Model model) {
+	//public String proccesNewTopic(@Valid @ModelAttribute Topic topic, BindingResult bindingResult, Authentication authentication, Model model) {
+	public String proccesNewTopic(@Valid @ModelAttribute("newTopic") NewTopicForm newTopic, BindingResult bindingResult, Authentication authentication, Model model) {
 		
 		// If hasErrors == true, then return to topic page. something went wrong.
 		if(bindingResult.hasErrors()) {
@@ -111,10 +114,17 @@ public class TopicController {
 		
 		// Creating new Topic
 		// TODO ERROR! ATTACHE IT TO A FORUM!
+		Topic topic = new Topic();
+		topic.setTitle(newTopic.getTitle());
+		topic.setContent(newTopic.getContent());
+		topic.setForum(forumRepo.findById(newTopic.getForumId()));
 		topic.setUser(userReop.findByUsername(authentication.getName()));
 		topic.setClosed(false);
 		topic.setViews(0);
+		
 		//topic.setForum(forumRepo.findById(topic.getForum().getId())); // TODO <- test this!
+		
+		
 		topicRepo.save(topic);
 		
 		return "redirect:/topic/" + topic.getId();

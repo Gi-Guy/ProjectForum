@@ -24,6 +24,16 @@
 			style ="max-width:600px; margin: 0 auto;"
 			th:object = "${topic}">
 			
+			
+			<div class="row">
+				<div class="input-field col s12">
+					<select class="browser-default" id="forum" th:field="${newTopic.forumId}">
+					<option value="0" disabled="disabled" selected="selected">Choose section</option>
+					<option th:each="forum : ${forums}" th:text="${forum.name}" th:value="${forum.id}"></option>
+				</select>
+				</div>
+			</div>
+			
 			<!-- Title -->
 				<div class ="row">
 					<div class="input-field col s12">
