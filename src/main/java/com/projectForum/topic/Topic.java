@@ -1,7 +1,6 @@
 package com.projectForum.topic;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,12 +9,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import com.projectForum.post.Post;
 import com.projectForum.user.User;
 
 /** Topic is a collection of posts,
@@ -55,18 +52,6 @@ public class Topic {
 	
 	@Column
 	private boolean closed;
-	
-	// EACH TOPIC CAN HAVE {POSTS}* (0 or more)
-	// @OneToMany(mappedBy = "topic")
-	// private List<Post> posts;
-	
-	/* public List<Post> getPosts() {
-		return posts;
-	}
-	
-	public void setPosts(List<Post> posts) {
-		this.posts = posts;
-	}*/
 	
 	@PrePersist
 	 protected void onCreate() {
@@ -134,14 +119,6 @@ public class Topic {
 	public void setClosed(boolean closed) {
 		this.closed = closed;
 	}
-	
-	/*public List<Post> getPosts() {
-		return posts;
-	}
-	
-	public void setPosts(List<Post> posts) {
-		this.posts = posts;
-	}*/
 	
 	public LocalDateTime getCreatedDate() {
 		return createdDate;

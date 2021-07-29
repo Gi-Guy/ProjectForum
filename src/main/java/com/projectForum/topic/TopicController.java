@@ -1,5 +1,7 @@
 package com.projectForum.topic;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +44,16 @@ public class TopicController {
 		this.postRepo = postRepo;
 	}
 	
+	/**This method will display a full topic page including:
+	 * @return Model:	Topic object with all information
+	 * @return Model:	List<Post> - list of all posts that in Topic object
+	 * @return Model:	Post - new Post object for replay option
+	 * */
 	@GetMapping("{topicId}")
 	public String getTopicById(@PathVariable int topicId, Model model) {
 		
 		Topic topic = topicRepo.findTopicById(topicId);
-		// Each call we update the views counter by 1
+		// Each view have to update the views counter by 1
 		topic.setViews(topic.getViews() + 1);
 		topicRepo.save(topic);
 		
@@ -57,13 +64,6 @@ public class TopicController {
 		model.addAttribute("newPost", new Post());
 		
 		return "topic";
-	}
-	
-	// TODO finish this method.
-	@GetMapping("{username}")
-	public String getTopicByUsername() {
-		
-		return "";
 	}
 	
 	/**This method will add a new post to an exists topic*/
@@ -117,9 +117,28 @@ public class TopicController {
 	
 	// TODO Move this method to control panel?
 	// TODO finish this method.
-	/** This method will delete an exists method */
+	/** This method will delete an exists method.
+	 * 	A Topic can't be deleted as long List<Post> is not empty */
 	@GetMapping("delete/{topicId}")
 	public String deleteTopic(@PathVariable int topicId, Authentication authentication) {
-		return "";
+		Topic topic = topicRepo.findTopicById(topicId);
+		List<Post> posts = postRepo.findPostsByTopic(topic);
+		
+		// TODO Add authorized permission checks.
+		/*if(authentication not allowed)
+			return "redirect:/topic/" + topicId;*/
+		
+		if(posts != null) {
+			while( !posts.isEmpty() ) {
+				postRepo.delete(posts.get(0));
+			}
+		}
+		topicRepo.delete(topic);
+		
+		if( topicRepo.findTopicById(topicId) != null) {
+			//Something went wrong
+			return "redirect:/topic/" + topicId;
+		}
+		return "redirect:/topic";
 	}
 }

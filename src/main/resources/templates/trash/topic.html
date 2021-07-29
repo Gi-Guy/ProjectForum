@@ -36,17 +36,16 @@
 	<section class = "row">
 		<!-- TITLE -->
 
+			<label class = "col s12">Title</label>
 			<p class = "col s12" style="text-align: justify; display:block; white-space:pre-wrap"
 			th:text = "${topic.getTitle()}"> Title:</p>
-			<label class = "col s12">:כותרת</label>
 	</section>
 		<!-- Topic contect - Left side of the row-->
 	<section class = "row">
+			<label class = "col s12">Content</label>
 			<p class = "col s12" style="text-align: justify; display:block; white-space:pre-wrap"
 				th:text = "${topic.getContent()}"> Content:</p>
-				<label class = "col s12">:תוכן</label>
-			<hr>
-			<hr>
+
 	</section>
 	<!-- END OF TOPIC -->
 	
@@ -58,23 +57,19 @@
 	</header>
 	
 	<!-- displaying all posts -->
-	
-		<div th:each = "post: ${posts}">
+	<section class = "row">
+		<div class="col s12" th:each = "post: ${posts}">
 			<!-- username -->
-			<section class = "row justify-content-md-center">
+			<label class = "col s12">:שם משתמש</label>
 			<p class = "col s12>" th:text = "${post.getUser().getUsername()}">
 				Post author</p>
-				<label class = "col s12">:שם משתמש</label>
-			</section>
 			<!-- post -->
-			<section class = "row">
+			<div class="row">
 				<p class = "col s12" style="text-align: justify; display:block; white-space:pre-wrap"
 				th:text = "${post.getContent()}"> Content</p>
-				<label class = "col s12">:תגובה</label>
-			</section>
-						<hr>
+			</div>
 		</div>
-
+	</section>
 	
 	<!-- Reply -->
 	<header class="row">
