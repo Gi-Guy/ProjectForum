@@ -142,7 +142,7 @@ public class TopicController {
 		// TODO Add authorized permission checks.
 		/*if(authentication not allowed)
 			return "redirect:/topic/" + topicId;*/
-		
+		// TODO deleteAll(posts) instead
 		if(posts != null) {
 			while( !posts.isEmpty() ) {
 				postRepo.delete(posts.get(0));
