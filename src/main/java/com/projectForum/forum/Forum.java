@@ -38,6 +38,10 @@ public class Forum {
 	@Column(updatable = false, nullable = false)
 	private LocalDateTime createdDate;
 	
+	@Column(updatable = true, nullable = false)
+	private int priority;
+	
+	
 	public Forum() {
 		
 	}
@@ -81,4 +85,11 @@ public class Forum {
 	public Forum getForum() {
 		return this;
 	}
+	public int getPriority() {
+		return priority;
+	}
+	public void setPriority(int priority) {
+		this.priority = priority;
+	}
+	
 }

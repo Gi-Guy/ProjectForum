@@ -1,5 +1,7 @@
 package com.projectForum.forum;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +69,15 @@ public class ForumController {
 		if(bindingResult.hasErrors()) {
 			// TODO complete this
 			System.out.println("I'm here (New Forum) and I don't know what to do with my life.");
+		}
+		
+		//Each forum must have a priority value, 1 is the lowest.
+		List<Forum> forums = forumRepo.findAll();
+		if(forums.isEmpty()) {
+			forum.setPriority(1);	
+		}
+		else {
+			forum.setPriority(forums.size() + 1);	
 		}
 		forumRepo.save(forum);
 		return "redirect:/forum/" + forum.getId();
