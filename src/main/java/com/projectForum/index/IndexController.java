@@ -29,7 +29,7 @@ public class IndexController {
 		return "index";
 	}
 	
-	//This method has been moved to userController
+	//This method has been moved to userController TODO remove
 	/**
 	 * This method creates a page of all users 
 	 * */
@@ -47,7 +47,7 @@ public class IndexController {
 	    return "users";
 	}*/
 	
-	
+	// TODO move this to UserController and remove it from here
 	/**
 	 * This method will delete a user in the users list by button active */
 	@GetMapping("/deleteUser")
