@@ -1,5 +1,7 @@
 package com.projectForum.forum;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +21,13 @@ import com.projectForum.user.UserRepository;
 
 /**
  * This Controller will handle the next actions:
+ * Displaying a list of all forums
  * Creation of a new forum
  * Find all topics of a forum and display a forum page
  * Delete a forum
  * 
  * Notice:
- * Topic creation is in a Topic Controller, A topic will be attched to a forum by it controller.*/
+ * Topic creation is in TopicController where the topic will also be attached to a forum .*/
 
 	@Controller
 	@RequestMapping("/forum/")
@@ -44,6 +47,15 @@ public class ForumController {
 		this.forumRepo = forumRepo;
 	}
 	
+	/**
+	 * This method will display all forums in a list
+	 */
+	@GetMapping("/forums")
+	public String displayForums(Model model) {
+		model.addAttribute("forums", forumRepo.findAll());
+		return "forums";
+	}
+	 
 	/**This method will display all topics that attached to {forumId}*/
 	@GetMapping("{forumId}")
 	public String getTopicsById(@PathVariable int forumId, Model model) {
