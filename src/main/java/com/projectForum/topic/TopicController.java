@@ -1,7 +1,6 @@
 package com.projectForum.topic;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -34,7 +33,7 @@ import com.projectForum.user.UserRepository;
 @RequestMapping("/topic/")
 public class TopicController {
 	
-	private UserRepository 	userReop;
+	private UserRepository 	userRepo;
 	private TopicRepository topicRepo;
 	private PostRepository 	postRepo;
 	private ForumRepository forumRepo;
@@ -42,7 +41,7 @@ public class TopicController {
 	@Autowired
 	public TopicController(UserRepository userReop, TopicRepository topicRepo, PostRepository postRepo,
 			ForumRepository forumRepo) {
-		this.userReop = userReop;
+		this.userRepo = userReop;
 		this.topicRepo = topicRepo;
 		this.postRepo = postRepo;
 		this.forumRepo = forumRepo;
@@ -82,7 +81,7 @@ public class TopicController {
 		
 		// No errors, creating a new post in topic
 		// TODO check if new post register dates.
-		post.setUser(userReop.findByUsername(authentication.getName()));
+		post.setUser(userRepo.findByUsername(authentication.getName()));
 		post.setTopic(topicRepo.findTopicById(topicId));
 		postRepo.save(post);
 
@@ -118,7 +117,7 @@ public class TopicController {
 		topic.setTitle(newTopic.getTitle());
 		topic.setContent(newTopic.getContent());
 		topic.setForum(forumRepo.findById(newTopic.getForumId()));
-		topic.setUser(userReop.findByUsername(authentication.getName()));
+		topic.setUser(userRepo.findByUsername(authentication.getName()));
 		topic.setClosed(false);
 		topic.setViews(0);
 		

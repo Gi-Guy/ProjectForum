@@ -15,7 +15,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 	@Transactional
 	void deletePostById(int id);
 	
-	Set<Post> findPostsByTopicId(int topicId);
+	List<Post> findPostsByTopicId(int topicId);
 	List<Post> findPostsByTopic(Topic topic);
-	Set<Post> findPostsByUser(User user);
+	List<Post> findPostsByUser(User user);
 }
