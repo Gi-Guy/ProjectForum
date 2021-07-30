@@ -14,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 
+import com.projectForum.forum.Forum;
+import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
 import com.projectForum.post.PostRepository;
 import com.projectForum.topic.Topic;
@@ -35,6 +37,8 @@ public class TopicTest {
 	private PostRepository postRepo;
 	@Autowired
 	private UserRepository userRepo;
+	@Autowired
+	private ForumRepository forumRepo;
 
 	@Test
 	public void testCreateTopic() {
@@ -50,6 +54,21 @@ public class TopicTest {
 		Topic savedTopic = topicRepo.save(topic);
 		Topic existTopic = entityManager.find(Topic.class, savedTopic.getId());
 		assertThat(topic.getId()).isEqualTo(existTopic.getId());
+	}
+	@Test 
+	public void createNewTopicInForum() {
+		User user = userRepo.findByEmail("Err@err.err");
+		Post post = postRepo.findById(1);
+		Forum forum = forumRepo.findById(1);
+		Topic topic = new Topic();
+		
+		topic.setUser(user);
+		topic.setTitle("Hello World!");
+		topic.setContent("This is a test dummy for a new topic in a forum!");
+		topic.setViews(0);
+		topic.setForum(forum);
+		
+		topicRepo.save(topic);
 	}
 	@Test
 	public void addPostToTopic() {

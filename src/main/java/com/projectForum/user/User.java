@@ -28,7 +28,7 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private int id;
 	
 	@Column (unique = true, nullable = false, length = 10)
 	private String username;
@@ -52,11 +52,11 @@ public class User {
 	private LocalDateTime lastLogin;
 	
 	/* Consider removing these */
-	@OneToMany(mappedBy = "user")
+	/*@OneToMany(mappedBy = "user")
 	private List<Topic> topics;
 	
 	@OneToMany(mappedBy = "user")
-	private List<Post> posts;
+	private List<Post> posts;*/
 	
 	//TODO: ADD ROLE OPTION - FOR ADMINS
 	//TODO: Add private messages list
@@ -77,11 +77,11 @@ public class User {
 		this.isActive = isActive;
 	}
 
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 	
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	
@@ -146,7 +146,7 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+	/*
 	public List<Topic> getTopics() {
 		return topics;
 	}
@@ -161,5 +161,5 @@ public class User {
 
 	public void setPosts(List<Post> posts) {
 		this.posts = posts;
-	}
+	}*/
 }

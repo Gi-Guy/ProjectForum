@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.projectForum.topic.Topic;
@@ -16,7 +15,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 	@Transactional
 	void deletePostById(int id);
 	
-	Set<Post> findPostsByTopicId(int topicId);
+	List<Post> findPostsByTopicId(int topicId);
 	List<Post> findPostsByTopic(Topic topic);
-	Set<Post> findPostsByUser(User user);
+	List<Post> findPostsByUser(User user);
 }

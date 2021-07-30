@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
+import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
 import com.projectForum.post.PostRepository;
 
@@ -33,15 +33,18 @@ import com.projectForum.user.UserRepository;
 @RequestMapping("/topic/")
 public class TopicController {
 	
-	private UserRepository 	userReop;
+	private UserRepository 	userRepo;
 	private TopicRepository topicRepo;
 	private PostRepository 	postRepo;
+	private ForumRepository forumRepo;
 	
 	@Autowired
-	public TopicController(UserRepository userReop, TopicRepository topicRepo, PostRepository postRepo) {
-		this.userReop = userReop;
+	public TopicController(UserRepository userReop, TopicRepository topicRepo, PostRepository postRepo,
+			ForumRepository forumRepo) {
+		this.userRepo = userReop;
 		this.topicRepo = topicRepo;
 		this.postRepo = postRepo;
+		this.forumRepo = forumRepo;
 	}
 	
 	/**This method will display a full topic page including:
@@ -78,7 +81,7 @@ public class TopicController {
 		
 		// No errors, creating a new post in topic
 		// TODO check if new post register dates.
-		post.setUser(userReop.findByUsername(authentication.getName()));
+		post.setUser(userRepo.findByUsername(authentication.getName()));
 		post.setTopic(topicRepo.findTopicById(topicId));
 		postRepo.save(post);
 
@@ -89,15 +92,18 @@ public class TopicController {
 	/** This method will return a model and navigate the user to newTopic page */
 	@GetMapping("newTopic")
 	public String createNewTopic(@Valid @ModelAttribute Topic topic, Model model) {
-		model.addAttribute("newTopic", new Topic());
-		// TODO: I think I need to add a forum --> EACH TOPIC HAS TO BE ATTACHED TO A FORUM.
+		//model.addAttribute("newTopic", new Topic());
+		model.addAttribute("newTopic", new NewTopicPageForm());
+		model.addAttribute("forums",forumRepo.findAll());
+	
 		
 		return "new_Topic_page";
 	}
 	
 	/** This method will create a new topic and navigate the user to the new topic page. */
 	@PostMapping("newTopic")
-	public String proccesNewTopic(@Valid @ModelAttribute Topic topic, BindingResult bindingResult, Authentication authentication, Model model) {
+	//public String proccesNewTopic(@Valid @ModelAttribute Topic topic, BindingResult bindingResult, Authentication authentication, Model model) {
+	public String proccesNewTopic(@Valid @ModelAttribute("newTopic") NewTopicPageForm newTopic, BindingResult bindingResult, Authentication authentication, Model model) {
 		
 		// If hasErrors == true, then return to topic page. something went wrong.
 		if(bindingResult.hasErrors()) {
@@ -107,9 +113,17 @@ public class TopicController {
 		
 		// Creating new Topic
 		// TODO ERROR! ATTACHE IT TO A FORUM!
-		topic.setUser(userReop.findByUsername(authentication.getName()));
+		Topic topic = new Topic();
+		topic.setTitle(newTopic.getTitle());
+		topic.setContent(newTopic.getContent());
+		topic.setForum(forumRepo.findById(newTopic.getForumId()));
+		topic.setUser(userRepo.findByUsername(authentication.getName()));
 		topic.setClosed(false);
 		topic.setViews(0);
+		
+		//topic.setForum(forumRepo.findById(topic.getForum().getId())); // TODO <- test this!
+		
+		
 		topicRepo.save(topic);
 		
 		return "redirect:/topic/" + topic.getId();
@@ -139,6 +153,7 @@ public class TopicController {
 			//Something went wrong
 			return "redirect:/topic/" + topicId;
 		}
+		// TODO update this to "/forum/"
 		return "redirect:/topic";
 	}
 }
