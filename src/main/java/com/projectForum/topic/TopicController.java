@@ -94,7 +94,7 @@ public class TopicController {
 	@GetMapping("newTopic")
 	public String createNewTopic(@Valid @ModelAttribute Topic topic, Model model) {
 		//model.addAttribute("newTopic", new Topic());
-		model.addAttribute("newTopic", new NewTopicForm());
+		model.addAttribute("newTopic", new NewTopicPageForm());
 		model.addAttribute("forums",forumRepo.findAll());
 	
 		
@@ -104,7 +104,7 @@ public class TopicController {
 	/** This method will create a new topic and navigate the user to the new topic page. */
 	@PostMapping("newTopic")
 	//public String proccesNewTopic(@Valid @ModelAttribute Topic topic, BindingResult bindingResult, Authentication authentication, Model model) {
-	public String proccesNewTopic(@Valid @ModelAttribute("newTopic") NewTopicForm newTopic, BindingResult bindingResult, Authentication authentication, Model model) {
+	public String proccesNewTopic(@Valid @ModelAttribute("newTopic") NewTopicPageForm newTopic, BindingResult bindingResult, Authentication authentication, Model model) {
 		
 		// If hasErrors == true, then return to topic page. something went wrong.
 		if(bindingResult.hasErrors()) {

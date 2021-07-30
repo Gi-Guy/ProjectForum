@@ -6,7 +6,7 @@ import javax.validation.constraints.Min;
  * This class is for new topic page only.
  * The topic controller need a way to keep a forum id.
  * */
-public class NewTopicForm {
+public class NewTopicPageForm {
 	
 	private String title;
 	private String content;
