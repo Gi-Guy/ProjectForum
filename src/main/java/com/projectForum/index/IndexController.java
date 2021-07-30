@@ -18,7 +18,6 @@ public class IndexController {
 	@Autowired
 	private UserRepository userRepo;
 	
-	
 	// Defining the home page of the application
 	@GetMapping("")
 	public String viewHomePage() {
@@ -39,9 +38,12 @@ public class IndexController {
 	/*
 	@GetMapping("/list_users")
 	public String listofUsers(Model model) {
+
 	    //List<User> listofUsers = userReop.findAll();
 	    //model.addAttribute("listofUsers", listofUsers);
 		model.addAttribute("listofUsers", userRepo.findAll());
+	    List<User> listofUsers = userRepo.findAll();
+	    model.addAttribute("listofUsers", listofUsers);
 	    return "users";
 	}*/
 	
