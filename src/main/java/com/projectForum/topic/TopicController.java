@@ -70,7 +70,6 @@ public class TopicController {
 	}
 	
 	/**This method will add a new post to an exists topic*/
-	/*
 	@PostMapping("{topicId}")
 	public String addNewPost(@Valid @ModelAttribute Post post, BindingResult bindingResult, @PathVariable int topicId,
 								Authentication authentication, Model model) {
@@ -89,7 +88,7 @@ public class TopicController {
 		model.asMap().clear();//Cleaning model because it don't some weird things if not.
 		return "redirect:/topic/" + topicId; //User will return to the same topic page
 	}
-	*/
+	
 	/** This method will return a model and navigate the user to newTopic page */
 	@GetMapping("newTopic")
 	public String createNewTopic(@Valid @ModelAttribute Topic topic, Model model) {
