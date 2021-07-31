@@ -1,5 +1,6 @@
 package com.projectForum.topic;
 
+import java.security.Principal;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -9,10 +10,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.projectForum.forum.ForumRepository;
@@ -94,15 +97,24 @@ public class TopicController {
 	public String createNewTopic(@Valid @ModelAttribute Topic topic, Model model) {
 		//model.addAttribute("newTopic", new Topic());
 		model.addAttribute("newTopic", new NewTopicPageForm());
+		// TODO fix this
 		model.addAttribute("forums",forumRepo.findAll());
-	
+		
+		return "new_Topic_page";
+	}
+
+	@GetMapping("newTopic/{forumId}")
+	public String createNewTopicInForum(@Valid @ModelAttribute Topic topic, @PathVariable int forumId, Model model) {
+		NewTopicPageForm newTopic = new NewTopicPageForm();
+		newTopic.setForumId(forumId);
+		
+		model.addAttribute("newTopic", newTopic);
 		
 		return "new_Topic_page";
 	}
 	
 	/** This method will create a new topic and navigate the user to the new topic page. */
 	@PostMapping("newTopic")
-	//public String proccesNewTopic(@Valid @ModelAttribute Topic topic, BindingResult bindingResult, Authentication authentication, Model model) {
 	public String proccesNewTopic(@Valid @ModelAttribute("newTopic") NewTopicPageForm newTopic, BindingResult bindingResult, Authentication authentication, Model model) {
 		
 		// If hasErrors == true, then return to topic page. something went wrong.
@@ -112,7 +124,6 @@ public class TopicController {
 		}
 		
 		// Creating new Topic
-		// TODO ERROR! ATTACHE IT TO A FORUM!
 		Topic topic = new Topic();
 		topic.setTitle(newTopic.getTitle());
 		topic.setContent(newTopic.getContent());
@@ -120,8 +131,6 @@ public class TopicController {
 		topic.setUser(userRepo.findByUsername(authentication.getName()));
 		topic.setClosed(false);
 		topic.setViews(0);
-		
-		//topic.setForum(forumRepo.findById(topic.getForum().getId())); // TODO <- test this!
 		
 		
 		topicRepo.save(topic);

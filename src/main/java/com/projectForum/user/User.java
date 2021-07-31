@@ -51,14 +51,7 @@ public class User {
 	private LocalDateTime joiningDate;
 	private LocalDateTime lastLogin;
 	
-	/* Consider removing these */
-	/*@OneToMany(mappedBy = "user")
-	private List<Topic> topics;
-	
-	@OneToMany(mappedBy = "user")
-	private List<Post> posts;*/
-	
-	//TODO: ADD ROLE OPTION - FOR ADMINS
+
 	//TODO: Add private messages list
 	
 	public boolean isActive() {

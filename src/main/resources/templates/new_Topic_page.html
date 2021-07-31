@@ -24,7 +24,7 @@
 			style ="max-width:600px; margin: 0 auto;"
 			th:object = "${topic}">
 			
-			
+			<!--  
 			<div class="row">
 				<div class="input-field col s12">
 					<select class="browser-default" id="forum" th:field="${newTopic.forumId}">
@@ -32,8 +32,12 @@
 					<option th:each="forum : ${forums}" th:text="${forum.name}" th:value="${forum.id}"></option>
 				</select>
 				</div>
-			</div>
-			
+			</div> 
+			-->
+					
+		<div class="col s12">
+			<blockquote class="flow-text right" th:text="|פורום: | + ${newTopic.forumId}">מספר תגובות</blockquote>
+		</div>
 			<!-- Title -->
 				<div class ="row">
 					<div class="input-field col s12">
@@ -55,6 +59,7 @@
 
 			<!-- Sumbit button -->
 			<div class="from-row py-1">
+				<input type="hidden" name = "forumId" th:value="${newTopic.forumId}"/>
 				<input class="btn btn-primary" type="submit" value="Submit" />
 			</div>
 				

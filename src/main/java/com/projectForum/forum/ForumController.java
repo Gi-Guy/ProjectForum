@@ -30,7 +30,7 @@ import com.projectForum.user.UserRepository;
  * Topic creation is in TopicController where the topic will also be attached to a forum .*/
 
 	@Controller
-	@RequestMapping("/forum/")
+	@RequestMapping("/forum")
 public class ForumController {
 	
 	private UserRepository 	userRepo;
