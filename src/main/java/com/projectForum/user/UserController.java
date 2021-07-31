@@ -19,9 +19,7 @@ import com.projectForum.user.Profile.UserProfileServices;
  * Find a User entity and display it profile page.
  * Return list of all users.
  * Create user profile page.
- * */
-
-
+ */
 @Controller
 //@RequestMapping(value ="/user")
 public class UserController {
@@ -40,20 +38,18 @@ public class UserController {
 	}
 	
 	// TODO figure out how to:
-	//change login/logout pages 
-	//how to add profile pictures.
-	//how to change password.
+	// change login/logout pages 
+	// how to add profile pictures.
+	// how to change password.
 	
-
-
-	/**This method will find a userProfile entity (including User object) by a username and display it profile page.
+	/** This method will find a userProfile entity (including User object) by a username and display it profile page.
 	 * @param String username
 	 * @param Model
-	 * */
+	 */
 	@GetMapping("/user/{username}")
 	public String findUserByUsernameAndDisplay(@PathVariable String username, Model model) {
 		
-		// TODO make an exception in case user isn't exists
+		// TODO make an exception in case user doesn't exist
 		
 		UserProfile userProfile = userService.findUserByUsername(username);
 		model.addAttribute("userProfile", userProfile);
@@ -64,28 +60,26 @@ public class UserController {
 	/**
 	 * This method will will find a userProfile entity and display it 'myProfile' page.
 	 * @param Authentication object
-	 * @param Model*/
+	 * @param Model
+	 */
 	@RequestMapping("/myprofile")
 	public String myProfileDisplay(Authentication authentication, Model model) {
 		
-		//authentication should hold user information
+		// Authentication should hold user information
 		String username = authentication.getName();
-		// TODO make an exception in case user isn't exists
+		
+		// TODO make an exception in case user doesn't exist
 		UserProfile userProfile = userService.findUserByUsername(username);
 		
 		model.addAttribute(userProfile);
 		return "user";
 	}
 	
-	/**
-	 *This method will return List<User> of all users in database and display it.*/
+	/** This method will return List<User> of all users in database and display it. */
 	@GetMapping("/list_users")
 	public String listofUsers(Model model) {
 
 		model.addAttribute("listofUsers", userRepo.findAll());
 	    return "users";
 	}
-	
-	
-	
 }
