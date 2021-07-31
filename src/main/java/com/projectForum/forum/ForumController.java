@@ -50,6 +50,7 @@ public class ForumController {
 	/**
 	 * This method will display all forums in a list
 	 */
+	// TODO move this to homepage controller.
 	@GetMapping("/forums")
 	public String displayForums(Model model) {
 		//returning a List<Forum> order by priority {highest priority = 1}
