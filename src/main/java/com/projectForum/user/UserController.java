@@ -5,14 +5,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 //import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.projectForum.forum.ForumRepository;
-import com.projectForum.post.PostRepository;
-import com.projectForum.topic.TopicRepository;
+
 import com.projectForum.user.Profile.UserProfile;
 import com.projectForum.user.Profile.UserProfileServices;
 
