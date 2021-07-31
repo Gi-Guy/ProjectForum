@@ -138,6 +138,32 @@ public class TopicController {
 		return "redirect:/topic/" + topic.getId();
 	}
 	
+	/**This method will enter user to edit mode for exsits topic*/
+	@GetMapping("edit/{topicId}")
+	public String editTopic(@Valid @ModelAttribute("newTopic") Topic topic,@PathVariable int topicId, Model model) {
+		NewTopicPageForm newTopic = new NewTopicPageForm();
+		newTopic.setTopicId(topicId);
+		model.addAttribute("newTopic", newTopic);
+		return "edit_Topic_page";
+	}
+	
+	@PostMapping("editTopic")
+	public String editTopic(@Valid @ModelAttribute("newTopic") NewTopicPageForm newTopic, BindingResult bindingResult, Authentication authentication, Model model) {
+		
+		Topic topic = topicRepo.getById(newTopic.getTopicId());
+		
+		if(authentication.getName().equals(topic.getUser().getUsername())){
+			if(!newTopic.getTitle().isEmpty())
+				topic.setTitle(newTopic.getTitle());
+			
+			if(!newTopic.getContent().isEmpty())
+				topic.setContent(newTopic.getContent());
+			
+			topicRepo.save(topic);
+		}
+		return "redirect:/topic/" + topic.getId();
+	}
+	
 	// TODO Move this method to control panel?
 	// TODO finish this method.
 	/** This method will delete an exists method.
