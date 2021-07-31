@@ -31,26 +31,16 @@
 	</div>
 		<hr>
 	<div class="container text-right">
-		<!-- links to other pages -->
 		<div>
 			<h3> <a th:href="@{forum/forums}">רשימת כל הפורומים</a></h3>
+				<h4 style = "color:red">All Users can read, Only Authorized can create new topics & posts, Only Admin can create a new forum.</h4>
 			<hr>
 			<h3> <a th:href="@{/list_users}">רשימת כל המשתמשים</a></h3>
+				<h4 style = "color:red">ADMIN ONLY</h4>
 			<hr>
 			<h3> <a th:href="@{/register}">הרשמה</a></h3>
 			<hr>
 			<h3> <a th:href="@{/login}">התחבר</a></h3>
-			<hr>
-			<h3> <a th:href="@{/test}">Testing</a></h3>
-			<hr>
-			<h3> <a th:href="@{/topic/newTopic}">Create a topic (login first!)</a></h3>
-			<hr>
-			<h3> <a th:href="@{/topic/2}">topic for example</a></h3>
-			<hr>
-			<h3> <a th:href="@{/forum/newForum}">צור פורום חדש</a></h3>
-			<h2 style="color:red">Warning - there is no list of forums yet, so your forum will be 2 or more</h2>
-			<hr>
-			<h3> <a th:href="@{/forum/1}">פורום לדוגמא</a></h3>
 			<hr>
 			<form th:action="@{/logout}" method="post">
 				<input type="submit" value="Sign Out" />
