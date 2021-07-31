@@ -52,7 +52,8 @@ public class ForumController {
 	 */
 	@GetMapping("/forums")
 	public String displayForums(Model model) {
-		model.addAttribute("forums", forumRepo.findAll());
+		//returning a List<Forum> order by priority {highest priority = 1}
+		model.addAttribute("forums", forumRepo.findByOrderByPriorityAsc());
 		return "forums";
 	}
 	 
