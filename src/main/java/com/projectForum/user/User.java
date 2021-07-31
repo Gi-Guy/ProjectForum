@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.projectForum.Security.Roles;
+
 
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.userdetails.UserDetails;
@@ -43,6 +45,8 @@ public class User {
 	
 	@Column(nullable = false, length = 4)
 	private boolean isActive = true;
+	
+	private Roles role = Roles.UNDEFINED_USER;
 	
 	private LocalDateTime joiningDate;
 	private LocalDateTime lastLogin;
@@ -142,20 +146,13 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	/*
-	public List<Topic> getTopics() {
-		return topics;
+
+	public Roles getRole() {
+		return role;
 	}
 
-	public void setTopics(List<Topic> topics) {
-		this.topics = topics;
+	public void setRole(Roles role) {
+		this.role = role;
 	}
-
-	public List<Post> getPosts() {
-		return posts;
-	}
-
-	public void setPosts(List<Post> posts) {
-		this.posts = posts;
-	}*/
+	
 }

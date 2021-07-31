@@ -53,7 +53,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	// Also explains again in 1:15:25
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+    	 http.authorizeRequests()
+         .antMatchers(AUTHORIZED_ACCESS).authenticated()
+         .antMatchers(ADMIN_ACCESS).hasAnyAuthority(Roles.AMDIN.toString())
+         .antMatchers(ALL_ACCESS).permitAll()
+         .and()
+         .formLogin()
+         .usernameParameter("email")
+         .defaultSuccessUrl("/index")
+         .permitAll()
+         .and()
+         .logout().logoutSuccessUrl("/").permitAll();
+        /*http.authorizeRequests()
             .antMatchers("/list_users").authenticated()
             .anyRequest().permitAll()
             .and()
@@ -62,6 +73,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .defaultSuccessUrl("/list_users")
             .permitAll()
             .and()
-            .logout().logoutSuccessUrl("/").permitAll();
+            .logout().logoutSuccessUrl("/").permitAll();*/
     }
+    
+    /** In this area we defines all of Access Rules for all Roles*/
+    private static final String[] ALL_ACCESS = {
+    		"/",
+    		"/index",
+    		"/topic/*",
+    		"/forum/**"
+    };
+    /*private static final String[] AUTHORIZED_ACCESS = {
+    		"/list_users",
+    		"/post/**"		
+    };*/
+    private static final String[] AUTHORIZED_ACCESS = {
+    		"/post/**",
+    		"/topic/newTopic"
+    };
+    private static final String[] MODERATE_ACCESS = {};
+    private static final String[] ADMIN_ACCESS = {
+    		"/list_users",
+    		"/forum/newForum"
+    };
+    
 }
