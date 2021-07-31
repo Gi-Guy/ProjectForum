@@ -69,7 +69,7 @@ public class TopicController {
 		// In each topic there is an option to create a new post
 		model.addAttribute("newPost", new Post());
 		
-		return "topic";
+		return "topic2";
 	}
 	
 	/**This method will add a new post to an exists topic*/
