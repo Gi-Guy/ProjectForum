@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projectForum.Services.DeleteService;
 import com.projectForum.user.UserRepository;
 
 /**
@@ -30,12 +31,16 @@ public class PostController {
 	
 	private PostRepository postRepo;
 	private UserRepository userRepo;
+	private DeleteService deleteService;
 	
 	@Autowired
-	public PostController(PostRepository postRepository) {
-		this.postRepo = postRepository;
+	public PostController(PostRepository postRepo, UserRepository userRepo,
+			com.projectForum.Services.DeleteService deleteService) {
+		this.postRepo = postRepo;
+		this.userRepo = userRepo;
+		this.deleteService = deleteService;
 	}
-	
+
 	// TODO Test those methods
 	/** This method will give the user the option to edit the post content*/
 	@GetMapping("edit/{postId}")
@@ -74,6 +79,7 @@ public class PostController {
 		return "posts";
 	}
 	
+	
 	@GetMapping("delete/{postId}")
 	public String deletePost(@PathVariable int postId, Authentication authentication,
 								RedirectAttributes model) {
@@ -85,11 +91,16 @@ public class PostController {
 			if( !authentication.getName().equals(post.getUser().getUsername()))
 				return "redirect:/";
 			else
-				postRepo.delete(post);
+			{
+				// At this point user allowed to remove post
+				deleteService.deletePost(post);
+				
+			}
 			
 		}
 		
 		model.addFlashAttribute("message", "post has been removed.");
 		return "redirect:/topic/" + post.getTopic().getId();
 	}
+	
 }

@@ -1,7 +1,6 @@
 package com.projectForum.topic;
 
-import java.security.Principal;
-import java.util.List;
+
 
 import javax.validation.Valid;
 
@@ -10,15 +9,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projectForum.Services.DeleteService;
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
 import com.projectForum.post.PostRepository;
@@ -41,16 +39,18 @@ public class TopicController {
 	private TopicRepository topicRepo;
 	private PostRepository 	postRepo;
 	private ForumRepository forumRepo;
+	private DeleteService	deleteService;
 	
 	@Autowired
-	public TopicController(UserRepository userReop, TopicRepository topicRepo, PostRepository postRepo,
-			ForumRepository forumRepo) {
-		this.userRepo = userReop;
+	public TopicController(UserRepository userRepo, TopicRepository topicRepo, PostRepository postRepo,
+			ForumRepository forumRepo, DeleteService deleteService) {
+		this.userRepo = userRepo;
 		this.topicRepo = topicRepo;
 		this.postRepo = postRepo;
 		this.forumRepo = forumRepo;
+		this.deleteService = deleteService;
 	}
-	
+
 	/**This method will display a full topic page including:
 	 * @return Model:	Topic object with all information
 	 * @return Model:	List<Post> - list of all posts that in Topic object
@@ -168,6 +168,25 @@ public class TopicController {
 	
 	/** This method will delete an exists method.
 	 * 	A Topic can't be deleted as long List<Post> is not empty */
+	
+	@GetMapping("delete/{topicId}")
+	public String deleteTopic(@PathVariable int topicId, Authentication authentication,
+									RedirectAttributes model) {
+		// find topic to remove and all it posts
+		Topic topic = topicRepo.findTopicById(topicId);
+		
+		// making sure that topic is exists and user allowed to remove it		
+		if (topic == null || authentication == null || !authentication.getName().equals(topic.getUser().getUsername())) {
+			//topic can't be removed
+			return "redirect:/";
+		}
+		
+		deleteService.deleteTopic(topic);
+		model.addFlashAttribute("message", "Topic has been removed.");
+		return "redirect:/forum/" + topic.getForum().getId();
+	}
+	
+	/* BACK UP BEFORE TESTING
 	@GetMapping("delete/{topicId}")
 	public String deleteTopic(@PathVariable int topicId, Authentication authentication,
 									RedirectAttributes model) {
@@ -180,7 +199,7 @@ public class TopicController {
 			//topic can't be removed
 			return "redirect:/";
 		}
-		/* at this point topic can be removed and posts as well.*/
+		// at this point topic can be removed and posts as well.
 		// Removing posts
 		if(posts != null) {
 			while( !posts.isEmpty() ) {
@@ -191,5 +210,5 @@ public class TopicController {
 		topicRepo.delete(topic);
 		model.addFlashAttribute("message", "Topic has been removed.");
 		return "redirect:/forum/" + topic.getForum().getId();
-	}
+	}*/
 }
