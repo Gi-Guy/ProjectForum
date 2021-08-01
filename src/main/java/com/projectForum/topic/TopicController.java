@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.projectForum.Services.DeleteService;
+import com.projectForum.Services.EditServices;
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
 import com.projectForum.post.PostRepository;
@@ -40,15 +41,18 @@ public class TopicController {
 	private PostRepository 	postRepo;
 	private ForumRepository forumRepo;
 	private DeleteService	deleteService;
+	private EditServices	editService;
 	
+
 	@Autowired
 	public TopicController(UserRepository userRepo, TopicRepository topicRepo, PostRepository postRepo,
-			ForumRepository forumRepo, DeleteService deleteService) {
+			ForumRepository forumRepo, DeleteService deleteService, EditServices editService) {
 		this.userRepo = userRepo;
 		this.topicRepo = topicRepo;
 		this.postRepo = postRepo;
 		this.forumRepo = forumRepo;
 		this.deleteService = deleteService;
+		this.editService = editService;
 	}
 
 	/**This method will display a full topic page including:
@@ -77,14 +81,19 @@ public class TopicController {
 	@PostMapping("{topicId}")
 	public String addNewPost(@Valid @ModelAttribute Post post, BindingResult bindingResult, @PathVariable int topicId,
 								Authentication authentication, Model model) {
-		// If hasErrors == true, then return to topic page.
+		
+		// If hasErrors == true, then return to topic page, because something went wrong
 		if(bindingResult.hasErrors()) {
-			System.out.println("I'm here (New post)  and I don't know what to do with my life.");
-			// TODO: Solve this issue <------------------------------------------------------FIX THIS!
+			System.err.println("ERROR :: Topic Controller - addNewPost (POST)");
+			// If there is an error we should go back to topic page and try again.
+			model.addAttribute("topic", topicRepo.findTopicById(topicId));
+			model.addAttribute("posts", postRepo.findPostsByTopicId(topicId));
+			model.addAttribute("newPost", new Post());
+			// Keeping user in same page to fix issues
+			return "topic";
 		}
 		
 		// No errors, creating a new post in topic
-		// TODO check if new post register dates.
 		post.setUser(userRepo.findByUsername(authentication.getName()));
 		post.setTopic(topicRepo.findTopicById(topicId));
 		postRepo.save(post);
@@ -94,23 +103,14 @@ public class TopicController {
 	}
 	
 	/** This method will return a model and navigate the user to newTopic page */
-	@GetMapping("newTopic")
-	public String createNewTopic(@Valid @ModelAttribute Topic topic, Model model) {
-		//model.addAttribute("newTopic", new Topic());
-		model.addAttribute("newTopic", new NewTopicPageForm());
-		// TODO fix this
-		model.addAttribute("forums",forumRepo.findAll());
-		
-		return "new_Topic_page";
-	}
-
 	@GetMapping("newTopic/{forumId}")
-	public String createNewTopicInForum(@Valid @ModelAttribute Topic topic, @PathVariable int forumId, Model model) {
+	public String createNewTopicInForum(@PathVariable int forumId, Model model) {
+		// Using a newTopicform to keep our forumId.
 		NewTopicPageForm newTopic = new NewTopicPageForm();
+		// Saving forumId value.
 		newTopic.setForumId(forumId);
 		
 		model.addAttribute("newTopic", newTopic);
-		
 		return "new_Topic_page";
 	}
 	
@@ -118,10 +118,12 @@ public class TopicController {
 	@PostMapping("newTopic")
 	public String proccesNewTopic(@Valid @ModelAttribute("newTopic") NewTopicPageForm newTopic, BindingResult bindingResult, Authentication authentication, Model model) {
 		
-		// If hasErrors == true, then return to topic page. something went wrong.
+		// If hasErrors == true, then return to topic page, because something went wrong
 		if(bindingResult.hasErrors()) {
-			System.out.println("I'm here (New Topic) and I don't know what to do with my life.");
-			// TODO: Solve this issue <------------------------------------------------------FIX THIS!
+			System.err.println("ERROR :: Topic Controller - proccesNewTopic (POST)");
+			// If there is an error we should go back to topic creation page and try again.
+			// TODO I'm not really sure what should we put into model.
+			return "new_Topic_page";
 		}
 		
 		// Creating new Topic
@@ -141,27 +143,23 @@ public class TopicController {
 	
 	/**This method will enter user to edit mode for exsits topic*/
 	@GetMapping("edit/{topicId}")
-	public String editTopic(@Valid @ModelAttribute("newTopic") Topic topic,@PathVariable int topicId, Model model) {
-		NewTopicPageForm newTopic = new NewTopicPageForm();
-		newTopic.setTopicId(topicId);
-		model.addAttribute("newTopic", newTopic);
+	public String editTopic(@PathVariable int topicId, Model model) {
+		// Using newTopicForm to keep the topicId while editing.
+		NewTopicPageForm editTopic = new NewTopicPageForm();
+		editTopic.setTopicId(topicId);
+		model.addAttribute("editTopic", editTopic);
+		// TODO Find out how to open a edit mode section and not using a new page.
 		return "edit_Topic_page";
 	}
 	
 	@PostMapping("editTopic")
-	public String editTopic(@Valid @ModelAttribute("newTopic") NewTopicPageForm newTopic, BindingResult bindingResult, Authentication authentication, Model model) {
+	public String editTopic(@Valid @ModelAttribute("editTopic") NewTopicPageForm editTopic, BindingResult bindingResult, Authentication authentication, Model model) {
 		
-		Topic topic = topicRepo.getById(newTopic.getTopicId());
+		Topic topic = topicRepo.getById(editTopic.getTopicId());
 		
-		if(authentication.getName().equals(topic.getUser().getUsername())){
-			if(!newTopic.getTitle().isEmpty())
-				topic.setTitle(newTopic.getTitle());
-			
-			if(!newTopic.getContent().isEmpty())
-				topic.setContent(newTopic.getContent());
-			
-			topicRepo.save(topic);
-		}
+		if(authentication.getName().equals(topic.getUser().getUsername()))
+			editService.updateTopic(topic, editTopic);
+
 		return "redirect:/topic/" + topic.getId();
 	}
 	

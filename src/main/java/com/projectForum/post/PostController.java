@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.projectForum.Services.DeleteService;
+import com.projectForum.Services.EditServices;
 import com.projectForum.user.UserRepository;
 
 /**
@@ -29,23 +30,25 @@ import com.projectForum.user.UserRepository;
 @RequestMapping(value = "/post")
 public class PostController {
 	
-	private PostRepository postRepo;
-	private UserRepository userRepo;
-	private DeleteService deleteService;
+	private PostRepository	postRepo;
+	private UserRepository	userRepo;
+	private DeleteService	deleteService;
+	private EditServices	editServices;	
 	
 	@Autowired
-	public PostController(PostRepository postRepo, UserRepository userRepo,
-			com.projectForum.Services.DeleteService deleteService) {
+	public PostController(PostRepository postRepo, UserRepository userRepo, DeleteService deleteService,
+			EditServices editServices) {
 		this.postRepo = postRepo;
 		this.userRepo = userRepo;
 		this.deleteService = deleteService;
+		this.editServices = editServices;
 	}
 
 	// TODO Test those methods
 	/** This method will give the user the option to edit the post content*/
 	@GetMapping("edit/{postId}")
 	public String editPost(@PathVariable int postId, Model model) {
-		editPostForm newEditPost = new editPostForm();
+		EditPostForm newEditPost = new EditPostForm();
 		newEditPost.setPostId(postId);
 		model.addAttribute("editPost", newEditPost);
 		return "editPost";
@@ -53,17 +56,22 @@ public class PostController {
 	
 	/** This method will edit the original post object and save the new content of the post.*/
 	@PostMapping("editPost")
-	public String editPost(@Valid @ModelAttribute("newEditPost") editPostForm newEdit, BindingResult bindingResult, Authentication authentication, Model model) {
+	public String editPost(@Valid @ModelAttribute("newEditPost") EditPostForm newEdit, BindingResult bindingResult, Authentication authentication, Model model) {
 		
 		// finding original post
 		Post post = postRepo.findById(newEdit.getPostId());
 		
 		// making sure user is allowed to edit post
 		if(authentication.getName().equals(post.getUser().getUsername())) {
+			
+			//User allowed to update post
+			editServices.updatePost(post, newEdit);
+		
+			/* BACKUP BEFORE TESTING
 			if(!newEdit.getContent().isEmpty())
 				post.setContent(newEdit.getContent());
 			
-			postRepo.save(post);
+			postRepo.save(post);*/
 		}
 		// taking user back to the original topic.
 		return "redirect:/topic/" + post.getTopic().getId();

@@ -114,4 +114,19 @@ public class DeleteService {
 		// Forum has no topics, removing forum
 		forumRepo.delete(forum);
 	}
+	
+	/** This method will delete a list of forums by List<forum>*/
+	public void deleteForums(List<Forum> forums) {
+		while(!forums.isEmpty()) {
+			this.deleteForum(forums.get(0));
+		}
+	}
+	
+	/** This method will delete all the forums + Topics + Posts in database.
+	 * @warning THIS CAN'T BE UNDONE*/
+	public void deleteAll() {
+		List<Forum> forums = forumRepo.findAll();
+		this.deleteForums(forums);
+		
+	}
 }

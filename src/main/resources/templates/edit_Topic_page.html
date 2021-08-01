@@ -22,7 +22,7 @@
 
 			<form th:action = "@{/topic/editTopic}" method = "post"
 			style ="max-width:600px; margin: 0 auto;"
-			th:object = "${newTopic}">
+			th:object = "${editTopic}">
 			
 			<!--  
 			<div class="row">
@@ -56,7 +56,7 @@
 
 			<!-- Sumbit button -->
 			<div class="from-row py-1">
-				<input type="hidden" name = "topicId" th:value="${newTopic.topicId}"/>
+				<input type="hidden" name = "topicId" th:value="${editTopic.topicId}"/>
 				<input class="btn btn-primary" type="submit" value="Submit" />
 			</div>
 				

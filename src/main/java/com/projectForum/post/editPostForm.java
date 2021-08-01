@@ -4,7 +4,7 @@ import javax.validation.constraints.Min;
 
 
 /** This method will use to edit an exists post.*/
-public class editPostForm {
+public class EditPostForm {
 	private String content;
 	@Min(value=1)
 	private int topicId;
