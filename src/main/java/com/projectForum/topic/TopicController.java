@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
@@ -69,7 +70,7 @@ public class TopicController {
 		// In each topic there is an option to create a new post
 		model.addAttribute("newPost", new Post());
 		
-		return "topic2";
+		return "topic";
 	}
 	
 	/**This method will add a new post to an exists topic*/
@@ -164,31 +165,31 @@ public class TopicController {
 		return "redirect:/topic/" + topic.getId();
 	}
 	
-	// TODO Move this method to control panel?
-	// TODO finish this method.
+	
 	/** This method will delete an exists method.
 	 * 	A Topic can't be deleted as long List<Post> is not empty */
 	@GetMapping("delete/{topicId}")
-	public String deleteTopic(@PathVariable int topicId, Authentication authentication) {
+	public String deleteTopic(@PathVariable int topicId, Authentication authentication,
+									RedirectAttributes model) {
+		// find topic to remove and all it posts
 		Topic topic = topicRepo.findTopicById(topicId);
 		List<Post> posts = postRepo.findPostsByTopic(topic);
 		
-		// TODO Add authorized permission checks.
-		/*if(authentication not allowed)
-			return "redirect:/topic/" + topicId;*/
-		
+		// making sure that topic is exists and user allowed to remove it		
+		if (topic == null || authentication == null || !authentication.getName().equals(topic.getUser().getUsername())) {
+			//topic can't be removed
+			return "redirect:/";
+		}
+		/* at this point topic can be removed and posts as well.*/
+		// Removing posts
 		if(posts != null) {
 			while( !posts.isEmpty() ) {
 				postRepo.delete(posts.get(0));
 			}
 		}
+		// Topic has no posts, removing topic
 		topicRepo.delete(topic);
-		
-		if( topicRepo.findTopicById(topicId) != null) {
-			//Something went wrong
-			return "redirect:/topic/" + topicId;
-		}
-		// TODO update this to "/forum/"
-		return "redirect:/topic";
+		model.addFlashAttribute("message", "Topic has been removed.");
+		return "redirect:/forum/" + topic.getForum().getId();
 	}
 }
