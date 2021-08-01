@@ -12,5 +12,6 @@ public interface ForumRepository extends JpaRepository<Forum, Integer> {
 	List<Forum> findByOrderByPriorityAsc();
 	
 	Forum findById(int i);
+	Forum findByPriority(int priority);
 	
 }
