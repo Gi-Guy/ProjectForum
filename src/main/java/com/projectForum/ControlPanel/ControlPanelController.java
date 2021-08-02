@@ -16,12 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.projectForum.Security.Roles;
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
-import com.projectForum.user.Profile.UserProfile;
 import com.projectForum.user.Profile.UserProfileServices;
 
 @Controller
@@ -114,10 +112,16 @@ public class ControlPanelController {
 	
 	@GetMapping("searchUser")
 	public String displayUserByUsername(@PathVariable String username, Model model) {
-		UserProfile userProfile = userService.findUserByUsername(username);
-		model.addAttribute("userProfile",userProfile);
+//		UserProfile userProfile = userService.findUserByUsername(username);
+//		model.addAttribute("userProfile",userProfile);
+		SearchUserForm searchUserForm = controlService.findSearchUserByUsername(username);
+		// TODO add roles List to model 
+		
+		model.addAttribute("searchUserForm",searchUserForm);
+		
 		return "searchUser";
 	}
+	
 	
 	/*
 	 * Homepage administration section

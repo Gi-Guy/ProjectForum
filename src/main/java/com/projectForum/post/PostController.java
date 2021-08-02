@@ -110,5 +110,5 @@ public class PostController {
 		model.addFlashAttribute("message", "post has been removed.");
 		return "redirect:/topic/" + post.getTopic().getId();
 	}
-	
+
 }

@@ -136,5 +136,70 @@ public class Topic {
 	public void setForum(Forum forum) {
 		this.forum = forum;
 	}
+    //Auto generated 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (closed ? 1231 : 1237);
+		result = prime * result + ((content == null) ? 0 : content.hashCode());
+		result = prime * result + ((createdDate == null) ? 0 : createdDate.hashCode());
+		result = prime * result + ((forum == null) ? 0 : forum.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((lastActivity == null) ? 0 : lastActivity.hashCode());
+		result = prime * result + ((title == null) ? 0 : title.hashCode());
+		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		result = prime * result + views;
+		return result;
+	}
+    //Auto generated 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Topic other = (Topic) obj;
+		if (closed != other.closed)
+			return false;
+		if (content == null) {
+			if (other.content != null)
+				return false;
+		} else if (!content.equals(other.content))
+			return false;
+		if (createdDate == null) {
+			if (other.createdDate != null)
+				return false;
+		} else if (!createdDate.equals(other.createdDate))
+			return false;
+		if (forum == null) {
+			if (other.forum != null)
+				return false;
+		} else if (!forum.equals(other.forum))
+			return false;
+		if (id != other.id)
+			return false;
+		if (lastActivity == null) {
+			if (other.lastActivity != null)
+				return false;
+		} else if (!lastActivity.equals(other.lastActivity))
+			return false;
+		if (title == null) {
+			if (other.title != null)
+				return false;
+		} else if (!title.equals(other.title))
+			return false;
+		if (user == null) {
+			if (other.user != null)
+				return false;
+		} else if (!user.equals(other.user))
+			return false;
+		if (views != other.views)
+			return false;
+		return true;
+	}
+	
 	
 }

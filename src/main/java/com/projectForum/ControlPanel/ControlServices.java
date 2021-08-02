@@ -1,13 +1,19 @@
 package com.projectForum.ControlPanel;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import org.springframework.stereotype.Service;import com.mysql.cj.util.StringUtils.SearchMode;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.PostRepository;
 import com.projectForum.topic.TopicRepository;
+import com.projectForum.user.User;
 import com.projectForum.user.UserRepository;
+
+
+/* ###########################################################
+ * 		WARNING: THIS SERVICE FILE ISN'T TESTED YET!
+ * ###########################################################*/
+
 
 @Service
 public class ControlServices {
@@ -27,6 +33,10 @@ public class ControlServices {
 	}
 	
 	/**This method will update the priority of a two forums, higher priority and lower priority*/
+	/**
+	 * @param forum
+	 * @param priority
+	 */
 	public void updatePriority(Forum forum, int priority) {
 		int tempPriority = forum.getPriority();
 		
@@ -38,5 +48,37 @@ public class ControlServices {
 			forumRepo.save(forum);
 			forumRepo.save(oldForum);
 		}
+	}
+	
+	/**This method will update the role of exsits user.*/
+	/**
+	 * @param user
+	 * @param searchUserForm
+	 */
+	public void updateUserRole(User user, SearchUserForm searchUserForm) {
+		//user.setRole(searchUserForm.getRole());
+		userRepo.save(user);
+		
+	}
+	/**
+	 * @param username
+	 * @return
+	 */
+	public SearchUserForm findSearchUserByUsername(String username) {
+		return this.findSearchUserById(userRepo.findByUsername(username).getId());
+	}
+	/**
+	 * @param userId
+	 * @return
+	 */
+	public SearchUserForm findSearchUserById(int userId) {
+		User user = userRepo.findUserById(userId);
+		SearchUserForm searchUser = new SearchUserForm();
+		
+		searchUser.setUser(user);
+		//searchUser.setRole(user.getRole());
+		searchUser.setPosts(postRepo.findPostsByUser(user));
+		searchUser.setTopics(topicRepo.findTopicsByUser(user));
+		return searchUser;
 	}
 }

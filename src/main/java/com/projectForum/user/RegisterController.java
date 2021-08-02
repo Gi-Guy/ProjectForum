@@ -1,6 +1,5 @@
 package com.projectForum.user;
 
-import java.time.LocalDateTime;
 
 import javax.validation.Valid;
 
@@ -14,7 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.projectForum.Security.Roles;
+import com.projectForum.Security.RoleRepository;
+
 
 /**
  * This Class manages all User registration process to the database and the web application */
@@ -22,13 +22,15 @@ import com.projectForum.Security.Roles;
 public class RegisterController {
 	
 	//@Autowired
-	private UserRepository userRepo;
+	private UserRepository 	userRepo;
+	private RoleRepository	roleRepo;
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
-	public RegisterController(UserRepository userRepository , PasswordEncoder passwordEncoder ) {
+	public RegisterController(UserRepository userRepository , PasswordEncoder passwordEncoder, RoleRepository	roleRepo) {
 		this.userRepo = userRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.roleRepo = roleRepo;
 	}
 	
 	/**Mapping to register page
@@ -53,8 +55,7 @@ public class RegisterController {
 				// Checking if username exists in the database
 				if(userRepo.findByUsername(user.getUsername()) == null) {
 					user.setPassword(passwordEncoder.encode(user.getPassword()));
-					user.setJoiningDate(LocalDateTime.now());
-					user.setRole(Roles.USER);
+					user.setRole(roleRepo.findRoleByName("USER"));
 					userRepo.save(user);	
 					}
 				
