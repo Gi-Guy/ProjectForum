@@ -1,4 +1,4 @@
-package com.projectForum.forum;
+package com.projectForum.ControlPanel;
 
 import java.util.List;
 
@@ -16,63 +16,38 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projectForum.Security.Roles;
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
-import com.projectForum.post.PostRepository;
-import com.projectForum.topic.TopicRepository;
-import com.projectForum.user.UserRepository;
+import com.projectForum.forum.Forum;
+import com.projectForum.forum.ForumRepository;
+import com.projectForum.user.Profile.UserProfile;
+import com.projectForum.user.Profile.UserProfileServices;
 
-/**
- * This Controller will handle the next actions:
- * Displaying a list of all forums
- * Creation of a new forum
- * Find all topics of a forum and display a forum page
- * Delete a forum
- * 
- * Notice:
- * Topic creation is in TopicController where the topic will also be attached to a forum .*/
+@Controller
+@RequestMapping("/controlPanel/")
+public class ControlPanelController {
 
-	@Controller
-	@RequestMapping("/forum")
-public class ForumController {
+	private ControlServices 	controlService;
+	private ForumRepository 	forumRepo;
+	private UserProfileServices	userService;
+	private DeleteService		deleteService;
+	private EditServices		editService;
 	
-	private UserRepository 	userRepo;
-	private TopicRepository topicRepo;
-	private PostRepository 	postRepo;
-	private ForumRepository forumRepo;
-	private DeleteService	deleteService;
-	private EditServices	editService;
+	
 	
 	@Autowired
-	public ForumController(UserRepository userReop, TopicRepository topicRepo, PostRepository postRepo,
-			ForumRepository forumRepo, DeleteService deleteService, EditServices editService) {
-		this.userRepo = userReop;
-		this.topicRepo = topicRepo;
-		this.postRepo = postRepo;
+	public ControlPanelController(ControlServices controlService, ForumRepository forumRepo,
+			DeleteService deleteService, EditServices editService) {
+		this.controlService = controlService;
 		this.forumRepo = forumRepo;
 		this.deleteService = deleteService;
 		this.editService = editService;
 	}
 	
-	/**
-	 * This method will display all forums in a List<Forum>
-	 */
-	// TODO move this to homepage controller.
-	@GetMapping("/forums")
-	public String displayForums(Model model) {
-		// returning a List<Forum> order by priority {highest priority = 1}
-		model.addAttribute("forums", forumRepo.findByOrderByPriorityAsc());
-		return "forums";
-	}
-	 
-	/**This method will display all topics that attached to {forumId}*/
-	@GetMapping("{forumId}")
-	public String getTopicsById(@PathVariable int forumId, Model model) {
-		model.addAttribute("forum", forumRepo.findById(forumId));
-		model.addAttribute("topics", topicRepo.findTopicsByForumId(forumId));
-		return "forum";
-	}
-	
+	/*
+	 * Forum administration section
+	 * */
 	/**This method will lead user to create new forum page
 	 * This should be only in Control panel*/
 	@GetMapping("newForum")
@@ -121,24 +96,30 @@ public class ForumController {
 		return "";
 	}
 	
-	
 	/**This method will delete a forum
 	 * A forum can't be deleted until all topics attached to it are exists*/
 	@GetMapping("delete/{forumId}")
 	public String deleteForum(@PathVariable int forumId, Authentication authentication,
 								RedirectAttributes model) {
-		
-		// TODO Solve how to check if authentication is admin + return to control panel
-		// Find forum to remove.
 		Forum forum = forumRepo.findById(forumId);
-		
-		// making sure that forum is exists and user allowed to remove it
-		if(forum == null || authentication == null) {
-			return "redirect:/";
-		}
 		
 		deleteService.deleteForum(forum);
 		model.addFlashAttribute("message", "Forum has been removed.");
-		return "";
+		return "/controlPanel/";
 	}
-}	
+	
+	/*
+	 * User administration section
+	 * */
+	
+	@GetMapping("searchUser")
+	public String displayUserByUsername(@PathVariable String username, Model model) {
+		UserProfile userProfile = userService.findUserByUsername(username);
+		model.addAttribute("userProfile",userProfile);
+		return "searchUser";
+	}
+	
+	/*
+	 * Homepage administration section
+	 * */
+}

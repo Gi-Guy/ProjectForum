@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.projectForum.Security.Roles;
+
 /**
  * This Class manages all User registration process to the database and the web application */
 @Controller
@@ -52,6 +54,7 @@ public class RegisterController {
 				if(userRepo.findByUsername(user.getUsername()) == null) {
 					user.setPassword(passwordEncoder.encode(user.getPassword()));
 					user.setJoiningDate(LocalDateTime.now());
+					user.setRole(Roles.USER);
 					userRepo.save(user);	
 					}
 				

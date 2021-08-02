@@ -2,6 +2,8 @@ package com.projectForum;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -10,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 
+import com.projectForum.Security.Roles;
 import com.projectForum.user.User;
 import com.projectForum.user.UserRepository;
 
@@ -62,5 +65,19 @@ public class UserRepositoryTests {
 		assertThat(user).isNotNull();
 	}
 
+	@Test
+	public void updateAllUserRoles() {
+		List<User> users = repo.findAll();
+		for (int i=0 ; i<users.size(); i++) {
+			User user = users.get(i);
+			if(user.getRole() == null)
+				user.setRole(Roles.USER);
+		}
+	}
+	@Test
+	public void setUserAsAdmin() {
+		User user = repo.findByEmail("Tom@tom.om");
+		user.setRole(Roles.AMDIN);
+	}
 	
 }
