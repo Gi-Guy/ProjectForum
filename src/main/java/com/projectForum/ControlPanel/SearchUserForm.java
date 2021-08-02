@@ -13,7 +13,7 @@ public class SearchUserForm {
 
 	private List<Topic> topics;
 	private List<Post> posts;
-	
+	private boolean keepActivity = true;
 	
 	public SearchUserForm(User user, List<Topic> topics, List<Post> posts) {
 		this.user = user;
@@ -57,7 +57,16 @@ public class SearchUserForm {
 		this.posts = posts;
 	}
 	
+	public void keepActivity() {
+		this.keepActivity = true;
+	}
 	
+	public void noKeepActivity() {
+		this.keepActivity = false;
+	}
 	
+	public boolean getKeepActivity() {
+		return this.keepActivity;
+	}
 
 }

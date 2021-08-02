@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.projectForum.ControlPanel.SearchUserForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
@@ -47,7 +48,7 @@ public class DeleteService {
 	 * 
 	 * @param User
 	 * */
-	public void deleteUser(User user) {
+	public void deleteUserKeepActivity(User user) {
 		
 		User dummyUser = userRepo.findByUsername("Unknown");
 		
@@ -77,13 +78,37 @@ public class DeleteService {
 	}
 	
 	/** This method will delete an exists user.
+	 * 	it will also delete it posts and topics.
+	 * 	to an Dummy User.
+	 * 
+	 * @param User
+	 * */
+	public void deleteUserDontKeepActivity(User user) {
+		List<Post>	userPosts	=	postRepo.findPostsByUser(user);
+		List<Topic>	userTopics	=	topicRepo.findTopicsByUser(user);
+		
+		// Removing all posts and topics
+		this.deletePosts(userPosts);
+		this.deleteTopics(userTopics);
+		// Removing user
+		userRepo.delete(user);
+	}
+	/** This method will delete an exists user.
+	 *  It will remove user's data dependent on Keep activity boolean.*/
+	public void deleteUser(SearchUserForm user) {
+			if(user.getKeepActivity())
+				this.deleteUserKeepActivity(user.getUser());
+			else
+				this.deleteUserDontKeepActivity(user.getUser());
+	}
+	/** This method will delete an exists user.
 	 * 	However it won't delete it posts and topics, but will attached user's posts and topics
 	 * 	to an Dummy User.
 	 * 
 	 * @param String
 	 * */
 	public void deleteUser(String username) {
-		this.deleteUser(userRepo.findByUsername(username));
+		this.deleteUserKeepActivity(userRepo.findByUsername(username));
 	}
 	
 	/** This method will delete an exists user.
@@ -93,7 +118,7 @@ public class DeleteService {
 	 * @param int
 	 * */
 	public void deleteUser(int userId) {
-		this.deleteUser(userRepo.findUserById(userId));
+		this.deleteUserKeepActivity(userRepo.findUserById(userId));
 	}
 	
 	/** This method will delete a post by postId

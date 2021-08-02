@@ -144,7 +144,7 @@ public class ControlPanelController {
 				|| !userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN"))
 			return "redirect:/";
 		
-		deleteService.deleteUser(user);
+		deleteService.deleteUserKeepActivity(user);
 		return "/controlPanel/";
 	}
 	
