@@ -34,12 +34,56 @@ public class DeleteService {
 		this.forumRepo = forumRepo;
 	}
 	
-	/** This method will be used to delete a user*/
-	public void deleteUser(int userId) {
+	/** This method will delete an exists user.
+	 * 	However it won't delete it posts and topics, but will attached user's posts and topics
+	 * 	to an Dummy User.
+	 * 
+	 * @param User
+	 * */
+	public void deleteUser(User user) {
 		// TODO find a solution to delete user but not topics and posts
-		User user = userRepo.findUserById(userId);
+		//User user = userRepo.findUserById(userId);
+		
+		// Removing Role (many To many, need to be removed)
+		user.removeRole();
+		
+		// Change the topic and post to dummy owner.
+		User dummyUser = userRepo.findByUsername("Unknown");
+		List<Post>	userPosts	=	postRepo.findPostsByUser(user);
+		List<Topic>	userTopics	=	topicRepo.findTopicsByUser(user);
+		
+		// posts:
+		if(!userPosts.isEmpty())
+			for (int i=0; i<userPosts.size(); i++) {
+				userPosts.get(i).setUser(dummyUser);
+			}
+		// topics:
+		if(!userTopics.isEmpty())
+			for (int i=0; i<userTopics.size(); i++) {
+				userTopics.get(i).setUser(dummyUser);
+			}
 		
 		userRepo.delete(user);
+	}
+	
+	/** This method will delete an exists user.
+	 * 	However it won't delete it posts and topics, but will attached user's posts and topics
+	 * 	to an Dummy User.
+	 * 
+	 * @param String
+	 * */
+	public void deleteUser(String username) {
+		this.deleteUser(userRepo.findByUsername(username));
+	}
+	
+	/** This method will delete an exists user.
+	 * 	However it won't delete it posts and topics, but will attached user's posts and topics
+	 * 	to an Dummy User.
+	 * 
+	 * @param int
+	 * */
+	public void deleteUser(int userId) {
+		this.deleteUser(userRepo.findUserById(userId));
 	}
 	
 	/** This method will delete a post by postId
