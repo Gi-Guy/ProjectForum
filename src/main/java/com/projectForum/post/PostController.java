@@ -61,10 +61,11 @@ public class PostController {
 		// finding original post
 		Post post = postRepo.findById(newEdit.getPostId());
 		
-		// making sure user is allowed to edit post
-		if(authentication.getName().equals(post.getUser().getUsername())) {
+		// making sure user is allowed to edit post or Admin
+		if(authentication.getName().equals(post.getUser().getUsername())
+				|| userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN")) {
 			
-			//User allowed to update post
+			// User or Admin allowed to update post
 			editServices.updatePost(post, newEdit);
 		
 			/* BACKUP BEFORE TESTING
@@ -91,12 +92,13 @@ public class PostController {
 	@GetMapping("delete/{postId}")
 	public String deletePost(@PathVariable int postId, Authentication authentication,
 								RedirectAttributes model) {
-		//find post to remove
+		// find post to remove
 		Post post = postRepo.findById(postId);
 		
-		//Making sure that post is exsits and user allowed to remove it
+		// Making sure that post is exsits and user allowed to remove it or Admin
 		if( post != null && authentication != null) {
-			if( !authentication.getName().equals(post.getUser().getUsername()))
+			if( !authentication.getName().equals(post.getUser().getUsername())
+					|| !userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN"))
 				return "redirect:/";
 			else
 			{

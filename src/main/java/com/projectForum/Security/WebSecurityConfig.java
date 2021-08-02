@@ -56,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	 http.authorizeRequests()
-         .antMatchers(AUTHORIZED_ACCESS).authenticated()
+    	 .antMatchers(AUTHORIZED_ACCESS).hasAnyAuthority("ADMIN", "USER")
          .antMatchers(ADMIN_ACCESS).hasAnyAuthority("ADMIN")
          .antMatchers(ALL_ACCESS).permitAll()
          .and()
@@ -68,18 +68,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          .logout().logoutSuccessUrl("/").permitAll();
     	 configureEncodingFilter(http);
     	 
-    	 // TODO Delete after testing
-    	 //Old configursion
-        /*http.authorizeRequests()
-            .antMatchers("/list_users").authenticated()
-            .anyRequest().permitAll()
-            .and()
-            .formLogin()
-            .usernameParameter("email")
-            .defaultSuccessUrl("/list_users")
-            .permitAll()
-            .and()
-            .logout().logoutSuccessUrl("/").permitAll();*/
     }
     
     //Trying to encode the web
@@ -95,16 +83,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] ALL_ACCESS = {
     		"/",
     		"/index",
-    		"/topic/*",
     		"/forum/**"
     };
 
-    
     private static final String[] AUTHORIZED_ACCESS = {
     		"/post/**",
-    		"/topic/newTopic"
+    		"/topic/newTopic",
+    		"/topic/*"
     };
-    private static final String[] MODERATE_ACCESS = {};
     
     private static final String[] ADMIN_ACCESS = {
     		"/list_users",

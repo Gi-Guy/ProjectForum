@@ -20,6 +20,7 @@ import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
+import com.projectForum.user.UserRepository;
 import com.projectForum.user.Profile.UserProfileServices;
 
 @Controller
@@ -28,6 +29,7 @@ public class ControlPanelController {
 
 	private ControlServices 	controlService;
 	private ForumRepository 	forumRepo;
+	private UserRepository		userRepo;
 	private UserProfileServices	userService;
 	private DeleteService		deleteService;
 	private EditServices		editService;
@@ -36,11 +38,12 @@ public class ControlPanelController {
 	
 	@Autowired
 	public ControlPanelController(ControlServices controlService, ForumRepository forumRepo,
-			DeleteService deleteService, EditServices editService) {
-		this.controlService = controlService;
-		this.forumRepo = forumRepo;
-		this.deleteService = deleteService;
-		this.editService = editService;
+			DeleteService deleteService, EditServices editService, UserRepository userRepo) {
+		this.controlService	=	controlService;
+		this.forumRepo		=	forumRepo;
+		this.deleteService	=	deleteService;
+		this.editService	=	editService;
+		this.userRepo		=	userRepo;
 	}
 	
 	/*
@@ -100,9 +103,11 @@ public class ControlPanelController {
 	public String deleteForum(@PathVariable int forumId, Authentication authentication,
 								RedirectAttributes model) {
 		Forum forum = forumRepo.findById(forumId);
-		
-		deleteService.deleteForum(forum);
-		model.addFlashAttribute("message", "Forum has been removed.");
+		// Making sure that Admin in action
+		if(userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN")) {
+			deleteService.deleteForum(forum);
+			model.addFlashAttribute("message", "Forum has been removed.");	
+		}
 		return "/controlPanel/";
 	}
 	

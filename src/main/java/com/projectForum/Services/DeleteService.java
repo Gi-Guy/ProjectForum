@@ -171,7 +171,7 @@ public class DeleteService {
 	
 	/** This method will delete all the forums + Topics + Posts in database.
 	 * @warning THIS CAN'T BE UNDONE*/
-	public void deleteAll() {
+	public void deleteAllForums() {
 		List<Forum> forums = forumRepo.findAll();
 		this.deleteForums(forums);
 		

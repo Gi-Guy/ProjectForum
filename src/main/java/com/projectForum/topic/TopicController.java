@@ -21,7 +21,7 @@ import com.projectForum.Services.EditServices;
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
 import com.projectForum.post.PostRepository;
-
+import com.projectForum.user.User;
 import com.projectForum.user.UserRepository;
 
 
@@ -157,7 +157,9 @@ public class TopicController {
 		
 		Topic topic = topicRepo.getById(editTopic.getTopicId());
 		
-		if(authentication.getName().equals(topic.getUser().getUsername()))
+		// Approving admin or allowed user
+		if(authentication.getName().equals(topic.getUser().getUsername()) 
+				|| userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN"))
 			editService.updateTopic(topic, editTopic);
 
 		return "redirect:/topic/" + topic.getId();
@@ -173,8 +175,9 @@ public class TopicController {
 		// find topic to remove and all it posts
 		Topic topic = topicRepo.findTopicById(topicId);
 		
-		// making sure that topic is exists and user allowed to remove it		
-		if (topic == null || authentication == null || !authentication.getName().equals(topic.getUser().getUsername())) {
+		// making sure that topic is exists and user allowed to remove it or Admin		
+		if (topic == null || authentication == null || !authentication.getName().equals(topic.getUser().getUsername())
+				|| !userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN")) {
 			//topic can't be removed
 			return "redirect:/";
 		}

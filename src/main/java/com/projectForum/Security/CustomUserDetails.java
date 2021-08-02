@@ -2,7 +2,6 @@ package com.projectForum.Security;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,12 +22,6 @@ public class CustomUserDetails implements UserDetails {
  
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-    	// TODO Test this or remove it.
-    	// Trying to define Authorities
-    	/*Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-    	grantedAuthorities.add(new SimpleGrantedAuthority(user.getRole().toString()));*/
-    	//return grantedAuthorities;
-    	
     	Set<Role> roles = user.getRoles();
     	List<SimpleGrantedAuthority> authorities = new ArrayList<>();
     	

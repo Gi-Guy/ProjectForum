@@ -2,12 +2,10 @@ package com.projectForum.user;
 
 //import java.util.Collection;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-//import javax.management.relation.Role; //TODO: SOLVE THIS
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,7 +13,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.PrePersist;
@@ -25,12 +22,8 @@ import javax.persistence.Table;
 import com.projectForum.Security.Role;
 
 
-//import org.springframework.security.core.GrantedAuthority;
-//import org.springframework.security.core.userdetails.UserDetails;
-
 @Entity
 @Table(name =  "user")
-//public class User implements UserDetails{
 public class User {
 
 	private static final long serialVersionUID = 1L;
@@ -265,7 +258,5 @@ public class User {
 			return false;
 		return true;
 	}
-	
-	 
-	
+
 }
