@@ -41,14 +41,17 @@ public class DeleteService {
 	 * @param User
 	 * */
 	public void deleteUser(User user) {
-		// TODO find a solution to delete user but not topics and posts
-		//User user = userRepo.findUserById(userId);
+		
+		User dummyUser = userRepo.findByUsername("Unknown");
+		
+		// Making sure that dummy user won't be deleted or Admin user
+		if(dummyUser.equals(user) || user.getRoles().iterator().next().getName().equals("ADMIN"))
+			return;
 		
 		// Removing Role (many To many, need to be removed)
 		user.removeRole();
 		
 		// Change the topic and post to dummy owner.
-		User dummyUser = userRepo.findByUsername("Unknown");
 		List<Post>	userPosts	=	postRepo.findPostsByUser(user);
 		List<Topic>	userTopics	=	topicRepo.findTopicsByUser(user);
 		
