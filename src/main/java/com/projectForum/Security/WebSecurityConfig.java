@@ -56,9 +56,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	 http.authorizeRequests()
-    	 .antMatchers(AUTHORIZED_ACCESS).hasAnyAuthority("ADMIN", "USER")
-         .antMatchers(ADMIN_ACCESS).hasAnyAuthority("ADMIN")
-         .antMatchers(ALL_ACCESS).permitAll()
+    	 .antMatchers(Path.getAuthorizedAccess()).hasAnyAuthority(Path.getAuthorityRoles())
+         .antMatchers(Path.getAdminAccess()).hasAnyAuthority(Path.getAdminRole())
+         .antMatchers(Path.getAllAccess()).permitAll()
          .and()
          .formLogin()
          .usernameParameter("email")
@@ -79,22 +79,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(filter, CsrfFilter.class);
     }
     
-    /** In this area we defines all of Access Rules for all Roles*/
-    private static final String[] ALL_ACCESS = {
-    		"/",
-    		"/index",
-    		"/forum/**"
-    };
 
-    private static final String[] AUTHORIZED_ACCESS = {
-    		"/post/**",
-    		"/topic/newTopic",
-    		"/topic/*"
-    };
-    
-    private static final String[] ADMIN_ACCESS = {
-    		"/list_users",
-    		"/forum/newForum"
-    };
-    
 }

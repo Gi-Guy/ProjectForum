@@ -132,10 +132,10 @@ public class ControlPanelController {
 	}
 
 	/** This method will remove a User 'username' from database.
-	 * 	This method will not delete an Admin user.
+	 * 	This method will not delete an Admin user or dummy User.
 	 * 	All user's posts and topics will not removed, but will be attched to an dummy user.
 	 * */
-	@PostMapping("/delete/{username}")
+	@GetMapping("/delete/{username}")
 	public String deleteUser(@PathVariable String username, Authentication authentication,
 								RedirectAttributes model) {
 		User user = userRepo.findByUsername(username);
