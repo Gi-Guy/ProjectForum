@@ -21,7 +21,6 @@ import com.projectForum.Services.EditServices;
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
 import com.projectForum.post.PostRepository;
-import com.projectForum.user.User;
 import com.projectForum.user.UserRepository;
 
 

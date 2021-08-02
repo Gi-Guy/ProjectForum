@@ -1,7 +1,7 @@
 package com.projectForum.ControlPanel;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;import com.mysql.cj.util.StringUtils.SearchMode;
+import org.springframework.stereotype.Service;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.PostRepository;
@@ -9,7 +9,7 @@ import com.projectForum.topic.TopicRepository;
 import com.projectForum.user.User;
 import com.projectForum.user.UserRepository;
 
-
+//	TODO TEST THIS FILE
 /* ###########################################################
  * 		WARNING: THIS SERVICE FILE ISN'T TESTED YET!
  * ###########################################################*/

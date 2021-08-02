@@ -16,10 +16,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projectForum.Security.Role;
+import com.projectForum.Security.RoleRepository;
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
+import com.projectForum.user.User;
 import com.projectForum.user.UserRepository;
 import com.projectForum.user.Profile.UserProfileServices;
 
@@ -33,17 +36,20 @@ public class ControlPanelController {
 	private UserProfileServices	userService;
 	private DeleteService		deleteService;
 	private EditServices		editService;
+	private RoleRepository		roleRepo;
 	
 	
 	
 	@Autowired
 	public ControlPanelController(ControlServices controlService, ForumRepository forumRepo,
-			DeleteService deleteService, EditServices editService, UserRepository userRepo) {
+			DeleteService deleteService, EditServices editService, UserRepository userRepo,
+			RoleRepository roleRepo) {
 		this.controlService	=	controlService;
 		this.forumRepo		=	forumRepo;
 		this.deleteService	=	deleteService;
 		this.editService	=	editService;
 		this.userRepo		=	userRepo;
+		this.roleRepo		=	roleRepo;
 	}
 	
 	/*
@@ -114,19 +120,39 @@ public class ControlPanelController {
 	/*
 	 * User administration section
 	 * */
-	
+	/** This method will get Admin to search an user.*/
 	@GetMapping("searchUser")
 	public String displayUserByUsername(@PathVariable String username, Model model) {
-//		UserProfile userProfile = userService.findUserByUsername(username);
-//		model.addAttribute("userProfile",userProfile);
 		SearchUserForm searchUserForm = controlService.findSearchUserByUsername(username);
-		// TODO add roles List to model 
+		List<Role> roles = roleRepo.findAll();
 		
 		model.addAttribute("searchUserForm",searchUserForm);
-		
+		model.addAttribute("roles", roles);
 		return "searchUser";
 	}
+
+	/** This method will remove a User 'username' from database.
+	 * 	This method will not delete an Admin user.
+	 * 	All user's posts and topics will not removed, but will be attched to an dummy user.
+	 * */
+	@PostMapping("/delete/{username}")
+	public String deleteUser(@PathVariable String username, Authentication authentication,
+								RedirectAttributes model) {
+		User user = userRepo.findByUsername(username);
+		
+		if(authentication == null || user == null
+				|| !userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN"))
+			return "redirect:/";
+		
+		deleteService.deleteUser(user);
+		return "/controlPanel/";
+	}
 	
+	/** This method will edit the role of an exists user*/
+	public String updateUserRole() {
+		
+		return "";
+	}
 	
 	/*
 	 * Homepage administration section

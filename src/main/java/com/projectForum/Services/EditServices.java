@@ -14,6 +14,13 @@ import com.projectForum.topic.TopicRepository;
 import com.projectForum.user.User;
 import com.projectForum.user.UserRepository;
 
+
+
+//TODO TEST THIS FILE
+/* ###########################################################
+* 		WARNING: THIS SERVICE FILE ISN'T TESTED YET!
+* ###########################################################*/
+
 /** This class will use as a service to all edit actions in the application*/
 @Service
 public class EditServices {
