@@ -45,6 +45,12 @@
 			<p class = "col s12" style="text-align: justify; display:block; white-space:pre-wrap"
 				th:text = "${topic.getContent()}"> Content:</p>
 				<label class = "col s12">:תוכן</label>
+				
+				<div class="col s12" th:if="${#authentication.name} eq ${topic.user.username}">
+					 <a class="btn btn-primary" th:href="@{/topic/edit/} + ${topic.id}">
+                        <i class="material-icons white black-text">edit</i>
+                        </a>
+				</div>
 			<hr>
 			<hr>
 	</section>

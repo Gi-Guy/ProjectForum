@@ -1,6 +1,6 @@
 package com.projectForum.topic;
 
-import java.util.List;
+
 
 import javax.validation.Valid;
 
@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projectForum.Services.DeleteService;
+import com.projectForum.Services.EditServices;
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
 import com.projectForum.post.PostRepository;
@@ -37,16 +40,21 @@ public class TopicController {
 	private TopicRepository topicRepo;
 	private PostRepository 	postRepo;
 	private ForumRepository forumRepo;
+	private DeleteService	deleteService;
+	private EditServices	editService;
 	
+
 	@Autowired
-	public TopicController(UserRepository userReop, TopicRepository topicRepo, PostRepository postRepo,
-			ForumRepository forumRepo) {
-		this.userRepo = userReop;
+	public TopicController(UserRepository userRepo, TopicRepository topicRepo, PostRepository postRepo,
+			ForumRepository forumRepo, DeleteService deleteService, EditServices editService) {
+		this.userRepo = userRepo;
 		this.topicRepo = topicRepo;
 		this.postRepo = postRepo;
 		this.forumRepo = forumRepo;
+		this.deleteService = deleteService;
+		this.editService = editService;
 	}
-	
+
 	/**This method will display a full topic page including:
 	 * @return Model:	Topic object with all information
 	 * @return Model:	List<Post> - list of all posts that in Topic object
@@ -73,14 +81,19 @@ public class TopicController {
 	@PostMapping("{topicId}")
 	public String addNewPost(@Valid @ModelAttribute Post post, BindingResult bindingResult, @PathVariable int topicId,
 								Authentication authentication, Model model) {
-		// If hasErrors == true, then return to topic page.
+		
+		// If hasErrors == true, then return to topic page, because something went wrong
 		if(bindingResult.hasErrors()) {
-			System.out.println("I'm here (New post)  and I don't know what to do with my life.");
-			// TODO: Solve this issue <------------------------------------------------------FIX THIS!
+			System.err.println("ERROR :: Topic Controller - addNewPost (POST)");
+			// If there is an error we should go back to topic page and try again.
+			model.addAttribute("topic", topicRepo.findTopicById(topicId));
+			model.addAttribute("posts", postRepo.findPostsByTopicId(topicId));
+			model.addAttribute("newPost", new Post());
+			// Keeping user in same page to fix issues
+			return "topic";
 		}
 		
 		// No errors, creating a new post in topic
-		// TODO check if new post register dates.
 		post.setUser(userRepo.findByUsername(authentication.getName()));
 		post.setTopic(topicRepo.findTopicById(topicId));
 		postRepo.save(post);
@@ -90,29 +103,30 @@ public class TopicController {
 	}
 	
 	/** This method will return a model and navigate the user to newTopic page */
-	@GetMapping("newTopic")
-	public String createNewTopic(@Valid @ModelAttribute Topic topic, Model model) {
-		//model.addAttribute("newTopic", new Topic());
-		model.addAttribute("newTopic", new NewTopicPageForm());
-		model.addAttribute("forums",forumRepo.findAll());
-	
+	@GetMapping("newTopic/{forumId}")
+	public String createNewTopicInForum(@PathVariable int forumId, Model model) {
+		// Using a newTopicform to keep our forumId.
+		NewTopicPageForm newTopic = new NewTopicPageForm();
+		// Saving forumId value.
+		newTopic.setForumId(forumId);
 		
+		model.addAttribute("newTopic", newTopic);
 		return "new_Topic_page";
 	}
 	
 	/** This method will create a new topic and navigate the user to the new topic page. */
 	@PostMapping("newTopic")
-	//public String proccesNewTopic(@Valid @ModelAttribute Topic topic, BindingResult bindingResult, Authentication authentication, Model model) {
 	public String proccesNewTopic(@Valid @ModelAttribute("newTopic") NewTopicPageForm newTopic, BindingResult bindingResult, Authentication authentication, Model model) {
 		
-		// If hasErrors == true, then return to topic page. something went wrong.
+		// If hasErrors == true, then return to topic page, because something went wrong
 		if(bindingResult.hasErrors()) {
-			System.out.println("I'm here (New Topic) and I don't know what to do with my life.");
-			// TODO: Solve this issue <------------------------------------------------------FIX THIS!
+			System.err.println("ERROR :: Topic Controller - proccesNewTopic (POST)");
+			// If there is an error we should go back to topic creation page and try again.
+			// TODO I'm not really sure what should we put into model.
+			return "new_Topic_page";
 		}
 		
 		// Creating new Topic
-		// TODO ERROR! ATTACHE IT TO A FORUM!
 		Topic topic = new Topic();
 		topic.setTitle(newTopic.getTitle());
 		topic.setContent(newTopic.getContent());
@@ -121,39 +135,78 @@ public class TopicController {
 		topic.setClosed(false);
 		topic.setViews(0);
 		
-		//topic.setForum(forumRepo.findById(topic.getForum().getId())); // TODO <- test this!
-		
 		
 		topicRepo.save(topic);
 		
 		return "redirect:/topic/" + topic.getId();
 	}
 	
-	// TODO Move this method to control panel?
-	// TODO finish this method.
+	/**This method will enter user to edit mode for exsits topic*/
+	@GetMapping("edit/{topicId}")
+	public String editTopic(@PathVariable int topicId, Model model) {
+		// Using newTopicForm to keep the topicId while editing.
+		NewTopicPageForm editTopic = new NewTopicPageForm();
+		editTopic.setTopicId(topicId);
+		model.addAttribute("editTopic", editTopic);
+		// TODO Find out how to open a edit mode section and not using a new page.
+		return "edit_Topic_page";
+	}
+	
+	@PostMapping("editTopic")
+	public String editTopic(@Valid @ModelAttribute("editTopic") NewTopicPageForm editTopic, BindingResult bindingResult, Authentication authentication, Model model) {
+		
+		Topic topic = topicRepo.getById(editTopic.getTopicId());
+		
+		if(authentication.getName().equals(topic.getUser().getUsername()))
+			editService.updateTopic(topic, editTopic);
+
+		return "redirect:/topic/" + topic.getId();
+	}
+	
+	
 	/** This method will delete an exists method.
 	 * 	A Topic can't be deleted as long List<Post> is not empty */
+	
 	@GetMapping("delete/{topicId}")
-	public String deleteTopic(@PathVariable int topicId, Authentication authentication) {
+	public String deleteTopic(@PathVariable int topicId, Authentication authentication,
+									RedirectAttributes model) {
+		// find topic to remove and all it posts
+		Topic topic = topicRepo.findTopicById(topicId);
+		
+		// making sure that topic is exists and user allowed to remove it		
+		if (topic == null || authentication == null || !authentication.getName().equals(topic.getUser().getUsername())) {
+			//topic can't be removed
+			return "redirect:/";
+		}
+		
+		deleteService.deleteTopic(topic);
+		model.addFlashAttribute("message", "Topic has been removed.");
+		return "redirect:/forum/" + topic.getForum().getId();
+	}
+	
+	/* BACK UP BEFORE TESTING
+	@GetMapping("delete/{topicId}")
+	public String deleteTopic(@PathVariable int topicId, Authentication authentication,
+									RedirectAttributes model) {
+		// find topic to remove and all it posts
 		Topic topic = topicRepo.findTopicById(topicId);
 		List<Post> posts = postRepo.findPostsByTopic(topic);
 		
-		// TODO Add authorized permission checks.
-		/*if(authentication not allowed)
-			return "redirect:/topic/" + topicId;*/
-		
+		// making sure that topic is exists and user allowed to remove it		
+		if (topic == null || authentication == null || !authentication.getName().equals(topic.getUser().getUsername())) {
+			//topic can't be removed
+			return "redirect:/";
+		}
+		// at this point topic can be removed and posts as well.
+		// Removing posts
 		if(posts != null) {
 			while( !posts.isEmpty() ) {
 				postRepo.delete(posts.get(0));
 			}
 		}
+		// Topic has no posts, removing topic
 		topicRepo.delete(topic);
-		
-		if( topicRepo.findTopicById(topicId) != null) {
-			//Something went wrong
-			return "redirect:/topic/" + topicId;
-		}
-		// TODO update this to "/forum/"
-		return "redirect:/topic";
-	}
+		model.addFlashAttribute("message", "Topic has been removed.");
+		return "redirect:/forum/" + topic.getForum().getId();
+	}*/
 }

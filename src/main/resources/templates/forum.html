@@ -34,7 +34,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
                         <h3 th:text=" ${forum.name} + '        :' + 'פורום'"></h3>
                         <p th:text="${forum.description} + '   :'  + 'תיאר'"></p>
           					<hr>
-                        <a sec:authorize="isAuthenticated()" th:href="@{/topic/newTopic}">צור שרשור חדש</a>
+                        <a sec:authorize="isAuthenticated()" th:href="@{/topic/newTopic/} + ${forum.id}">צור שרשור חדש</a>
                         	<hr>
                     </div>
                 </div>

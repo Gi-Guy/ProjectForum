@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"> <!-- Declaring  XML using-->
 <head>
     <meta charset="UTF-8">
-    <title>New forum</title>
+    <title>Edit topic</title>
     <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
     <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
@@ -13,38 +13,50 @@
 <body>
 	<div class="container text-center">
 		<div>
-			<h1>צור פורום חדש</h1>
+			<h1>עדכן שרשור</h1>
 		</div>
 	</div>
 		
 	<div class="container text-center">
 		<div>
 
-			<form th:action = "@{/forum/newForum}" method = "post"
+			<form th:action = "@{/topic/editTopic}" method = "post"
 			style ="max-width:600px; margin: 0 auto;"
-			th:object = "${newForum}">
+			th:object = "${editTopic}">
 			
-			<!-- name -->
+			<!--  
+			<div class="row">
+				<div class="input-field col s12">
+					<select class="browser-default" id="forum" th:field="${newTopic.forumId}">
+					<option value="0" disabled="disabled" selected="selected">Choose section</option>
+					<option th:each="forum : ${forums}" th:text="${forum.name}" th:value="${forum.id}"></option>
+				</select>
+				</div>
+			</div> 
+			-->
+					
+			<!-- Title -->
 				<div class ="row">
 					<div class="input-field col s12">
-						<input type="text" th:field="*{name}" class="validate" length="50" required/>
+					<input type="text" th:field="*{title}" class="validate" length="50"/>
 						<label>כותרת</label>
-						<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="red-text">Incorrect name!</p>
+						<p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="red-text">Incorrect title!</p>
 					</div>
 				</div>
 				
-			<!-- description -->
+			<!-- content -->
 			<!-- This one need a big texting area -->
 			<div class ="row">
 					<div class="input-field col s12">
-					<textarea name='description' th:field="*{description}" required></textarea>
+					<textarea name='content' th:field="*{content}" ></textarea>
 					<label>תוכן</label>
-					<p th:if="${#fields.hasErrors('description')}" th:errors="description" class="red-text">Incorrect description!</p>
+					<p th:if="${#fields.hasErrors('content')}" th:errors="content" class="red-text">Incorrect content!</p>
 				</div>
 			</div>
 
 			<!-- Sumbit button -->
 			<div class="from-row py-1">
+				<input type="hidden" name = "topicId" th:value="${editTopic.topicId}"/>
 				<input class="btn btn-primary" type="submit" value="Submit" />
 			</div>
 				
