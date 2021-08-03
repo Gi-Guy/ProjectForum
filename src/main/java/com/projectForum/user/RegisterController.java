@@ -44,6 +44,7 @@ public class RegisterController {
 	/**
 	 * Creating new user in database. If success then moving to completed page*/
 	//TODO: Solve the issue with exists users. YOU HAVE TO NOTIFY THE USER IF ACCOUNT ALREADY EXIST.
+	// TODO fix this method.
 	@PostMapping("/register")
 	public String processRegistration(@Valid User user, BindingResult bindingResult) {
 		

@@ -166,7 +166,7 @@ public class ControlPanelServices {
 		SearchUserForm searchUser = new SearchUserForm();
 		
 		searchUser.setUser(user);
-		//searchUser.setRole(user.getRole());
+		searchUser.setRole(user.getRole());
 		searchUser.setPosts(postRepo.findPostsByUser(user));
 		searchUser.setTopics(topicRepo.findTopicsByUser(user));
 		return searchUser;

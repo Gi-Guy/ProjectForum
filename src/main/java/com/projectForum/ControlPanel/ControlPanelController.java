@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.projectForum.Security.Role;
@@ -30,15 +31,16 @@ import com.projectForum.user.Profile.UserProfileServices;
 
 @Controller
 @RequestMapping("/a/")
+//@RequestMapping("/admin/")
 public class ControlPanelController {
 
 	private ControlPanelServices 	controlService;
-	private ForumRepository 	forumRepo;
-	private UserRepository		userRepo;
-	private UserProfileServices	userService;
-	private DeleteService		deleteService;
-	private EditServices		editService;
-	private RoleRepository		roleRepo;
+	private ForumRepository 		forumRepo;
+	private UserRepository			userRepo;
+	private UserProfileServices		userService;
+	private DeleteService			deleteService;
+	private EditServices			editService;
+	private RoleRepository			roleRepo;
 	
 	
 	
@@ -72,14 +74,18 @@ public class ControlPanelController {
 		/*
 		 * Users section
 		 * */
+		SearchUserForm searchUserForm = new SearchUserForm();
+		model.addAttribute("searchUserForm",searchUserForm);
+		
 		
 		return "controlPanel";
 	}
 	
 	
-	/*
+	/* ######################################################
 	 * Forum administration section
-	 * */
+	 * ###################################################### */
+	
 	/**This method will lead user to create new forum page
 	 * This should be only in Control panel*/
 	@GetMapping("newForum")
@@ -164,25 +170,35 @@ public class ControlPanelController {
 		return "redirect:/a/controlPanel";
 	}
 	
-	/*
+	/* ######################################################
 	 * User administration section
-	 * */
+	 * ######################################################*/
+	
 	/** This method will get Admin to search an user.*/
 	@GetMapping("searchUser")
-	public String displayUserByUsername(@PathVariable String username, Model model) {
+	public String displayUserByUsername(@RequestParam(name = "username") String username, Model model) {
+		
 		SearchUserForm searchUserForm = controlService.findSearchUserByUsername(username);
 		List<Role> roles = roleRepo.findAll();
 		
 		model.addAttribute("searchUserForm",searchUserForm);
 		model.addAttribute("roles", roles);
-		return "searchUser";
+		return "edit_User_page";
 	}
-
-	/** This method will remove a User 'username' from database.
+	/** This method will apply changes into db*/
+	@PostMapping("searchUser")
+	public String applyUserChanges(@ModelAttribute("editUser") SearchUserForm editUser,
+							BindingResult bindingResult, Authentication authentication,
+							Model model) {
+		System.err.println("Hello! I'm here!");
+		return "";
+	}
+	/** This method will remove a User entity from database.
 	 * 	This method will not delete an Admin user or dummy User.
-	 * 	All user's posts and topics will not removed, but will be attched to an dummy user.
+	 * 	In default all user's posts and topics will not removed, but will be attched to an dummy user.
+	 * 	to delete all user's activity put SearchUserForm.keepActivity=false.
 	 * */
-	@GetMapping("/delete/{username}")
+	@GetMapping("user/delete/{username}")
 	public String deleteUser(@PathVariable String username, Authentication authentication,
 								RedirectAttributes model) {
 		User user = userRepo.findByUsername(username);
@@ -201,7 +217,7 @@ public class ControlPanelController {
 		return "";
 	}
 	
-	/*
+	/* ######################################################
 	 * Homepage administration section
-	 * */
+	 * ######################################################*/
 }

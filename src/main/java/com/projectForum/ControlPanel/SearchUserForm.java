@@ -16,7 +16,8 @@ public class SearchUserForm {
 	private List<Post> posts;
 	private boolean keepActivity = true;
 	private Role role;
-	
+	private String username;
+	private String name;
 	public SearchUserForm(User user, List<Topic> topics, List<Post> posts) {
 		this.user = user;
 		this.topics = topics;
@@ -26,6 +27,21 @@ public class SearchUserForm {
 
 	public SearchUserForm() {
 		
+	}
+
+
+	public String getUsername() {
+		return username;
+	}
+
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+
+	public void setKeepActivity(boolean keepActivity) {
+		this.keepActivity = keepActivity;
 	}
 
 
@@ -70,5 +86,11 @@ public class SearchUserForm {
 	public boolean getKeepActivity() {
 		return this.keepActivity;
 	}
+
+	
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
 
 }

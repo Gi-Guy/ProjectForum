@@ -75,7 +75,9 @@ public class User {
 		this.roles.add(role);
 	}
 
-	
+	public Role getRole() {
+		return this.roles.iterator().next();
+	}
 	private LocalDateTime joiningDate;
 	private LocalDateTime lastLogin;
 	

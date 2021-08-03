@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"> <!-- Declaring  XML using-->
+<head>
+    <meta charset="UTF-8">
+    <title>Edit topic</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+
+
+
+<body>
+	<div class="container text-center">
+		<div>
+			<h1>עדכון משתמש</h1>
+		</div>
+	</div>
+		
+	<div class="container text-center">
+		<div>
+
+			<form th:action = "@{/a/searchUser}" method = "post"
+			style ="max-width:600px; margin: 0 auto;"
+			th:object = "${editUser}">
+			
+			 	<div class="input-field col s12">
+					<select class="browser-default" name="role" th:field="${searchUserForm}">
+					<option value="0" disabled="disabled" selected="selected">Choose section</option>
+					<option th:each="role : ${roles}" th:text="${role.name}" th:value="${role}"></option>
+					</select>
+				</div>
+				<p th:text = "${searchUserForm.user.username}"></p>
+				<p th:text = "${searchUserForm.user.firstName}"></p>
+				<p th:text = "${searchUserForm.user.LastName}"></p>
+				<p th:text = "${searchUserForm.user.email}"></p>
+				<p th:text = "${searchUserForm.user.getRole().name}"></p>
+				<p th:text = "${searchUserForm.username}"></p>
+							<!-- Sumbit button -->
+			<div class="from-row py-1">
+				<input class="btn btn-primary" type="submit" value="Submit" />
+			</div>
+			</form>
+		</div>
+		
+	</div>
+</body>
+</html>
