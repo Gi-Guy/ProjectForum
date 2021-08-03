@@ -2,6 +2,7 @@
  This is my final project in the university - A Java forum web application.
 
 ##################################################################################################
+
 LAST UPDATE:
 
 This update has a servel majors updates:
