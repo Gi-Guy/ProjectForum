@@ -121,24 +121,4 @@ public class ForumController {
 		return "";
 	}
 	
-	
-	/**This method will delete a forum
-	 * A forum can't be deleted until all topics attached to it are exists*/
-	@GetMapping("delete/{forumId}")
-	public String deleteForum(@PathVariable int forumId, Authentication authentication,
-								RedirectAttributes model) {
-		
-		// TODO Solve how to check if authentication is admin + return to control panel
-		// Find forum to remove.
-		Forum forum = forumRepo.findById(forumId);
-		
-		// making sure that forum is exists and user allowed to remove it
-		if(forum == null || authentication == null) {
-			return "redirect:/";
-		}
-		
-		deleteService.deleteForum(forum);
-		model.addFlashAttribute("message", "Forum has been removed.");
-		return "";
-	}
 }	
