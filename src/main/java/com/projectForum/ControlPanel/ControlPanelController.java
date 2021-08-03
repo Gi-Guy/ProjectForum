@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.projectForum.Security.Role;
 import com.projectForum.Security.RoleRepository;
+import com.projectForum.Services.ControlPanelServices;
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
 import com.projectForum.forum.Forum;
@@ -27,10 +28,10 @@ import com.projectForum.user.UserRepository;
 import com.projectForum.user.Profile.UserProfileServices;
 
 @Controller
-@RequestMapping("/controlPanel/")
+@RequestMapping("/a/")
 public class ControlPanelController {
 
-	private ControlServices 	controlService;
+	private ControlPanelServices 	controlService;
 	private ForumRepository 	forumRepo;
 	private UserRepository		userRepo;
 	private UserProfileServices	userService;
@@ -41,7 +42,7 @@ public class ControlPanelController {
 	
 	
 	@Autowired
-	public ControlPanelController(ControlServices controlService, ForumRepository forumRepo,
+	public ControlPanelController(ControlPanelServices controlService, ForumRepository forumRepo,
 			DeleteService deleteService, EditServices editService, UserRepository userRepo,
 			RoleRepository roleRepo) {
 		this.controlService	=	controlService;
@@ -51,6 +52,26 @@ public class ControlPanelController {
 		this.userRepo		=	userRepo;
 		this.roleRepo		=	roleRepo;
 	}
+	
+	
+	/*
+	 * Displaying page area
+	 * */
+	
+	@GetMapping("/controlPanel")
+	public String displayControlPanel(Model model) {
+
+		/*
+		 * Forums section
+		 * */
+		
+		List<Forum> forums = forumRepo.findByOrderByPriorityAsc();
+		model.addAttribute("forums", controlService.createForumDisplayList(forums));
+		
+		
+		return "controlPanel";
+	}
+	
 	
 	/*
 	 * Forum administration section

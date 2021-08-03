@@ -1,7 +1,14 @@
-package com.projectForum.ControlPanel;
+package com.projectForum.Services;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.projectForum.ControlPanel.ForumForm;
+import com.projectForum.ControlPanel.SearchUserForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.PostRepository;
@@ -16,7 +23,7 @@ import com.projectForum.user.UserRepository;
 
 
 @Service
-public class ControlServices {
+public class ControlPanelServices {
 
 	private UserRepository	userRepo;
 	private PostRepository	postRepo;
@@ -24,12 +31,56 @@ public class ControlServices {
 	private ForumRepository	forumRepo;
 	
 	@Autowired
-	public ControlServices(UserRepository userRepo, PostRepository postRepo, TopicRepository topicRepo,
+	public ControlPanelServices(UserRepository userRepo, PostRepository postRepo, TopicRepository topicRepo,
 			ForumRepository forumRepo) {
 		this.userRepo = userRepo;
 		this.postRepo = postRepo;
 		this.topicRepo = topicRepo;
 		this.forumRepo = forumRepo;
+	}
+	
+	/**
+	 *  This method will create a list of List<ForumForm> to display additional information in conrtol Panel.
+	 * 
+	 *  @param List<Forum>*/
+	public List<ForumForm> createForumDisplayList(List<Forum> forums){
+		
+		List<ForumForm> forumsForm = new ArrayList<ForumForm>();
+		
+		// updating new list
+		for(Iterator<Forum> i = forums.iterator(); i.hasNext(); ) {
+			forumsForm.add(createDisplayForum(i.next()));
+		}
+		
+		return forumsForm;
+	}
+	
+	private ForumForm createDisplayForum(Forum forum) {
+		
+		ForumForm newForm = new ForumForm();
+		
+		// update forum
+		newForm.setForum(forum);
+		
+		// update Topics counter
+		int topicsCounter = topicRepo.findTopicsByForum(forum).size();
+		newForm.setNumOfTopics(topicsCounter);
+		
+		// update short Description
+		String description = forum.getDescription();
+		String shortDes = description.substring(0, description.length() - 5) + "..." ;
+		if(description.isBlank())
+			newForm.setShortDescription("");
+		
+		else if(description.length() < 40)
+			shortDes = description;
+		
+		else
+			shortDes = description.substring(0, 40) + "..." ;
+		
+		newForm.setShortDescription(shortDes);
+		
+		return newForm;
 	}
 	
 	/**This method will update the priority of a two forums, higher priority and lower priority*/

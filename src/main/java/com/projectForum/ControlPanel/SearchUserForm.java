@@ -2,10 +2,11 @@ package com.projectForum.ControlPanel;
 
 import java.util.List;
 
-
+import com.projectForum.Security.Role;
 import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;
 import com.projectForum.user.User;
+
 
 public class SearchUserForm {
 	
@@ -14,6 +15,7 @@ public class SearchUserForm {
 	private List<Topic> topics;
 	private List<Post> posts;
 	private boolean keepActivity = true;
+	private Role role;
 	
 	public SearchUserForm(User user, List<Topic> topics, List<Post> posts) {
 		this.user = user;
