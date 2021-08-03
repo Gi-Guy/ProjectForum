@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"> <!-- Declaring  XML using-->
+<head>
+    <meta charset="UTF-8">
+    <title>Edit topic</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+
+
+
+<body>
+	<div class="container text-center">
+		<div>
+			<h1>עדכון פורום</h1>
+		</div>
+	</div>
+		
+	<div class="container text-center">
+		<div>
+
+			<form th:action = "@{/a/editForum}" method = "post"
+			style ="max-width:600px; margin: 0 auto;"
+			th:object = "${editForum}">
+			<!-- Title -->
+				<div class ="row">
+					<div class="input-field col s12">
+					<input type="text" th:field="*{name}" class="validate" length="50"/>
+						<label>שם הפורום</label>
+						<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="red-text">ERROR</p>
+					</div>
+				</div>
+				
+			<!-- content -->
+			<!-- This one need a big texting area -->
+			<div class ="row">
+					<div class="input-field col s12">
+					<textarea name='description' th:field="*{description}" ></textarea>
+					<label>תיאור</label>
+					<p th:if="${#fields.hasErrors('description')}" th:errors="description" class="red-text">ERROR</p>
+				</div>
+			</div>
+
+			<!-- Sumbit button -->
+			<div class="from-row py-1">
+				<input type="hidden" name = "forumId" th:value="${editForum.forumId}"/>
+				<input class="btn btn-primary" type="submit" value="Submit" />
+			</div>
+				
+			</form>
+		</div>
+		
+	</div>
+</body>
+</html>

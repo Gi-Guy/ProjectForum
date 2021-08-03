@@ -3,6 +3,7 @@ package com.projectForum.Services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.projectForum.forum.EditForumForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.EditPostForm;
@@ -73,7 +74,14 @@ public class EditServices {
 	 * 	In case that the Name or Description are blank, there will be no update.
 	 * 	@param Forum to update
 	 * 	@param */
-	public void updateForum(Forum forum) {
+	public void updateForum(Forum forum, EditForumForm editForum) {
+		
+		// Checking if there is a new name or description to update
+		if(!editForum.getName().isBlank())
+			forum.setName(editForum.getName());
+		
+		if(!editForum.getDescription().isBlank())
+			forum.setDescription(editForum.getDescription());
 		
 		forumRepo.save(forum);
 	}

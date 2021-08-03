@@ -22,8 +22,10 @@
     </div>
 	
 	
-		<div>
+		<!-- Forums section  -->
+		<div style="text-align:right">
 			<h1>:פורומים</h1>
+			<h6>ערוך ונהל פורומים</h6>
 		</div>
 		<div>
 			<!--  <table class="table table-striped table-bordered">-->
@@ -54,14 +56,14 @@
 				<tbody>
 					<tr th:each = "forum : ${forums}">
 						<td>
-							<a>למעלה</a>
+							<a th:href="@{/a/addPriority/} + ${forum.forum.id}">למעלה</a>
 							&nbsp;&nbsp;
-							<a>למטה</a>
+							<a th:href="@{/a/downPriority/} + ${forum.forum.id}">למטה</a>
 						</td>
 						<td>
-							<a>ערוך</a>
+							<a th:href="@{/a/forum/edit/} + ${forum.forum.id}">ערוך</a>
 							&nbsp;&nbsp;
-							<a>מחק</a>
+							<a th:href="@{/a/forum/delete/} + ${forum.forum.id}">מחק</a>
 						</td>
 						<td th:text = "${forum.numOfTopics}"></td>
 						<td th:text = "${forum.shortDescription}"></td>
@@ -74,6 +76,8 @@
 			</table>
 			
 		</div>
+		
+		<!-- Users section  -->
 	</div>
 		
 </body>

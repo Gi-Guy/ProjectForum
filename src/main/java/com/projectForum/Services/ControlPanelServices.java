@@ -68,7 +68,7 @@ public class ControlPanelServices {
 		
 		// update short Description
 		String description = forum.getDescription();
-		String shortDes = description.substring(0, description.length() - 5) + "..." ;
+		String shortDes = "";
 		if(description.isBlank())
 			newForm.setShortDescription("");
 		
@@ -83,22 +83,61 @@ public class ControlPanelServices {
 		return newForm;
 	}
 	
-	/**This method will update the priority of a two forums, higher priority and lower priority*/
-	/**
+	/** This method will update the priority of a two forums, higher priority and lower priority.
+	 * 	It will set the traget forum to the higher priority.
+	 * 	It will set :: targetForum.priority > lowerForum.priority
 	 * @param forum
 	 * @param priority
 	 */
-	public void updatePriority(Forum forum, int priority) {
-		int tempPriority = forum.getPriority();
+	private void updatePriorityUp(Forum targetForum, Forum lowerForum) {
+		// Making sure that forums are exsits
+		if(targetForum == null || lowerForum == null)
+			return;
+		// updating prioritys
+		int tempPriority = targetForum.getPriority();
+		targetForum.setPriority(lowerForum.getPriority());
+		lowerForum.setPriority(tempPriority);
 		
-		if(tempPriority != priority) {
-			Forum oldForum = forumRepo.findByPriority(priority);
-			forum.setPriority(priority);
-			oldForum.setPriority(tempPriority);
-			
-			forumRepo.save(forum);
-			forumRepo.save(oldForum);
-		}
+		forumRepo.save(targetForum);
+		forumRepo.save(lowerForum);
+		
+	}
+	/** This method will update the priority of a two forums, higher priority and lower priority.
+	 *  It will set the traget forum to the higher priority.
+	 *  
+	 *  @param int forumId
+	 * */
+	public void updatePriorityUp(int forumId) {
+		Forum forum = forumRepo.findById(forumId);
+		this.updatePriorityUp(forum , forumRepo.findByPriority(forum.getPriority() - 1));
+	}
+	/** This method will update the priority of a two forums, higher priority and lower priority.
+	 * 	It will set the traget forum to the higher priority.
+	 * 	It will set :: targetForum.priority < higherForum.priority
+	 * @param forum
+	 * @param priority
+	 */
+	private void updatePriorityDown(Forum targetForum, Forum higherForum) {
+		// Making sure that forums are exsits
+		if(targetForum == null || higherForum == null)
+			return;
+		// updating prioritys
+		int tempPriority = targetForum.getPriority();
+		targetForum.setPriority(higherForum.getPriority());
+		higherForum.setPriority(tempPriority);
+		
+		forumRepo.save(targetForum);
+		forumRepo.save(higherForum);
+		
+	}
+	/** This method will update the priority of a two forums, higher priority and lower priority.
+	 *  It will set the traget forum to the lower priority.
+	 *  
+	 *  @param int forumId
+	 * */
+	public void updatePriorityDown(int forumId) {
+		Forum forum = forumRepo.findById(forumId);
+		this.updatePriorityDown(forum , forumRepo.findByPriority(forum.getPriority() + 1));
 	}
 	
 	/**This method will update the role of exsits user.*/

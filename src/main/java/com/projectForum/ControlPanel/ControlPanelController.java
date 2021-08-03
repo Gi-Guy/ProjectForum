@@ -21,6 +21,7 @@ import com.projectForum.Security.RoleRepository;
 import com.projectForum.Services.ControlPanelServices;
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
+import com.projectForum.forum.EditForumForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.user.User;
@@ -109,27 +110,49 @@ public class ControlPanelController {
 	}
 	
 	
-	@GetMapping("edit/{forumId}")
+	@GetMapping("forum/edit/{forumId}")
 	public String editForum(@PathVariable int forumId, Model model) {
-		Forum forum = new Forum();
+		EditForumForm editForum = new EditForumForm();
+		editForum.setForumId(forumId);
 		
-		forum.setId(forumId);
-		model.addAttribute("editForum", forum);
-		// TODO update this after you create the control panel
-		return "";
+		model.addAttribute("editForum", editForum);
+		return "edit_Forum_page";
 	}
 	
 	@PostMapping("editForum")
-	public String editForum(@Valid @ModelAttribute("editForum") Forum editForum, BindingResult bindingResult, Authentication authentication, Model model) {
-		Forum forum = forumRepo.findById(editForum.getId());
+	public String editForum(@Valid @ModelAttribute("editForum") EditForumForm editForum,
+							BindingResult bindingResult, Authentication authentication,
+							Model model) {
+		Forum forum = forumRepo.findById(editForum.getForumId());
 		
-		// TODO solve how to check authentication == ADMIN
-		return "";
+		// Making sure that Admin in action
+		if(userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN")) 
+			editService.updateForum(forum, editForum);
+		
+		return "redirect:/a/controlPanel";
 	}
 	
+	/**
+	 *  This method will set forumId to a higher priority level.
+	 *  */
+	@GetMapping("addPriority/{forumId}")
+	public String addForumPriority(@PathVariable int forumId) {
+		controlService.updatePriorityUp(forumId);
+		
+		return "redirect:/a/controlPanel";
+	}
+	/**
+	 *  This method will set forumId to a lower priority level.
+	 *  */
+	@GetMapping("downPriority/{forumId}")
+	public String downForumPriority(@PathVariable int forumId) {
+		controlService.updatePriorityDown(forumId);
+		
+		return "redirect:/a/controlPanel";
+	}
 	/**This method will delete a forum
 	 * A forum can't be deleted until all topics attached to it are exists*/
-	@GetMapping("delete/{forumId}")
+	@GetMapping("forum/delete/{forumId}")
 	public String deleteForum(@PathVariable int forumId, Authentication authentication,
 								RedirectAttributes model) {
 		Forum forum = forumRepo.findById(forumId);
@@ -138,7 +161,7 @@ public class ControlPanelController {
 			deleteService.deleteForum(forum);
 			model.addFlashAttribute("message", "Forum has been removed.");	
 		}
-		return "/controlPanel/";
+		return "redirect:/a/controlPanel";
 	}
 	
 	/*

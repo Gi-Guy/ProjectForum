@@ -138,9 +138,11 @@ public class DeleteService {
 	 * @param List<Post>*/
 	
 	public void deletePosts(List<Post> posts) {
-		while(!posts.isEmpty()) {
-			this.deletePost(posts.get(0));
-		}
+
+		if(posts.isEmpty())
+			return;
+		for(int i=0; i<posts.size(); i++)
+			this.deletePost(posts.get(i));
 			
 	}
 	
@@ -169,9 +171,12 @@ public class DeleteService {
 	/** This method will delete list of topics by List<Topic>
 	 *  @param List<Topic>*/
 	public void deleteTopics(List<Topic> topics) {
-		while(!topics.isEmpty()) {
-			this.deleteTopic(topics.get(0));
-		}
+
+		if(topics.isEmpty())
+			return;
+		
+		for (int i=0; i<topics.size(); i++)
+			this.deleteTopic(topics.get(i));
 	}
 	
 	/** This method will delete a forum by forumId
@@ -184,6 +189,9 @@ public class DeleteService {
 	/** This method will delete a forum by forum object
 	 *  @param Forum*/
 	public void deleteForum(Forum forum) {
+		if(forum == null)
+			return;
+		this.updateAllLowerPriority(forum);
 		// Get all topics in Forum
 		List<Topic> topics = topicRepo.findTopicsByForum(forum);
 		
@@ -196,16 +204,38 @@ public class DeleteService {
 	
 	/** This method will delete a list of forums by List<forum>*/
 	public void deleteForums(List<Forum> forums) {
-		while(!forums.isEmpty()) {
-			this.deleteForum(forums.get(0));
-		}
+
+		if(forums.isEmpty())
+			return;
+		for(int i=0; i<forums.size(); i++)
+			this.deleteForum(forums.get(i));
 	}
 	
 	/** This method will delete all the forums + Topics + Posts in database.
-	 * @warning THIS CAN'T BE UNDONE*/
+	 * @warning THIS CAN'T BE UNDONE
+	 * 
+	 * There is a bug in this method, it isn't working.*/
 	public void deleteAllForums() {
+		
 		List<Forum> forums = forumRepo.findAll();
 		this.deleteForums(forums);
 		
+	}
+	
+	/**
+	 * When deleting a forum there is need to update all lower priority */
+	private void updateAllLowerPriority(Forum forum) {
+		final int forumsSize = forumRepo.findByOrderByPriorityAsc().size();
+		
+		// if true then no need to update any other forum's priority
+		if (forum.getPriority() == forumsSize)
+			return;
+		// forum isn't in last priority, need to update all lower priority forums
+		
+		for (int i = forum.getPriority() + 1; i <= forumsSize; i++) {
+			Forum updateForum = forumRepo.findByPriority(i);
+			updateForum.setPriority(i - 1);
+			forumRepo.save(updateForum);
+		}
 	}
 }
