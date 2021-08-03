@@ -68,6 +68,9 @@ public class ControlPanelController {
 		List<Forum> forums = forumRepo.findByOrderByPriorityAsc();
 		model.addAttribute("forums", controlService.createForumDisplayList(forums));
 		
+		/*
+		 * Users section
+		 * */
 		
 		return "controlPanel";
 	}
@@ -102,7 +105,7 @@ public class ControlPanelController {
 			forum.setPriority(forums.size() + 1);	
 		}
 		forumRepo.save(forum);
-		return "redirect:/forum/" + forum.getId();
+		return "redirect:/a/controlPanel";
 	}
 	
 	
