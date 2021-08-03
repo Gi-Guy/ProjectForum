@@ -187,7 +187,7 @@ public class ControlPanelController {
 	}
 	/** This method will apply changes into db*/
 	@PostMapping("searchUser")
-	public String applyUserChanges(@ModelAttribute("editUser") SearchUserForm editUser,
+	public String applyUserChanges(@ModelAttribute("searchUserForm") SearchUserForm searchUserForm,
 							BindingResult bindingResult, Authentication authentication,
 							Model model) {
 		System.err.println("Hello! I'm here!");
