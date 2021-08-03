@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"> <!-- Declaring  XML using-->
+<html xmlns:th="http://www.thymeleaf.org" lang="he"> <!-- Declaring  XML using-->
 <head>
     <meta charset="UTF-8">
     <title>לוח בקרה</title>
@@ -7,7 +7,7 @@
 
     
 </head>
-<body>
+<body style = "background-color:LightGray" dir="rtl">
 	<div class="container text-center" align="center">
 		<h1>לוח בקרה</h1>
 		<h6>ערוך ונהל את הפורום</h6>
@@ -23,8 +23,9 @@
 	
 	
 		<!-- Forums section  -->
+		<hr>
 		<div style="text-align:right">
-			<h1>:פורומים</h1>
+			<h1>פורומים:</h1>
 			<h6>ערוך ונהל פורומים</h6>
 		</div>
 		<div>
@@ -34,7 +35,6 @@
 				<thead>
 						<tr>
 						<th colspan="6">
-						
 							<a th:href="@{/a/newForum}">הוסף פורום חדש</a>
 							&nbsp;&nbsp;
 							<a>ייצא פורומים</a>
@@ -45,39 +45,51 @@
 
 						</tr>
 						<tr>
-							<th>הזז</th>
-							<th>פעולות</th>
-							<th>מספר שרשורים</th>
-							<th>תקציר</th>
-							<th>שם פורום</th>
 							<th>מספר</th>
+							<th>שם פורום</th>
+							<th>תקציר</th>
+							<th>מספר שרשורים</th>
+							<th>פעולות</th>
+							<th>הזז</th>
 						</tr>
 				</thead>
 				<tbody>
 					<tr th:each = "forum : ${forums}">
-						<td>
-							<a th:href="@{/a/addPriority/} + ${forum.forum.id}">למעלה</a>
-							&nbsp;&nbsp;
-							<a th:href="@{/a/downPriority/} + ${forum.forum.id}">למטה</a>
-						</td>
-						<td>
-							<a th:href="@{/a/forum/edit/} + ${forum.forum.id}">ערוך</a>
-							&nbsp;&nbsp;
-							<a th:href="@{/a/forum/delete/} + ${forum.forum.id}">מחק</a>
-						</td>
-						<td th:text = "${forum.numOfTopics}"></td>
-						<td th:text = "${forum.shortDescription}"></td>
+						<td th:text = "${forum.forum.priority}"></td>
 						<td>
 							<a th:href="@{/forum/} + ${forum.forum.id}" th:text = "${forum.forum.name}"></a></td>
-						<td th:text = "${forum.forum.priority}"></td>
+						<td th:text = "${forum.shortDescription}"></td>
+						<td th:text = "${forum.numOfTopics}"></td>
+						<td>
+							<a th:href="@{/a/forum/delete/} + ${forum.forum.id}">מחק</a>
+							&nbsp;&nbsp;
+							<a th:href="@{/a/forum/edit/} + ${forum.forum.id}">ערוך</a>
+						</td>
+						<td>
+							<a th:href="@{/a/downPriority/} + ${forum.forum.id}">למטה</a>
+							&nbsp;&nbsp;
+							<a th:href="@{/a/addPriority/} + ${forum.forum.id}">למעלה</a>
+						</td>
 						
 					</tr>
 				</tbody>
 			</table>
 			
 		</div>
-		
 		<!-- Users section  -->
+			<hr>
+		<div style="text-align:right">
+			<h1>משתמשים:</h1>
+			<h6>ערוך ונהל משתמשים</h6>
+		</div>
+		<div style="text-align:right">
+				<form th:action="@{/a/searchUser}" th:object = "${searchUserForm}">
+					<label>חפש משתמש:</label>
+					<input name="username" type="text" th:value="*{username}" required>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<input class="btn btn-primary" type="submit" value="Submit" />
+				</form>
+			</div>
 	</div>
 		
 </body>
