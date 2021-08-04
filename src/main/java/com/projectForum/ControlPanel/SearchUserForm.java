@@ -16,6 +16,7 @@ public class SearchUserForm {
 	private List<Post> posts;
 	private boolean keepActivity = true;
 	private Role role;
+	private List<Role> roles;
 	private String username;
 	private String name;
 	public SearchUserForm(User user, List<Topic> topics, List<Post> posts) {

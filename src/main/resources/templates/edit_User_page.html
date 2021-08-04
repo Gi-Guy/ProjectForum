@@ -45,52 +45,48 @@
 	</div>	
 	<div align="center">
 		<div>
-			<form action ="#" th:action = "@{/a/searchUser}" method = "post" th:object="${searchUserForm}">
+			<!--  <form action ="#" th:action = "@{/a/searchUser}" method = "post" th:object="${editUser}">-->
 			
 			<h3>פרטי משתמש</h3>
 			<label>כינוי:</label>
 			&nbsp;&nbsp;&nbsp;&nbsp;
-			<label th:text = "${searchUserForm.user.username}">כינוי:</label><br>
+			<label th:text = "${searchUser.user.username}">username</label><br>
 
 			<label>אימייל:</label>
 			&nbsp;&nbsp;&nbsp;&nbsp;
-			<label th:text = "${searchUserForm.user.email}">כינוי:</label><br>
+			<label th:text = "${searchUser.user.email}">Email</label><br>
 			
 			<label>תאריך הרשמה:</label>
 			&nbsp;&nbsp;&nbsp;&nbsp;
-			<label th:text = "${searchUserForm.user.joiningDate}">כינוי:</label><br>
+			<label th:text = "${searchUser.user.joiningDate}">JoiningDate</label><br>
 			
 			<label>דירוג:</label> 
 			&nbsp;&nbsp;&nbsp;&nbsp;
-			<label th:text = "${searchUserForm.user.getRole().name}">כינוי:</label><br>
+			<label th:text = "${searchUser.user.getRole().name}">role</label><br>
 			
-			
+        	<!--  <select id="role" name="role" th:value="${role}">
+				<option value="">בחר דירוג </option>
+    			<option th:each="role : ${roles}" th:text="${role.name}" th:selected="${role} == ${role}" th:value="${role}"></option>
+ 			</select>
+ 			-->
+
+			<!--  </form>-->
+		</div>
+		<!-- Change role section -->
+		<div>
+			<form th:action = "@{/a/searchUser}" th:object = "${editUser}" method = "post">
+			<label>עדכן דירוג:</label>
+			 	<select >
+			    <option
+			        th:each="role : ${roles}"
+			        th:value="${{role}}"
+			        th:text="${role.name}"
+			        th:selected="${role == role.name}" />
+				</select>
+			 
+        	<button type="submit">בצע פעולות</button> 
 			</form>
-			<!-- 
-			<form th:action = "@{/a/searchUser}" method = "post"
-			style ="max-width:600px; margin: 0 auto;"
-			th:object = "${editUser}">
-			
-			 	<div class="input-field col s12">
-					<select class="browser-default" name="role" th:field="${searchUserForm}">
-					<option value="0" disabled="disabled" selected="selected">Choose section</option>
-					<option th:each="role : ${roles}" th:text="${role.name}" th:value="${role}"></option>
-					</select>
-				</div>
-				<p th:text = "${searchUserForm.user.username}"></p>
-				<p th:text = "${searchUserForm.user.firstName}"></p>
-				<p th:text = "${searchUserForm.user.LastName}"></p>
-				<p th:text = "${searchUserForm.user.email}"></p>
-				<p th:text = "${searchUserForm.user.getRole().name}"></p>
-				<p th:text = "${searchUserForm.username}"></p> 
-				-->
-			
-			<!-- Sumbit button -->
-			<!--  
-			<div class="from-row py-1">
-				<input class="btn btn-primary" type="submit" value="Submit" />
-			</div>
-			</form> -->
+		
 		</div>
 		
 	</div>

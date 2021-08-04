@@ -178,16 +178,17 @@ public class ControlPanelController {
 	@GetMapping("searchUser")
 	public String displayUserByUsername(@RequestParam(name = "username") String username, Model model) {
 		
-		SearchUserForm searchUserForm = controlService.findSearchUserByUsername(username);
+		SearchUserForm searchUser = controlService.findSearchUserByUsername(username);
 		List<Role> roles = roleRepo.findAll();
 		
-		model.addAttribute("searchUserForm",searchUserForm);
+		model.addAttribute("searchUser",searchUser);
+		model.addAttribute("editUser",new SearchUserForm());
 		model.addAttribute("roles", roles);
 		return "edit_User_page";
 	}
 	/** This method will apply changes into db*/
 	@PostMapping("searchUser")
-	public String applyUserChanges(@ModelAttribute("searchUserForm") SearchUserForm searchUserForm,
+	public String applyUserChanges(@ModelAttribute("editUser") SearchUserForm editUser,
 							BindingResult bindingResult, Authentication authentication,
 							Model model) {
 		System.err.println("Hello! I'm here!");
