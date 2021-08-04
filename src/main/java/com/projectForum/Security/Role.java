@@ -39,4 +39,7 @@ public class Role {
 	public int getId() {
 		return id;
 	}
+	public Role getRole() {
+		return this;
+	}
 }

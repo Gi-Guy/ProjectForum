@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.projectForum.ControlPanel.SearchUserForm;
+import com.projectForum.ControlPanel.EditUserForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
@@ -43,12 +43,23 @@ public class DeleteService {
 	}
 	
 	/** This method will delete an exists user.
+	 *  It will remove user's data dependent on Keep activity boolean.*/
+	public void deleteUser(EditUserForm editUser) {
+		User user = userRepo.findUserById(editUser.getId());
+		
+		if(editUser.isKeepActivity())
+			this.deleteUserKeepActivity(user);
+		else
+			this.deleteUserDontKeepActivity(user);
+	}
+	
+	/** This method will delete an exists user.
 	 * 	However it won't delete it posts and topics, but will attached user's posts and topics
 	 * 	to an Dummy User.
 	 * 
 	 * @param User
 	 * */
-	public void deleteUserKeepActivity(User user) {
+	private void deleteUserKeepActivity(User user) {
 		
 		User dummyUser = userRepo.findByUsername("Unknown");
 		
@@ -83,24 +94,30 @@ public class DeleteService {
 	 * 
 	 * @param User
 	 * */
-	public void deleteUserDontKeepActivity(User user) {
+	private void deleteUserDontKeepActivity(User user) {
 		List<Post>	userPosts	=	postRepo.findPostsByUser(user);
 		List<Topic>	userTopics	=	topicRepo.findTopicsByUser(user);
 		
+		// Making sure that dummy user won't be deleted or Admin user
+		if(user.getRoles().iterator().next().getName().equals("ADMIN"))
+			return;
+		
+		// Removing Role (many To many, need to be removed)
+		user.removeRole();
+		
 		// Removing all posts and topics
-		this.deletePosts(userPosts);
-		this.deleteTopics(userTopics);
+		//posts:
+		if(!userPosts.isEmpty()) {
+			this.deletePosts(userPosts);	
+		}
+		//topics:
+		if(!userTopics.isEmpty()) {
+			this.deleteTopics(userTopics);	
+		}
 		// Removing user
 		userRepo.delete(user);
 	}
-	/** This method will delete an exists user.
-	 *  It will remove user's data dependent on Keep activity boolean.*/
-	public void deleteUser(SearchUserForm user) {
-			if(user.getKeepActivity())
-				this.deleteUserKeepActivity(user.getUser());
-			else
-				this.deleteUserDontKeepActivity(user.getUser());
-	}
+
 	/** This method will delete an exists user.
 	 * 	However it won't delete it posts and topics, but will attached user's posts and topics
 	 * 	to an Dummy User.
