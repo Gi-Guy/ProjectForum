@@ -96,7 +96,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     		"/",
     		"/index",
     		"/topic/*",
-    		"/forum/**"
+    		"/forum/**",
+    		"/css/**"
     };
 
     
