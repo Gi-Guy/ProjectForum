@@ -36,10 +36,11 @@
 						<tr>
 						<th colspan="6">
 							<a th:href="@{/a/newForum}">הוסף פורום חדש</a>
-							&nbsp;&nbsp;
+							<!--&nbsp;&nbsp;
 							<a>ייצא פורומים</a>
 							&nbsp;&nbsp;
 							<a>ייבא פורומים</a>
+							-->
 						
 						</th>
 
@@ -83,12 +84,17 @@
 			<h6>ערוך ונהל משתמשים</h6>
 		</div>
 		<div style="text-align:right">
-				<form th:action="@{/a/searchUser}" th:object = "${searchUserForm}">
+				<form th:action="@{/a/editUser}" >
 					<label>חפש משתמש:</label>
 					<input name="username" type="text" th:value="*{username}" required>
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<input class="btn btn-primary" type="submit" value="Submit" />
 				</form>
+				<div>
+					&nbsp;&nbsp;
+					<a th:href="@{/list_users}">רשימת כל המשתמשים</a>
+				</div>
+				
 			</div>
 	</div>
 		

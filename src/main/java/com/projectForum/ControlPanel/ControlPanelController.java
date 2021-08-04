@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.projectForum.Security.Role;
@@ -74,8 +75,8 @@ public class ControlPanelController {
 		/*
 		 * Users section
 		 * */
-		SearchUserForm searchUserForm = new SearchUserForm();
-		model.addAttribute("searchUserForm",searchUserForm);
+		
+		// model.addAttribute("searchUserForm",searchUserForm);
 		
 		
 		return "controlPanel";
@@ -115,7 +116,8 @@ public class ControlPanelController {
 		return "redirect:/a/controlPanel";
 	}
 	
-	
+	/**
+	 * This mehod will lead Admin into forum's editing page.*/
 	@GetMapping("forum/edit/{forumId}")
 	public String editForum(@PathVariable int forumId, Model model) {
 		EditForumForm editForum = new EditForumForm();
@@ -124,7 +126,9 @@ public class ControlPanelController {
 		model.addAttribute("editForum", editForum);
 		return "edit_Forum_page";
 	}
-	
+	/**
+	 * This method will proccess all admins actions in forum's editing page.
+	 * */
 	@PostMapping("editForum")
 	public String editForum(@Valid @ModelAttribute("editForum") EditForumForm editForum,
 							BindingResult bindingResult, Authentication authentication,
@@ -173,26 +177,52 @@ public class ControlPanelController {
 	/* ######################################################
 	 * User administration section
 	 * ######################################################*/
-	
-	/** This method will get Admin to search an user.*/
-	@GetMapping("searchUser")
-	public String displayUserByUsername(@RequestParam(name = "username") String username, Model model) {
+	/**
+	 *  This method will disply to Admin an User editing page.
+	 *  Admin can edit user's role rank or delete User.*/
+	@RequestMapping("/editUser")
+	ModelAndView showUserEditForm(@RequestParam(name = "username") String username) {
+		ModelAndView mav = new ModelAndView("edit_User_form");
 		
-		SearchUserForm searchUserForm = controlService.findSearchUserByUsername(username);
 		List<Role> roles = roleRepo.findAll();
+		EditUserForm editUser = controlService.editUserForm(username);
+
+		mav.addObject("editUser",editUser);
+		mav.addObject("roles",roles);
 		
-		model.addAttribute("searchUserForm",searchUserForm);
-		model.addAttribute("roles", roles);
-		return "edit_User_page";
+		return mav;
 	}
-	/** This method will apply changes into db*/
-	@PostMapping("searchUser")
-	public String applyUserChanges(@ModelAttribute("searchUserForm") SearchUserForm searchUserForm,
-							BindingResult bindingResult, Authentication authentication,
-							Model model) {
-		System.err.println("Hello! I'm here!");
-		return "";
+	/**
+	 *  This method will proccess all admin actions in user editing page.
+	 *  */
+	@RequestMapping("/updateUser")
+	public String updateUser(@Valid @ModelAttribute("editUser") EditUserForm editUser, BindingResult bindingResult, 
+								Authentication authentication, Model mode) {
+		
+		User user = userRepo.findUserById(editUser.getId());
+		
+		// Checking if user is exists
+		if(authentication == null || user == null
+				|| !userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN"))
+			return "redirect:/";
+		
+		// Checking if need to update role
+		if(!user.getRole().getName().equals(editUser.getRole()) && !editUser.getRole().equals("UNDIEFINED_USER")) {
+			// Updating user's role
+			editService.updateUserRole(editUser);
+		}
+		
+		// Checking if needed to delete user
+		if(editUser.isDelete()) {
+			// Deleting user
+			deleteService.deleteUser(editUser);
+		}
+		// if user still admin, then return to control panel
+		if(userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN"))
+			return "redirect:/a/controlPanel";
+		return "redirect:/";
 	}
+	
 	/** This method will remove a User entity from database.
 	 * 	This method will not delete an Admin user or dummy User.
 	 * 	In default all user's posts and topics will not removed, but will be attched to an dummy user.
@@ -203,21 +233,18 @@ public class ControlPanelController {
 								RedirectAttributes model) {
 		User user = userRepo.findByUsername(username);
 		
+		// Checking if user exists
 		if(authentication == null || user == null
 				|| !userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN"))
 			return "redirect:/";
 		
-		deleteService.deleteUserKeepActivity(user);
+		deleteService.deleteUser(username);
 		return "/controlPanel/";
 	}
 	
-	/** This method will edit the role of an exists user*/
-	public String updateUserRole() {
-		
-		return "";
-	}
 	
 	/* ######################################################
 	 * Homepage administration section
 	 * ######################################################*/
+	
 }

@@ -3,6 +3,9 @@ package com.projectForum.Services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.projectForum.ControlPanel.EditUserForm;
+import com.projectForum.Security.Role;
+import com.projectForum.Security.RoleRepository;
 import com.projectForum.forum.EditForumForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
@@ -30,14 +33,16 @@ public class EditServices {
 	private PostRepository	postRepo;
 	private TopicRepository	topicRepo;
 	private ForumRepository	forumRepo;
+	private RoleRepository	roleRepo;
 	
 	@Autowired
 	public EditServices(UserRepository userRepo, PostRepository postRepo, TopicRepository topicRepo,
-			ForumRepository forumRepo) {
+			ForumRepository forumRepo, RoleRepository	roleRepo) {
 		this.userRepo = userRepo;
 		this.postRepo = postRepo;
 		this.topicRepo = topicRepo;
 		this.forumRepo = forumRepo;
+		this.roleRepo = roleRepo;
 	}
 	
 	/** This method will update exists post with new Content.
@@ -92,8 +97,17 @@ public class EditServices {
 	 * 	@param */
 	public void updateUser(User user) {
 		
+		userRepo.save(user);
+	}
+	
+	/** This method will update user's roles to editUser role traget.
+	 * */
+	public void updateUserRole(EditUserForm editUser) {
+		Role role = roleRepo.findRoleByName(editUser.getRole());
+		User user = userRepo.findUserById(editUser.getId());
 		
-		
+		user.removeRole();
+		user.setRole(role);
 		userRepo.save(user);
 	}
 }
