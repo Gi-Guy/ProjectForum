@@ -1,7 +1,8 @@
 package com.projectForum.Security;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -21,12 +22,13 @@ public class CustomUserDetails implements UserDetails {
  
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-    	// TODO Test this or remove it.
-    	// Trying to define Authorities
-    	Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-    	grantedAuthorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
+    	Set<Role> roles = user.getRoles();
+    	List<SimpleGrantedAuthority> authorities = new ArrayList<>();
     	
-        return grantedAuthorities;
+    	for	(Role role : roles) {
+    		authorities.add(new SimpleGrantedAuthority(role.getName()));
+    	}
+    	return authorities;
     }
 
     @Override
