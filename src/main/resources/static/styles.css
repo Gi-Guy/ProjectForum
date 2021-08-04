@@ -1,25 +1,84 @@
 /* Credit to w3schools for the css styling */
 
+/* ------- */
+/* General */
+/* ------- */
+
+body {
+	direction: rtl;
+	background-color: LightGray;
+	margin-left:auto;
+	margin-right:auto;
+	width:80%;
+}
+
+h1 {
+	color: blue;
+	text-align: center;
+	margin: auto;
+ 	font-family: verdana;
+	font-size: 600%;
+}
+
+h3 {
+	font-size: 150%
+}
+
+hr {
+	box-sizing: content-box;
+	height: 0;
+	overflow: visible;
+}
+
+p {
+	color: red;
+	font-family: verdana;
+	font-size: 160%;
+}
+
+a, a:focus, a:active {
+      text-decoration: none;
+      color: #007bff;
+ }
+ 
+a:hover {
+	text-decoration: underline;
+}
+
+/* ------ */
+/* Topnav */
+/* ------ */
+
 /* 
  * Add a black background color to the top navigation. 
- * Keep the txt aligned to the right but also in right to left text direction. 
+ * Keep the text aligned to the right but also in right to left text direction. 
  */
 .topnav {
 	background-color: #333;
-	overflow: hidden;
+	overflow: auto;
 	direction: rtl;
+	
  	display: flex;
- 	justify-content: flex-start;
+ 	flex-wrap: wrap;
 }
 
 /* Style the links inside the navigation bar */
-.topnav a {
-	float: left;
+.topnav * {
 	color: #f2f2f2;
-	text-align: center;
-	padding: 14px 16px;
 	text-decoration: none;
 	font-size: 17px;
+	
+	/* Align the text horizontally */
+	align-items: center;
+	flex-grow: 1;
+	
+	padding: 14px 16px;
+	margin: 0;
+	
+	/* Align the text vertically */
+ 	display: flex;
+ 	flex-direction: column;
+ 	justify-content: center;
 }
 
 /* Change the color of links on hover */
