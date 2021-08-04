@@ -19,6 +19,7 @@ public class SearchUserForm {
 	private List<Role> roles;
 	private String username;
 	private String name;
+	private String email;
 	public SearchUserForm(User user, List<Topic> topics, List<Post> posts) {
 		this.user = user;
 		this.topics = topics;

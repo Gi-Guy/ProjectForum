@@ -184,15 +184,16 @@ public class ControlPanelController {
 		model.addAttribute("searchUser",searchUser);
 		model.addAttribute("editUser",new SearchUserForm());
 		model.addAttribute("roles", roles);
+		
 		return "edit_User_page";
 	}
 	/** This method will apply changes into db*/
-	@PostMapping("searchUser")
-	public String applyUserChanges(@ModelAttribute("editUser") SearchUserForm editUser,
+	@PostMapping("editUser")
+	public String applyUserChanges(@Valid @ModelAttribute("editUser") SearchUserForm editUser,
 							BindingResult bindingResult, Authentication authentication,
 							Model model) {
 		System.err.println("Hello! I'm here!");
-		return "";
+		return "redirect:/a/controlPanel";
 	}
 	/** This method will remove a User entity from database.
 	 * 	This method will not delete an Admin user or dummy User.

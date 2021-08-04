@@ -74,16 +74,26 @@
 		</div>
 		<!-- Change role section -->
 		<div>
-			<form th:action = "@{/a/searchUser}" th:object = "${editUser}" method = "post">
-			<label>עדכן דירוג:</label>
-			 	<select >
+			<form action="#" th:action = "@{/a/editUser}" method = "POST">
+			<!-- th:object="${editUser}" -->
+			
+			 	<!-- <select th:field="${editUser}">
 			    <option
 			        th:each="role : ${roles}"
 			        th:value="${{role}}"
 			        th:text="${role.name}"
-			        th:selected="${role == role.name}" />
+			        />
 				</select>
-			 
+				 -->
+			
+				<!-- <input type="hidden" th:field = "${searchUser.user}" th:value = "${user}"/> -->
+				<input type="hidden" th:value="${searchUser.user}" name="user"/>
+				<input type="hidden" th:value="${searchUser.user.username}" name="username"/>
+				<input type="hidden" th:value="${searchUser.user.email}" name="email"/>
+				
+			 	
+
+			 <!-- <input name="username" type="text" th:value="*{username}" required><br> -->
         	<button type="submit">בצע פעולות</button> 
 			</form>
 		
