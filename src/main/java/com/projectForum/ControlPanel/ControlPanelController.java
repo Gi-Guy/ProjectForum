@@ -116,7 +116,8 @@ public class ControlPanelController {
 		return "redirect:/a/controlPanel";
 	}
 	
-	
+	/**
+	 * This mehod will lead Admin into forum's editing page.*/
 	@GetMapping("forum/edit/{forumId}")
 	public String editForum(@PathVariable int forumId, Model model) {
 		EditForumForm editForum = new EditForumForm();
@@ -125,7 +126,9 @@ public class ControlPanelController {
 		model.addAttribute("editForum", editForum);
 		return "edit_Forum_page";
 	}
-	
+	/**
+	 * This method will proccess all admins actions in forum's editing page.
+	 * */
 	@PostMapping("editForum")
 	public String editForum(@Valid @ModelAttribute("editForum") EditForumForm editForum,
 							BindingResult bindingResult, Authentication authentication,
@@ -174,32 +177,9 @@ public class ControlPanelController {
 	/* ######################################################
 	 * User administration section
 	 * ######################################################*/
-	
-//	/** This method will get Admin to search an user.*/
-//	@GetMapping("searchUser")
-//	public String displayUserByUsername(@RequestParam(name = "username") String username, Model model) {
-//		
-//		SearchUserForm searchUser = controlService.findSearchUserByUsername(username);
-//		List<Role> roles = roleRepo.findAll();
-//		
-//		model.addAttribute("searchUser",searchUser);
-//		model.addAttribute("editUser",new SearchUserForm());
-//		model.addAttribute("roles", roles);
-//		
-//		return "edit_User_page";
-//	}
-//	/** This method will apply changes into db*/
-//	@PostMapping("ediitUser")
-//	public String applyUserChanges(@Valid @ModelAttribute("editUser") SearchUserForm editUser,
-//							BindingResult bindingResult, Authentication authentication,
-//							Model model) {
-//		System.err.println("Hello! I'm here!");
-//		return "redirect:/a/controlPanel";
-//	}
-	
-	/*
-	 * Trying new edit type for user*/
-	//@RequestMapping("/editUser/{username}")
+	/**
+	 *  This method will disply to Admin an User editing page.
+	 *  Admin can edit user's role rank or delete User.*/
 	@RequestMapping("/editUser")
 	ModelAndView showUserEditForm(@RequestParam(name = "username") String username) {
 		ModelAndView mav = new ModelAndView("edit_User_form");
@@ -212,6 +192,9 @@ public class ControlPanelController {
 		
 		return mav;
 	}
+	/**
+	 *  This method will proccess all admin actions in user editing page.
+	 *  */
 	@RequestMapping("/updateUser")
 	public String updateUser(@Valid @ModelAttribute("editUser") EditUserForm editUser, BindingResult bindingResult, 
 								Authentication authentication, Model mode) {
@@ -263,4 +246,5 @@ public class ControlPanelController {
 	/* ######################################################
 	 * Homepage administration section
 	 * ######################################################*/
+	
 }

@@ -1,6 +1,7 @@
 package com.projectForum;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.useRepresentation;
 
 import java.util.HashSet;
 import java.util.List;
@@ -80,6 +81,14 @@ public class UserRepositoryTests {
 //		System.err.println(user.getRoles().iterator().next().getName());
 		System.err.println(role.equals(role2));
 
+	}
+	
+	@Test
+	public void displayAllAdmins() {
+		Role role = roleRepo.findRoleByName("ADMIN");
+		List<User> admins = userRepo.findAll();
+		// find it
+		System.err.println("my size is: " + admins.size());
 		
 	}
 	
