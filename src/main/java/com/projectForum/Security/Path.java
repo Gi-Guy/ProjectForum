@@ -11,13 +11,13 @@ public class Path {
     private static final String[] AUTHORIZED_ACCESS = {
     		"/post/**",
     		"/topic/newTopic",
-    		"/topic/*",
-    		"/a/**"
+    		"/topic/*"
     };
     
     private static final String[] ADMIN_ACCESS = {
     		"/list_users",
-    		"/forum/newForum"
+    		"/forum/newForum",
+    		"/a/**"
     };
     final static String adminRole		=	"ADMIN";
     final static String userRole		=	"USER";

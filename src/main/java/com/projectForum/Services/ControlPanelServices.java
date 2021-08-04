@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.projectForum.ControlPanel.EditUserForm;
 import com.projectForum.ControlPanel.ForumForm;
-import com.projectForum.ControlPanel.SearchUserForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.PostRepository;
@@ -141,43 +140,6 @@ public class ControlPanelServices {
 		this.updatePriorityDown(forum , forumRepo.findByPriority(forum.getPriority() + 1));
 	}
 	
-	/**This method will update the role of exsits user.*/
-	/**
-	 * @param user
-	 * @param searchUserForm
-	 */
-	public void updateUserRole(User user, SearchUserForm searchUserForm) {
-		//user.setRole(searchUserForm.getRole());
-		userRepo.save(user);
-		
-	}
-	/*
-	 * 	DELETE THIS METHOD
-	 **/
-	/**
-	 * @param username
-	 * @return
-	 */
-	public SearchUserForm findSearchUserByUsername(String username) {
-		return this.findSearchUserById(userRepo.findByUsername(username).getId());
-	}
-	
-	/*
-	 * 	DELETE THIS METHOD
-	 **/
-	/**
-	 * @param userId
-	 * @return
-	 */
-	public SearchUserForm findSearchUserById(int userId) {
-		User user = userRepo.findUserById(userId);
-		SearchUserForm searchUser = new SearchUserForm();
-		
-		searchUser.setUser(user);
-		searchUser.setPosts(postRepo.findPostsByUser(user));
-		searchUser.setTopics(topicRepo.findTopicsByUser(user));
-		return searchUser;
-	}
 	public EditUserForm editUserForm(String username) {
 		return this.editUserFormById(userRepo.findByUsername(username).getId());
 	}

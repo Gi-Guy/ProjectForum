@@ -75,8 +75,8 @@ public class ControlPanelController {
 		/*
 		 * Users section
 		 * */
-		SearchUserForm searchUserForm = new SearchUserForm();
-		model.addAttribute("searchUserForm",searchUserForm);
+		
+		// model.addAttribute("searchUserForm",searchUserForm);
 		
 		
 		return "controlPanel";
@@ -213,9 +213,31 @@ public class ControlPanelController {
 		return mav;
 	}
 	@RequestMapping("/updateUser")
-	public String updateUser(@ModelAttribute("editUser") EditUserForm editUser) {
-		System.err.println("Hello!");
-		return "redirect:/a/controlPanel";
+	public String updateUser(@Valid @ModelAttribute("editUser") EditUserForm editUser, BindingResult bindingResult, 
+								Authentication authentication, Model mode) {
+		
+		User user = userRepo.findUserById(editUser.getId());
+		
+		// Checking if user is exists
+		if(authentication == null || user == null
+				|| !userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN"))
+			return "redirect:/";
+		
+		// Checking if need to update role
+		if(!user.getRole().getName().equals(editUser.getRole()) && !editUser.getRole().equals("UNDIEFINED_USER")) {
+			// Updating user's role
+			editService.updateUserRole(editUser);
+		}
+		
+		// Checking if needed to delete user
+		if(editUser.isDelete()) {
+			// Deleting user
+			deleteService.deleteUser(editUser);
+		}
+		// if user still admin, then return to control panel
+		if(userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN"))
+			return "redirect:/a/controlPanel";
+		return "redirect:/";
 	}
 	
 	/** This method will remove a User entity from database.
@@ -228,19 +250,15 @@ public class ControlPanelController {
 								RedirectAttributes model) {
 		User user = userRepo.findByUsername(username);
 		
+		// Checking if user exists
 		if(authentication == null || user == null
 				|| !userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN"))
 			return "redirect:/";
 		
-		deleteService.deleteUserKeepActivity(user);
+		deleteService.deleteUser(username);
 		return "/controlPanel/";
 	}
 	
-	/** This method will edit the role of an exists user*/
-	public String updateUserRole() {
-		
-		return "";
-	}
 	
 	/* ######################################################
 	 * Homepage administration section
