@@ -1,34 +1,39 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"> <!-- Declaring  XML using-->
-<head>
-    <meta charset="UTF-8">
-    <title>דף הבית</title>
-    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
-    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
- 	<style>    
-  		h1 {
- 			 color: blue;
- 		 	font-family: verdana;
-  			font-size: 450%;
-			}
-			
-		p  {
-  			color: red;
-  			font-family: verdana;
-  			font-size: 160%;
-  			border: 3px solid black;
-			}
-	</style>  
-
-</head>
-<body style = "background-color:LightGray">
-	<div class="container text-center">
-		<div> 
-		    <h1>ברוכים הבאים לאתר הכי טוב בתבל</h1>
-			<p>אל תמליצו לחברים שלכם לבוא לפה בבקשה</p>
+	<head>
+	    <meta charset="UTF-8">
+	    <title>דף הבית</title>
+		<link rel="stylesheet" type="css" href="styles.css" />
+	    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+	    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+	    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+	 	<style>    
+	  		h1 {
+	 			 color: blue;
+	 		 	font-family: verdana;
+	  			font-size: 450%;
+				}
+				
+			p  {
+	  			color: red;
+	  			font-family: verdana;
+	  			font-size: 160%;
+	  			border: 3px solid black;
+				}
+		</style>  
+	
+	</head>
+	
+	<body style = "background-color:LightGray">
+	
+		<div th:replace="fragments/navigation-bar"></div>
+	
+		<div class="container text-center">
+			<div> 
+			    <h1>ברוכים הבאים לאתר הכי טוב בתבל</h1>
+				<p>אל תמליצו לחברים שלכם לבוא לפה בבקשה</p>
+			</div>
 		</div>
-	</div>
 		<hr>
 	<div class="container text-right">
 		<div>
@@ -36,7 +41,7 @@
 				<h4 style = "color:red">All Users can read, Only Authorized can create new topics & posts, Only Admin can create a new forum.</h4>
 			<hr>
 			<h3> <a th:href="@{/list_users}">רשימת כל המשתמשים</a></h3>
-				<h4 style = "color:red">ADMIN ONLY</h4>
+			<h4 style = "color:red">ADMIN ONLY</h4>
 			<hr>
 			<h3> <a th:href="@{/register}">הרשמה</a></h3>
 			<hr>
@@ -59,5 +64,5 @@
 		</div>
 		
 	</div>
-</body>
+	</body>
 </html>
