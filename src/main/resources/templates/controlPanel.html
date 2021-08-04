@@ -84,13 +84,12 @@
 			<h6>ערוך ונהל משתמשים</h6>
 		</div>
 		<div style="text-align:right">
-				<form th:action="@{/a/searchUser}" th:object = "${searchUserForm}">
+				<form th:action="@{/a/editUser}" th:object = "${searchUserForm}">
 					<label>חפש משתמש:</label>
 					<input name="username" type="text" th:value="*{username}" required>
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<input class="btn btn-primary" type="submit" value="Submit" />
 				</form>
-				<a th:href="@{/a/editUser/aaaa}">Search:aaaa</a>
 			</div>
 	</div>
 		

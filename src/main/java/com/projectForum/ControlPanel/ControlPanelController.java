@@ -175,32 +175,33 @@ public class ControlPanelController {
 	 * User administration section
 	 * ######################################################*/
 	
-	/** This method will get Admin to search an user.*/
-	@GetMapping("searchUser")
-	public String displayUserByUsername(@RequestParam(name = "username") String username, Model model) {
-		
-		SearchUserForm searchUser = controlService.findSearchUserByUsername(username);
-		List<Role> roles = roleRepo.findAll();
-		
-		model.addAttribute("searchUser",searchUser);
-		model.addAttribute("editUser",new SearchUserForm());
-		model.addAttribute("roles", roles);
-		
-		return "edit_User_page";
-	}
-	/** This method will apply changes into db*/
-	@PostMapping("ediitUser")
-	public String applyUserChanges(@Valid @ModelAttribute("editUser") SearchUserForm editUser,
-							BindingResult bindingResult, Authentication authentication,
-							Model model) {
-		System.err.println("Hello! I'm here!");
-		return "redirect:/a/controlPanel";
-	}
+//	/** This method will get Admin to search an user.*/
+//	@GetMapping("searchUser")
+//	public String displayUserByUsername(@RequestParam(name = "username") String username, Model model) {
+//		
+//		SearchUserForm searchUser = controlService.findSearchUserByUsername(username);
+//		List<Role> roles = roleRepo.findAll();
+//		
+//		model.addAttribute("searchUser",searchUser);
+//		model.addAttribute("editUser",new SearchUserForm());
+//		model.addAttribute("roles", roles);
+//		
+//		return "edit_User_page";
+//	}
+//	/** This method will apply changes into db*/
+//	@PostMapping("ediitUser")
+//	public String applyUserChanges(@Valid @ModelAttribute("editUser") SearchUserForm editUser,
+//							BindingResult bindingResult, Authentication authentication,
+//							Model model) {
+//		System.err.println("Hello! I'm here!");
+//		return "redirect:/a/controlPanel";
+//	}
 	
 	/*
 	 * Trying new edit type for user*/
-	@RequestMapping("/editUser/{username}")
-	ModelAndView showUserEditForm(@PathVariable(name = "username") String username) {
+	//@RequestMapping("/editUser/{username}")
+	@RequestMapping("/editUser")
+	ModelAndView showUserEditForm(@RequestParam(name = "username") String username) {
 		ModelAndView mav = new ModelAndView("edit_User_form");
 		
 		List<Role> roles = roleRepo.findAll();

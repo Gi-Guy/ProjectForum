@@ -10,19 +10,21 @@ public class EditUserForm {
 	private String email;
 	private String role;
 	private boolean keepActivity = true;
+	private boolean delete = false;
 	private LocalDateTime joiningDate;
 	
 	public EditUserForm() {
 	}
 
 	public EditUserForm(int id, String username, String email, String role, boolean keepActivity,
-			LocalDateTime joiningDate) {
+			LocalDateTime joiningDate, boolean delete) {
 		this.id = id;
 		this.username = username;
 		this.email = email;
 		this.role = role;
 		this.keepActivity = keepActivity;
 		this.joiningDate = joiningDate;
+		this.delete = delete;
 	}
 
 	public int getId() {
@@ -71,6 +73,15 @@ public class EditUserForm {
 
 	public void setJoiningDate(LocalDateTime joiningDate) {
 		this.joiningDate = joiningDate;
+		
+	}
+
+	public boolean isDelete() {
+		return delete;
+	}
+
+	public void setDelete(boolean delete) {
+		this.delete = delete;
 	}
 	
 	
