@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.projectForum.ControlPanel.EditUserForm;
 import com.projectForum.ControlPanel.ForumForm;
 import com.projectForum.ControlPanel.SearchUserForm;
 import com.projectForum.forum.Forum;
@@ -150,6 +151,9 @@ public class ControlPanelServices {
 		userRepo.save(user);
 		
 	}
+	/*
+	 * 	DELETE THIS METHOD
+	 **/
 	/**
 	 * @param username
 	 * @return
@@ -157,6 +161,10 @@ public class ControlPanelServices {
 	public SearchUserForm findSearchUserByUsername(String username) {
 		return this.findSearchUserById(userRepo.findByUsername(username).getId());
 	}
+	
+	/*
+	 * 	DELETE THIS METHOD
+	 **/
 	/**
 	 * @param userId
 	 * @return
@@ -166,9 +174,26 @@ public class ControlPanelServices {
 		SearchUserForm searchUser = new SearchUserForm();
 		
 		searchUser.setUser(user);
-		searchUser.setRole(user.getRole());
 		searchUser.setPosts(postRepo.findPostsByUser(user));
 		searchUser.setTopics(topicRepo.findTopicsByUser(user));
 		return searchUser;
 	}
+	public EditUserForm editUserForm(String username) {
+		return this.editUserFormById(userRepo.findByUsername(username).getId());
+	}
+
+	private EditUserForm editUserFormById(int id) {
+		EditUserForm editForm = new EditUserForm();
+		User user = userRepo.findUserById(id);
+		
+		// insert all relevent information
+		editForm.setId(user.getId());
+		editForm.setUsername(user.getUsername());
+		editForm.setEmail(user.getEmail());
+		editForm.setRole(user.getRole().getName());
+		editForm.setJoiningDate(user.getJoiningDate());
+		
+		return editForm;
+	}
+	
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.projectForum.Security.Role;
@@ -188,13 +189,33 @@ public class ControlPanelController {
 		return "edit_User_page";
 	}
 	/** This method will apply changes into db*/
-	@PostMapping("editUser")
+	@PostMapping("ediitUser")
 	public String applyUserChanges(@Valid @ModelAttribute("editUser") SearchUserForm editUser,
 							BindingResult bindingResult, Authentication authentication,
 							Model model) {
 		System.err.println("Hello! I'm here!");
 		return "redirect:/a/controlPanel";
 	}
+	
+	/*
+	 * Trying new edit type for user*/
+	@RequestMapping("/editUser/{username}")
+	ModelAndView showUserEditForm(@PathVariable(name = "username") String username) {
+		ModelAndView mav = new ModelAndView("edit_User_form");
+		
+		List<Role> roles = roleRepo.findAll();
+		EditUserForm editUser = controlService.editUserForm(username);
+
+		mav.addObject("editUser",editUser);
+		
+		return mav;
+	}
+	@RequestMapping("/updateUser")
+	public String updateUser(@ModelAttribute("editUser") EditUserForm editUser) {
+		System.err.println("Hello!");
+		return "redirect:/a/controlPanel";
+	}
+	
 	/** This method will remove a User entity from database.
 	 * 	This method will not delete an Admin user or dummy User.
 	 * 	In default all user's posts and topics will not removed, but will be attched to an dummy user.

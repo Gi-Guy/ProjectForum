@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html 	xmlns:th="http://www.thymeleaf.org"
+		lang="he"> <!-- Declaring  XML using-->
+<head>
+    <meta charset="UTF-8">
+    <title>ערוך משתמש</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    
+    
+    
+    <style type="text/css">
+    label {
+        display: inline-block;
+        width: 100px;
+        margin: 5px;
+        text-align: right;
+    }
+    input[type=text], input[type=password], select {
+        display: inline-block;
+        width: 200px;
+    }
+    input[type=radio] {
+        margin-left: 45px;
+    }
+    input[type=checkbox] {
+        margin-right: 190px;
+    }  
+    button {
+        padding: 5px;
+        margin: 10px;
+    }
+</style>
+
+
+</head>
+
+<body dir="rtl">
+   <div align="center">
+        <h1>ערוך משתמש</h1>
+        <br />
+        <form action="#" th:action="@{/a/updateUser}" th:object="${editUser}"
+            method="post">
+ 
+            <table border="0" cellpadding="10">
+
+                <tr>
+                    <td>מזהה:</td>
+                    <td><input type="text" th:field="*{id}" readonly="readonly" /></td>
+                </tr>
+                <tr>
+                    <td>שם משתמש:</td>
+                    <td><input type="text" th:field="*{username}" readonly="readonly" /></td>
+                </tr>
+				<tr>
+                    <td>אימייל:</td>
+                    <td><input type="text" th:field="*{email}" readonly="readonly"/></td>
+                </tr>
+                <tr>
+                    <td>תאריך הצטרפות:</td>
+                    <td><input type="text" th:field="*{joiningDate}" readonly="readonly" /></td>
+                </tr>
+                <tr>
+                    <td>דרגה:</td>
+                    <td><input type="text" th:field="*{role}" /></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><button type="submit">Save</button> </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</body>
+<!-- 
+
+<body dir="rtl">
+	<div align="center">
+		<div>
+			<h1>עדכון משתמש</h1><br/>
+		</div>
+		<div>
+			
+			<form action="#" th:action="@{/a/updateUser}" th:object="${editUser}" method = "POST">
+				<table border="0" cellpadding="10">
+					<tr>
+						<td>שם משתמש</td>
+						<td><input type="text" th:field="${user.username}" readonly="readonly" /></td>
+					</tr>
+					<tr>
+						<td>אימייל</td>
+						<td><input type="text" th:field="${user.email}" readonly="readonly" /></td>						
+					</tr>
+					<tr>
+						<td>דירוג</td>
+						<td><input type="text" th:field="${user.role.name}"/></td>						
+					</tr>
+					<tr>
+						<td>דירוג</td>
+						<td><input type="text" th:field="*{role}"/></td>						
+					</tr>
+					<tr>
+						<td>שנה דירוג</td>
+						<td>
+							<select  >
+								<option>בחר דירוג </option>
+    							<option th:each="role : ${roleList}" th:value="${role.name}" th:text="${role.name}"/>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						
+						<td colspan="2">
+	 -->					
+						<!--  <input type="hidden"  name="username" th:value="${user.username}"/>-->
+		<!-- 				<button type="submit">שמור הגדרות</button> </td>
+					</tr>
+				</table>
+			</form>
+			
+		</div>
+		
+	</div>	
+	
+</body>
+ -->
+</html>

@@ -2,7 +2,6 @@ package com.projectForum.ControlPanel;
 
 import java.util.List;
 
-import com.projectForum.Security.Role;
 import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;
 import com.projectForum.user.User;
@@ -12,14 +11,16 @@ public class SearchUserForm {
 	
 	private User user;
 
+	public String getRole() {
+		return role;
+	}
+
+
 	private List<Topic> topics;
 	private List<Post> posts;
 	private boolean keepActivity = true;
-	private Role role;
-	private List<Role> roles;
+	private String role;
 	private String username;
-	private String name;
-	private String email;
 	public SearchUserForm(User user, List<Topic> topics, List<Post> posts) {
 		this.user = user;
 		this.topics = topics;
@@ -29,6 +30,11 @@ public class SearchUserForm {
 
 	public SearchUserForm() {
 		
+	}
+	
+
+	public SearchUserForm(String role) {
+		this.role = role;
 	}
 
 
@@ -90,7 +96,7 @@ public class SearchUserForm {
 	}
 
 	
-	public void setRole(Role role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
 
