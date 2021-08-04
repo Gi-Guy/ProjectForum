@@ -207,6 +207,7 @@ public class ControlPanelController {
 		EditUserForm editUser = controlService.editUserForm(username);
 
 		mav.addObject("editUser",editUser);
+		mav.addObject("roles",roles);
 		
 		return mav;
 	}
