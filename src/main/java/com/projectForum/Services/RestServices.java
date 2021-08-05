@@ -24,6 +24,8 @@ public class RestServices {
 	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private RoleRepository	roleRepo;
+	@Autowired
+	private UserServices	userServices;
 	/**
 	 *  This method will return a list of user, order by roles (Admins first)
 	 *  */
@@ -60,26 +62,6 @@ public class RestServices {
 	 * 	This method will add a new user from JSON to database and return a new user.
 	 * */
 	public User addNewUser(AddUserForm addUser) {
-		User user = userRepo.findByUsername(addUser.getUsername());
-		
-		// Checking if user already exists by username
-		if(user != null)
-			return null;
-		// Checking if user already exists by email		
-		user = userRepo.findByEmail(addUser.getEmail());
-		if(user != null)
-			return null;	
-		
-		// user isn't exists by username or email.
-		// Creating new User
-		user = new User();
-		user.setUsername(addUser.getUsername());
-		user.setFirstName(addUser.getFirstName());
-		user.setLastName(addUser.getLastName());
-		user.setEmail(addUser.getEmail());
-		user.setPassword(passwordEncoder.encode(addUser.getPassword()));
-		user.setRole(roleRepo.findRoleByName("USER"));
-		userRepo.save(user);
-		return userRepo.findByUsername(user.getUsername());
+		return userServices.addNewUser(addUser);
 	}
 }
