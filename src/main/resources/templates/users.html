@@ -42,7 +42,6 @@
 							<th>שם משפחה</th>
 							<th>תאריך הצטרפות</th>
 							<th>ערוך משתמש</th>
-							<th>הסר</th>
 						</tr>
 				</thead>
 				<tbody>
@@ -56,14 +55,7 @@
 						<td th:text = "${user.joiningDate}">joining date</td>
 						<td>
 							<a th:href="@{/a/editUser(username = ${user.username})}" class = "button button5" >עריכה</a>
-						</td>
-						<td>
-						
-						<a th:href="@{/deleteUser(username=${user.username})}" class = "button button5">
-							מחק
-						</a>
-
-						</td>		
+						</td>	
 					</tr>
 					
 				</tbody>
