@@ -9,47 +9,36 @@
 		
 		<div>
 		
-		    <div>
-	        <form th:action="@{/logout}" method="post">
-	            <p>
-	                <b>[[${#request.userPrincipal.principal.fullName}]]</b> ברוך הבא  
-	            </p>
-	            <input type="submit" value="Sign Out" />
-	            <a th:href="@{/index}" type="submit" >חזרה לדף הבית</a>
-	        </form>
-	    </div>
-		
-		
 			<div>
 				<h1>רשימת כל המשתמשים:</h1>
-			</div>
+	    		<a th:href="@{/a/controlPanel}" type="submit" >חזרה ללוח הבקרה</a>
+    		</div>
+    		
 			<div>
 				<table>
 					<thead>
 							<tr>
 								<th>מזהה משתמש</th>
+								<th>דרגה</th>
 								<th>שם משתמש</th>
 								<th>Email</th>
 								<th>שם פרטי</th>
 								<th>שם משפחה</th>
 								<th>תאריך הצטרפות</th>
-								<th>הסר</th>
+								<th>ערוך משתמש</th>
 							</tr>
 					</thead>
 					<tbody>
 						<tr th:each = "user: ${listofUsers}">
 							<td th:text = "${user.id}">מזהה משתמש</td>
+							<td th:text = "${user.getRole().name}">דרגה</td>
 							<td th:text = "${user.username}">מזהה משתמש</td>
 							<td th:text = "${user.email}">Email</td>
 							<td th:text = "${user.firstName}">שם פרטי</td>
 							<td th:text = "${user.lastName}">שם משפחה</td>
 							<td th:text = "${user.joiningDate}">joining date</td>
 							<td>
-							
-							<a th:href="@{/deleteUser(username=${user.username})}" class = "button button5">
-								מחק משתמש
-							</a>
-	
+								<a th:href="@{/a/editUser(username = ${user.username})}" class = "button button5" >עריכה</a>
 							</td>		
 						</tr>
 						
@@ -58,6 +47,5 @@
 				
 			</div>
 		</div>
-			
 	</body>
 </html>
