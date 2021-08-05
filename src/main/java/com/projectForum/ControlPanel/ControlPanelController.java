@@ -221,7 +221,7 @@ public class ControlPanelController {
 			return "redirect:/";
 		
 		// Checking if need to update role
-		if(!user.getRole().getName().equals(editUser.getRole()) && !editUser.getRole().equals("UNDIEFINED_USER")) {
+		if(!user.getRole().getName().equals(editUser.getRole()) && !editUser.getRole().equals("UNDEFINED_USER")) {
 			// Updating user's role
 			editService.updateUserRole(editUser);
 		}
