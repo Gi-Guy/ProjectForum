@@ -1,26 +1,26 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 
-		<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+	<!-- TODO remove this at the end - made our own CSS file --> 
+	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
 
-	<head th:fragment="headerfiles">
+	<!-- Information at the start of every HTML page -->
+	<head th:fragment="headerfiles(title)">
 		<meta charset="UTF-8" />
-		<link th:href="@{styles.css}" rel="stylesheet" />
+		<title th:text=${title}></title>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}" />
 		<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
 		<script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 	</head>
 	
 	<body>
+		<!-- Navigation bar at the top of the page -->
 		<nav th:fragment="topnav" class="topnav">
 			<a th:href="@{forum/forums}">רשימת כל הפורומים</a>
 			<a th:href="@{/list_users}">רשימת כל המשתמשים</a>
+			<a th:href="@{/a/controlPanel}">לוח בקרה</a>
 			<a th:href="@{/register}">הרשמה</a>
 			<a th:href="@{/login}">התחבר</a>
-			<a th:href="@{/test}">Testing</a>
-			<a th:href="@{/topic/newTopic}">Create a topic (login first!)</a>
-			<a th:href="@{/topic/2}">topic for example</a>
-			<a th:href="@{/forum/newForum}">צור פורום חדש</a>
-			<a th:href="@{/forum/1}">פורום לדוגמא</a>
 			<p style = "background-color:purple">הפורום הטוב בתבל</p>
 		</nav>
 	    

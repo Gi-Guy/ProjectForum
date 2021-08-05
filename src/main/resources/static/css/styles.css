@@ -1,4 +1,4 @@
-/* Credit to w3schools for the css styling */
+/* Credit to w3schools for some of the CSS styling */
 
 /* ------- */
 /* General */
@@ -11,7 +11,7 @@ body {
 	margin-right:auto;
 	width:80%;
 }
-
+	
 h1 {
 	color: blue;
 	text-align: center;
@@ -43,6 +43,43 @@ a, a:focus, a:active {
  
 a:hover {
 	text-decoration: underline;
+}
+
+label {
+	font-size: 15px;
+	line-height: 19px;
+	font-weight: 700;
+}
+
+
+/* -------- */
+/* Register */
+/* -------- */
+
+.invalid-feedback {
+	font-size:14px;
+	font-weight: 600;
+	text-align:right;
+}
+
+/* ------- */
+/* Buttons */
+/* ------- */
+.button {
+  		background-color: #04AA6D; /* Green */
+  		border: none;	  
+  		color: white;
+  		padding: 20px;
+  		text-align: center;
+  		text-decoration: none;
+  		display: inline-block;
+  		font-size: 16px;
+  		margin: 4px 2px;
+ 	 	cursor: pointer;
+}
+
+.button5 {
+	border-radius: 15%;
 }
 
 /* ------ */
