@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -65,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          .defaultSuccessUrl("/")
          .permitAll()
          .and()
-         .logout().logoutSuccessUrl("/").permitAll();
+         .logout().logoutSuccessUrl("/").permitAll().and().csrf().disable();
     	 configureEncodingFilter(http);
     	 
     }

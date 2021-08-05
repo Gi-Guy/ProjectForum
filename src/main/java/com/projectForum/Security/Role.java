@@ -8,9 +8,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
+
 
 @Entity
 @Table(name = "roles")
+@JsonIgnoreType
 public class Role {
 
 	@Id
@@ -41,5 +44,10 @@ public class Role {
 	}
 	public Role getRole() {
 		return this;
+	}
+
+	@Override
+	public String toString() {
+		return "Role [id=" + id + ", name=" + name + "]";
 	}
 }

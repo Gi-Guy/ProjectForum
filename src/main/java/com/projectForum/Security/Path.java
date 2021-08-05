@@ -5,7 +5,8 @@ public class Path {
     private static final String[] ALL_ACCESS = {
     		"/",
     		"/index",
-    		"/forum/**"
+    		"/forum/**",
+    		"/api/**"
     };
 
     private static final String[] AUTHORIZED_ACCESS = {
