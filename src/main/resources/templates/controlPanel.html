@@ -9,16 +9,10 @@
 		
 		<div class="container text-center" align="center">
 			<h1>לוח בקרה</h1>
-			<h6>ערוך ונהל את הפורום</h6>
+			<h3>ערוך ונהל את הפורום</h3>
 		    <div>
-	        <form th:action="@{/logout}" method="post">
-	            <p>
-	                <b>[[${#request.userPrincipal.principal.fullName}]]</b> ברוך הבא  
-	            </p>
-	            <input type="submit" value="Sign Out" />
-	            <a th:href="@{/index}" type="submit" >חזרה לדף הבית</a>
-	        </form>
-	    </div>
+	            <p> ברוך הבא <b>[[${#request.userPrincipal.principal.fullName}]]</b> </p>
+		    </div>
 		
 			<!-- Forums section  -->
 			<hr>
@@ -91,7 +85,7 @@
 					</form>
 					<div>
 						&nbsp;&nbsp;
-						<a th:href="@{/list_users}">רשימת כל המשתמשים</a>
+						<a th:href="@{/a/list_users}">רשימת כל המשתמשים</a>
 					</div>
 					
 				</div>
