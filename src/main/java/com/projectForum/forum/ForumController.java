@@ -58,7 +58,7 @@ public class ForumController {
 	 * This method will display all forums in a List<Forum>
 	 */
 	// TODO move this to homepage controller.
-	@GetMapping("/forums")
+	@GetMapping("forums")
 	public String displayForums(Model model) {
 		// returning a List<Forum> order by priority {highest priority = 1}
 		model.addAttribute("forums", forumRepo.findByOrderByPriorityAsc());
@@ -81,6 +81,7 @@ public class ForumController {
 		model.addAttribute("newForum", new Forum());		
 		return "new_Forum_page";
 	}
+	
 	/**This method will create a new forum*/
 	@PostMapping("newForum")
 	public String proccesNewForum(@Valid @ModelAttribute Forum forum, BindingResult bindingResult, Authentication authentication, Model model) {
