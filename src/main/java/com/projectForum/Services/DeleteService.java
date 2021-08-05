@@ -98,8 +98,10 @@ public class DeleteService {
 		List<Post>	userPosts	=	postRepo.findPostsByUser(user);
 		List<Topic>	userTopics	=	topicRepo.findTopicsByUser(user);
 		
+		User dummyUser = userRepo.findByUsername("Unknown");
+		
 		// Making sure that dummy user won't be deleted or Admin user
-		if(user.getRoles().iterator().next().getName().equals("ADMIN"))
+		if(dummyUser.equals(user) || user.getRoles().iterator().next().getName().equals("ADMIN"))
 			return;
 		
 		// Removing Role (many To many, need to be removed)
