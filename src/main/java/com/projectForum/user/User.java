@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -51,6 +52,7 @@ public class User {
 	private boolean isActive = true;
 	
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OrderBy("role_id ASC")
 	@JoinTable(
 			name = "users_roles",
 			joinColumns = @JoinColumn(name = "user_id"),

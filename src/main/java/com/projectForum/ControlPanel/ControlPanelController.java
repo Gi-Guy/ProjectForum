@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -177,6 +178,19 @@ public class ControlPanelController {
 	/* ######################################################
 	 * User administration section
 	 * ######################################################*/
+	
+	/** This method will return List<User> of all users in database and display it. */
+	/**
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/list_users")
+	public String listofUsers(Model model) {
+		// Display all useres by role rank.
+		model.addAttribute("listofUsers", userRepo.findByOrderByRolesAsc());
+		return "users";
+	}
+	
 	/**
 	 *  This method will disply to Admin an User editing page.
 	 *  Admin can edit user's role rank or delete User.*/

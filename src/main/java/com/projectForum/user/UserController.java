@@ -75,15 +75,17 @@ public class UserController {
 		return "user";
 	}
 	
+	
 	/** This method will return List<User> of all users in database and display it. */
 	/**
 	 * @param model
 	 * @return
 	 */
+	/* TODO TEST THIS IN CONTROL PANEL BEFORE REMOVING
 	@GetMapping("/list_users")
 	public String listofUsers(Model model) {
 
 		model.addAttribute("listofUsers", userRepo.findAll());
 		return "users";
-	}
+	}*/
 }

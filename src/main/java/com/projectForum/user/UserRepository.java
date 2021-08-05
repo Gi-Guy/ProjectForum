@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.projectForum.Security.Role;
 
+
 public interface UserRepository extends JpaRepository<User, Integer>{
 	
 	@Query("SELECT u FROM User u WHERE u.email = ?1")
@@ -21,8 +22,7 @@ public interface UserRepository extends JpaRepository<User, Integer>{
 	@Query("SELECT u FROM User u WHERE u.id = ?1")
 	User findUserById(int id);
 	
-	//@Query("SELECT u FROM User WHERE u.getRole=?1")
-	//List<User> findAllByRole(Role role);
+	List<User> findByOrderByRolesAsc();
 	
 	List<User> findAll();
 	

@@ -40,7 +40,7 @@ public class IndexController {
 		return "index";
 	}
 	
-	//This method has been moved to userController
+	//This method has been moved to controlPanelController
 	/**
 	 * This method creates a page of all users 
 	 * */
