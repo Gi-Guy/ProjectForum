@@ -60,15 +60,11 @@ public class UserServices {
 	 * 
 	 * 	This method is used only in register page, so then most information should be in it.
 	 * */
-	public boolean createNewUser(User user) {
-		// Checking if user is exists.
-		if(this.isUserExistsByEmail(user.getEmail()) || this.isUserExistsByUsername(user.getUsername()))
-			return false;
+	public void createNewUser(User user) {
 		
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setRole(roleRepo.findRoleByName("USER"));
 		userRepo.save(user);	
-		return true;
 	}
 	/** 
 	 * 	This method will return true if user is exists in database via Email,

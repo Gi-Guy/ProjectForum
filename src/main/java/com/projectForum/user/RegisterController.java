@@ -47,10 +47,10 @@ public class RegisterController {
 		if(!bindingResult.hasErrors()) {
 			
 			//Checking if Email is exist in database
-			if (userServices.isUserExistsByEmail(user.getEmail())){
+			if (!userServices.isUserExistsByEmail(user.getEmail())){
 				
 				// Checking if username exists in the database
-				if(userServices.isUserExistsByUsername(user.getUsername())) {
+				if(!userServices.isUserExistsByUsername(user.getUsername())) {
 					// User isn't exists
 					userServices.createNewUser(user);
 					}
