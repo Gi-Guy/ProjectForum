@@ -29,15 +29,21 @@ public class IndexController {
 	private EntityManager entityManager;
 	@Autowired
 	private DeleteService deleteService;
+	
 	// Defining the home page of the application
 	@GetMapping("")
 	public String viewHomePage() {
 		return "index";
 	}
-	
+
 	@GetMapping("/index")
 	public String returnHomePage() {
 		return "index";
+	}
+	
+	@GetMapping("/login")
+	public String viewLoginPage() {
+		return "login";
 	}
 	
 	//This method has been moved to controlPanelController

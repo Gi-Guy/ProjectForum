@@ -61,6 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          .antMatchers(Path.getAllAccess()).permitAll()
          .and()
          .formLogin()
+         .loginPage("/login")
          .usernameParameter("email")
          .defaultSuccessUrl("/")
          .permitAll()
