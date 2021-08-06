@@ -14,6 +14,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.projectForum.topic.Topic;
 import com.projectForum.user.User;
 
@@ -35,6 +36,7 @@ public class Post {
 	/* User Author Information */
 	@ManyToOne
 	@JoinColumn(name="user_id")
+	@JsonManagedReference
 	private User user;
 	
 	@Column (nullable = false, columnDefinition = "TEXT")
@@ -43,6 +45,7 @@ public class Post {
 	// Each post has to be attached to a topic but each topic can have many posts
 	@ManyToOne
 	@JoinColumn(name = "id_topic")
+	@JsonManagedReference
 	 private Topic topic;
 	
 	

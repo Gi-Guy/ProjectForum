@@ -13,6 +13,9 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.projectForum.forum.Forum;
 import com.projectForum.user.User;
 
@@ -24,6 +27,9 @@ import com.projectForum.user.User;
  * Each Topic has to be attached to a topics page (Forum), A topic can't be a ghost Topic */
 @Entity
 @Table(name = "topic")
+@JsonIdentityInfo(
+		  generator = ObjectIdGenerators.PropertyGenerator.class, 
+		  property = "id")
 public class Topic {
 	
 	// TODO: add a forum link or a category.
@@ -39,11 +45,13 @@ public class Topic {
 	
 	/* User Author Information */
 	@ManyToOne
-	@JoinColumn(name="user_id")
+	@JoinColumn(name="user_id",referencedColumnName = "id")
+	@JsonManagedReference
 	private User user;
 	
 	@ManyToOne
-	@JoinColumn(name="forum_id")
+	@JoinColumn(name="forum_id",referencedColumnName = "id")
+	@JsonManagedReference
 	private Forum forum;
 	
 	@Column
