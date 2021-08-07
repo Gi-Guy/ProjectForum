@@ -13,9 +13,12 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 	            <div class="col s12">
 	                <div class="row">
 	                    <div class="col s12">
-	                        <p>רשימת כל הפורומים</p>
-	                    </div>
-	                </div>
+						    <h1>ברוכים הבאים לפורום הכי טוב בתבל</h1>
+							<h3 style="text-align: center">אל תמליצו לחברים שלכם לבוא לפה בבקשה</h3>
+							<hr><br>
+							<p>רשימת כל הפורומים</p>
+                  		</div>
+             	 	</div>
 	                <div class="divider"></div>
 	                <div class="row" th:each="forum : ${forums}">
 	                    <div class="col s12">	
@@ -30,7 +33,6 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 	                        </div>
 	                        <div class="divider"></div>
 	                    </div>
-							<hr>
 	                </div>
 	            </div>
 	        </div>
