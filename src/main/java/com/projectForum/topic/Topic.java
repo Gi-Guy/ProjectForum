@@ -32,7 +32,6 @@ import com.projectForum.user.User;
 		  property = "id")
 public class Topic {
 	
-	// TODO: add a forum link or a category.
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;

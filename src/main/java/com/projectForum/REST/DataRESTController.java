@@ -3,7 +3,7 @@ package com.projectForum.REST;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.query.Procedure;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,34 +11,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+ 
 
 import com.projectForum.Services.RestServices;
 import com.projectForum.forum.Forum;
-import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;
 import com.projectForum.user.User;
-import com.projectForum.user.UserRepository;
 
 //@CrossOrigin(origins = "http://localhost:8080") // TODO check this.
 @RestController
 @RequestMapping("/api/")
 public class DataRESTController {
 	
-	
-	private	UserRepository 	userRepo;
-	private	ForumRepository	forumRepo;
+	@Autowired
 	private RestServices	restService;
 	
-	
-	@Autowired
-	public DataRESTController(UserRepository userRepo, ForumRepository forumRepo, RestServices restService) {
-		this.userRepo = userRepo;
-		this.forumRepo = forumRepo;
-		this.restService = restService;
-	}
 	/*
 	 * ################################################################
 	 * 							USERS
