@@ -29,36 +29,7 @@ public class IndexController {
 	private EntityManager entityManager;
 	@Autowired
 	private DeleteService deleteService;
-	// Defining the home page of the application
-	@GetMapping("")
-	public String viewHomePage() {
-		return "index";
-	}
-	
-	@GetMapping("/index")
-	public String returnHomePage() {
-		return "index";
-	}
-	
-	//This method has been moved to controlPanelController
-	/**
-	 * This method creates a page of all users 
-	 * */
-	
-	
-	/*
-	@GetMapping("/list_users")
-	public String listofUsers(Model model) {
 
-	    //List<User> listofUsers = userReop.findAll();
-	    //model.addAttribute("listofUsers", listofUsers);
-		model.addAttribute("listofUsers", userRepo.findAll());
-	    List<User> listofUsers = userRepo.findAll();
-	    model.addAttribute("listofUsers", listofUsers);
-	    return "users";
-	}*/
-	
-	
 	/**
 	 * This method will delete a user in the users list by button active */
 	@GetMapping("/deleteUser")
