@@ -30,14 +30,12 @@ public class UserController {
 	
 	private UserRepository 	userRepo;
 	private UserProfileServices userService;
-	private DeleteService deleteService;
 	
 	@Autowired
 	public UserController(UserRepository userReop, UserProfileServices userService, DeleteService deleteService) {
 		super();
 		this.userRepo = userReop;
 		this.userService = userService;
-		this.deleteService = deleteService;
 	}
 	
 	// TODO figure out how to:
@@ -76,14 +74,5 @@ public class UserController {
 		
 		model.addAttribute(userProfile);
 		return "user";
-	}
-
-	/**
-	 * This method will delete a user in the users list by button active */
-	@GetMapping("/deleteUser")
-	public String deleteUser(@RequestParam(name="username") String username) {
-		deleteService.deleteUser(username);
-		
-		return "redirect:/list_users";
 	}
 }
