@@ -3,16 +3,15 @@ package com.projectForum.REST;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
- 
 
 import com.projectForum.Services.RestServices;
 import com.projectForum.forum.Forum;
@@ -20,7 +19,6 @@ import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;
 import com.projectForum.user.User;
 
-//@CrossOrigin(origins = "http://localhost:8080") // TODO check this.
 @RestController
 @RequestMapping("/api/")
 public class DataRESTController {
@@ -72,6 +70,21 @@ public class DataRESTController {
 			return new ResponseEntity<User>(HttpStatus.METHOD_FAILURE);
 		return new ResponseEntity<User>(user, HttpStatus.CREATED);
 	}
+	
+	@GetMapping("/removeUser/example")
+	public ResponseEntity<DeleteUserForm> removeUserExample(){
+		return new ResponseEntity<DeleteUserForm>(restService.removeUserExample(), HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/removeUser")
+	public ResponseEntity<String> removeUser(@RequestBody DeleteUserForm deleteUser){
+		
+		if(!restService.removeUser(deleteUser))
+			return new ResponseEntity<String>("Could not delete user.", HttpStatus.METHOD_FAILURE);
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+	
+
 	/*
 	 * ################################################################
 	 * 							FORUMS
@@ -113,14 +126,23 @@ public class DataRESTController {
 	}
 	@PostMapping("/addForum/add")
 	public ResponseEntity<Forum> addForum(@RequestBody Forum forum) {
-		//User user = restService.addNewUser(addUser);
+		Forum newForum = restService.addNewForum(forum);
 		
-		//if(user == null)
-			//return new ResponseEntity<User>(HttpStatus.METHOD_FAILURE);
-		//return new ResponseEntity<User>(user, HttpStatus.CREATED);
+		if (newForum == null)
+			return new ResponseEntity<Forum>(HttpStatus.METHOD_FAILURE);
+		return new ResponseEntity<Forum>(newForum, HttpStatus.CREATED);
+	}
+	
+	@DeleteMapping("/deleteForum/{forumId}")
+	public ResponseEntity<?> deleteForum(@PathVariable("forumId") int forumId){
+		Forum forum = restService.getForumById(forumId);
 		
-		System.err.println("hey!");
-		return null;
+		if (forum == null)
+			return new ResponseEntity<Forum>(HttpStatus.NOT_FOUND);
+		else
+			restService.deleteForum(forumId);
+		return new ResponseEntity<Forum> (HttpStatus.OK);
+		
 	}
 	/*
 	 * ################################################################

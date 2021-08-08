@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.projectForum.ControlPanel.EditUserForm;
+import com.projectForum.REST.DeleteUserForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
@@ -41,11 +42,55 @@ public class DeleteService {
 		this.topicRepo = topicRepo;
 		this.forumRepo = forumRepo;
 	}
+	/** This method will delete an exists user.
+	 *  It will remove user's data dependent on Keep activity boolean.
+	 *  
+	 *  @see REST ONLY
+	 *  @return boolean true if deleted user.*/
+	public boolean deleteUser(DeleteUserForm deleteUser) {
+		User userByID = null;
+		User userByUsername = null;
+		if (deleteUser.getUserId() != 0)
+			userByID = userRepo.findUserById(deleteUser.getUserId());
+		if(!deleteUser.getUsername().isBlank())
+			userByUsername = userRepo.findByUsername(deleteUser.getUsername());
+		
+		// Checking if username and ID lead to same user
+		if(userByID!=null && userByUsername!=null) {
+			if(!userByID.equals(userByUsername))
+				// ID and username are not the same user!
+				return false;
+		}
+		
+		// Checking if both are null
+		if(userByID == null && userByUsername == null) {
+			// User isn't exists!
+			return false;
+		}
+		// At this point one of the users isn't null
+		if(userByUsername != null) {
+			if(deleteUser.isKeepActivity())
+				this.deleteUserKeepActivity(userByUsername);
+			else
+				this.deleteUserDontKeepActivity(userByUsername);	
+		}
+		else if(userByID != null) {
+			if(deleteUser.isKeepActivity())
+				this.deleteUserKeepActivity(userByID);
+			else
+				this.deleteUserDontKeepActivity(userByID);
+		}
+		
+		return true;
+	}
 	
 	/** This method will delete an exists user.
 	 *  It will remove user's data dependent on Keep activity boolean.*/
 	public void deleteUser(EditUserForm editUser) {
 		User user = userRepo.findUserById(editUser.getId());
+		
+		if(user == null)
+			return;
 		
 		if(editUser.isKeepActivity())
 			this.deleteUserKeepActivity(user);

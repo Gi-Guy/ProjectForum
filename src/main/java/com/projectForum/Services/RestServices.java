@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.projectForum.REST.AddUserForm;
+import com.projectForum.REST.DeleteUserForm;
 import com.projectForum.Security.RoleRepository;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
@@ -38,6 +39,15 @@ public class RestServices {
 	private TopicRepository	topicRepo;
 	@Autowired
 	private PostRepository	postRepo;
+	@Autowired
+	private DeleteService	deleteService;
+	
+	
+	/*
+	 * ################################################################
+	 * 							USERS
+	 * ################################################################
+	 * */
 	/**
 	 *  This method will return a list of user, order by roles (Admins first)
 	 *  */
@@ -75,6 +85,26 @@ public class RestServices {
 	 * */
 	public User addNewUser(AddUserForm addUser) {
 		return userServices.addNewUser(addUser);
+	}
+	
+	/**
+	 * 	This method will give a user an example to remove user.
+	 * */
+	public DeleteUserForm removeUserExample() {
+		DeleteUserForm deleteUser = new DeleteUserForm();
+		deleteUser.setUsername("example username");
+		deleteUser.setUserId(0);
+		deleteUser.setKeepActivity(true);
+		
+		return deleteUser;
+	}
+	
+	/**
+	 * 	This method will delete a user by username.
+	 * 
+	 * @return boolean true if user deleted*/
+	public boolean removeUser(DeleteUserForm deleteUser) {
+		return deleteService.deleteUser(deleteUser);
 	}
 	/*
 	 * ################################################################
@@ -116,6 +146,34 @@ public class RestServices {
 		return example;
 	}
 	
+	/**
+	 * 	This method will add a new forum to the database
+	 * */
+	public Forum addNewForum(Forum forum) {
+		
+		// Checking if name or description are blanked
+		if(forum.getName().isBlank() || forum.getDescription().isBlank())
+			return null;
+		
+		//Each forum must have a priority value, 1 is the lowest.
+		
+		List<Forum> forums = forumRepo.findAll();
+		if(forums.isEmpty()) {
+			forum.setPriority(1);	
+		}
+		else {
+			forum.setPriority(forums.size() + 1);	
+		}
+		forumRepo.save(forum);
+		return forumRepo.findByPriority(forums.size() + 1);
+	}
+	
+	/**
+	 * 	This method will delete a Forum by forumId.
+	 * */
+	public void deleteForum(int forumId) {
+		deleteService.deleteForum(forumId);
+	}
 	/*
 	 * ################################################################
 	 * 							TOPICS

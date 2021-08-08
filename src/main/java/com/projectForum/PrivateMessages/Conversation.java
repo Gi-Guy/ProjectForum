@@ -1,4 +1,4 @@
-package PrivateMessages;
+package com.projectForum.PrivateMessages;
 
 import java.time.LocalDateTime;
 
@@ -13,29 +13,37 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.projectForum.user.User;
 
 @Entity
-@Table(name = "answer")
-public class Answer {
+@Table(name = "conversation")
+@JsonIdentityInfo(
+		  generator = ObjectIdGenerators.PropertyGenerator.class, 
+		  property = "id")
+public class Conversation {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@ManyToOne
-	@JoinColumn(name="user_id")
-	@JsonManagedReference
-	private User user;
+	@Column(updatable = true, nullable = false, length = 50)
+	private String title;
 	
-	@Column (nullable = false, columnDefinition = "TEXT")
-	private String answer;
+	@Column(updatable = true, nullable = false, columnDefinition = "TEXT")
+	private String content;
 	
 	@ManyToOne
-	@JoinColumn(name = "id_conversation")
+	@JoinColumn(name="sender_id",referencedColumnName = "id")
 	@JsonManagedReference
-	 private Conversation conversation;
+	private User sender;
+	
+	@ManyToOne
+	@JoinColumn(name="receiver_id",referencedColumnName = "id")
+	@JsonManagedReference
+	private User receiver;
 	
 	@Column(updatable = false, nullable = false)
 	private LocalDateTime createdDate;
@@ -49,7 +57,7 @@ public class Answer {
 		 this.lastActivity = LocalDateTime.now();
 	 }
 	
-	@PreUpdate
+	 @PreUpdate
 	protected void onUpdate() {
 		this.lastActivity = LocalDateTime.now();
 	}
@@ -62,28 +70,36 @@ public class Answer {
 		this.id = id;
 	}
 
-	public User getUser() {
-		return user;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
-	}
-	
-	public String getAnswer() {
-		return answer;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public void setAnswer(String answer) {
-		this.answer = answer;
+	public String getContent() {
+		return content;
 	}
 
-	public Conversation getConversation() {
-		return conversation;
+	public void setContent(String content) {
+		this.content = content;
 	}
 
-	public void setConversation(Conversation conversation) {
-		this.conversation = conversation;
+	public User getSender() {
+		return sender;
+	}
+
+	public void setSender(User sender) {
+		this.sender = sender;
+	}
+
+	public User getReceiver() {
+		return receiver;
+	}
+
+	public void setReceiver(User receiver) {
+		this.receiver = receiver;
 	}
 
 	public LocalDateTime getCreatedDate() {
@@ -101,6 +117,6 @@ public class Answer {
 	public void setLastActivity(LocalDateTime lastActivity) {
 		this.lastActivity = lastActivity;
 	}
-	
-	
+	 
+	 
 }

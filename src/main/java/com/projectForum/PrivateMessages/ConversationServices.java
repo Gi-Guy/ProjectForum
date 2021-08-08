@@ -1,4 +1,4 @@
-package PrivateMessages;
+package com.projectForum.PrivateMessages;
 
 import org.springframework.stereotype.Service;
 

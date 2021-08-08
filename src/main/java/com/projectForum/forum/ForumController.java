@@ -89,6 +89,10 @@ public class ForumController {
 			return "new_Forum_page";
 		}
 		
+		// Checking if title or description are blanked
+		if(forum.getName().isBlank() || forum.getDescription().isBlank())
+			return "new_Forum_page";
+		
 		//Each forum must have a priority value, 1 is the lowest.
 		List<Forum> forums = forumRepo.findAll();
 		if(forums.isEmpty()) {
