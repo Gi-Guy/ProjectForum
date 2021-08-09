@@ -91,5 +91,13 @@ public class UserRepositoryTests {
 		System.err.println("my size is: " + admins.size());
 		
 	}
+	@Test
+	public void SetUserRole() {
+		User user = userRepo.findByUsername("Restful");
+		Role role = roleRepo.findRoleByName("USER");
+		
+		user.setRole(role);
+		userRepo.save(user);
+	}
 	
 }

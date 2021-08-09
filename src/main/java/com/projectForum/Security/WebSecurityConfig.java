@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -34,8 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-	// TODO GET RID OF THIS
-	// Video 1:09:14 - watch again
+
 	@Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -50,9 +50,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.authenticationProvider(authenticationProvider());
 	}
 
-	// This is the most important method.
-	// TODO Watch video 1:11:00
-	// Also explains again in 1:15:25
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	 http.authorizeRequests()
@@ -65,7 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          .defaultSuccessUrl("/")
          .permitAll()
          .and()
-         .logout().logoutSuccessUrl("/").permitAll();
+         .logout().logoutSuccessUrl("/").permitAll().and().csrf().disable();
     	 configureEncodingFilter(http);
     	 
     }

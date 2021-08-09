@@ -124,6 +124,9 @@ public class TopicController {
 			// TODO I'm not really sure what should we put into model.
 			return "new_Topic_page";
 		}
+		// Checking if title or content are blanked.
+		if(newTopic.getContent().isBlank() || newTopic.getTitle().isBlank())
+			return "new_Topic_page";
 		
 		// Creating new Topic
 		Topic topic = new Topic();

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
@@ -90,6 +89,10 @@ public class ForumController {
 			System.err.println("ERROR :: Forum Controller - proccesNewForum (POST)");
 			return "new_Forum_page";
 		}
+		
+		// Checking if title or description are blanked
+		if(forum.getName().isBlank() || forum.getDescription().isBlank())
+			return "new_Forum_page";
 		
 		//Each forum must have a priority value, 1 is the lowest.
 		List<Forum> forums = forumRepo.findAll();
