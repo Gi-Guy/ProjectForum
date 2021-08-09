@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Declaring  XML using-->
+ 
+	<head th:replace="fragments.html :: headerfiles(title=${userProfile.getUser().getUsername()})"></head>
+	
+	<body>
+	
+		<div th:replace="fragments.html :: topnav"></div>
+		 
+		<!-- User name as the title -->
+		<h1 th:text="${userProfile.getUser().getUsername()}"></h1>
+		<hr>
+		
+
+		<table>
+			<col style="width: 20%;" />
+			<col style="width: 80%;" />
+		
+			<tr>		
+				<td>
+					<!-- Information about the user -->
+					<table class="table-striped">
+						<tbody>
+							<tr>
+								<td>שם פרטי</td>
+								<td th:text="${userProfile.getUser().getFirstName()}"></td>
+							</tr>
+							<tr>
+								<td>שם משפחה</td>
+								<td th:text="${userProfile.getUser().getLastName()}"></td>
+							</tr>
+							<tr>
+								<td>אימייל</td>
+								<td th:text="${userProfile.getUser().getEmail()}"></td>
+							</tr>
+							<tr>
+								<td>כרגע באתר</td>
+								<td th:text="${userProfile.getUser().isActive()}"></td>
+							</tr>
+							<tr>
+								<td>סוג משתמש</td>
+								<td th:text="${userProfile.getUser().getRole().getName()}"></td>
+							</tr>
+							<tr>
+								<td>נרשם בתאריך</td>
+								<td th:text="${userProfile.getUser().getJoiningDate().toLocalDate()}"></td>
+							</tr>
+							<tr>
+								<td>נכנס פעם אחרונה</td>
+								<td th:text="${userProfile.getUser().getLastLogin().toLocalTime()} 
+									+ ', ' + ${userProfile.getUser().getLastLogin().toLocalDate()}"></td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<!-- Update user or send them a message (unless not signed in and then neither) -->
+					
+					<div sec:authorize="isAuthenticated()">
+					
+						<button class="button" th:if="${#authentication.name} eq ${userProfile.getUser().getUsername()}">עדכן את המשתמש</button>
+						
+						<button class="button" th:unless="${#authentication.name} eq ${userProfile.getUser().getUsername()}">שלח הודעה</button>
+						
+					</div>
+				</td>
+				
+				<td>
+					<div>
+					
+						<p>Main part of the page</p>
+					
+						<!-- List of links to topics by this user (and a message if none were made) ordered by number of posts -->
+						
+						<!-- List of posts by this user (with links to them) (message if none were made) ordered by number of views -->
+						
+						<!-- Get topics and get posts from user profile -->
+					
+					</div>
+				</td>
+		
+			</tr>
+		</table>
+		
+	</body>
+</html>
