@@ -129,7 +129,7 @@ public class DataRESTController {
 		Forum newForum = restService.addNewForum(forum);
 		
 		if (newForum == null)
-			return new ResponseEntity<Forum>(HttpStatus.METHOD_FAILURE);
+			return new ResponseEntity<Forum>(HttpStatus.FAILED_DEPENDENCY);
 		return new ResponseEntity<Forum>(newForum, HttpStatus.CREATED);
 	}
 	
