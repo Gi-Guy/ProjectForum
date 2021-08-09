@@ -78,6 +78,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(filter, CsrfFilter.class);
     }
-    
-
 }
