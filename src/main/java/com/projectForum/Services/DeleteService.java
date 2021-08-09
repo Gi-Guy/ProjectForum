@@ -6,6 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.projectForum.ControlPanel.EditUserForm;
+import com.projectForum.PrivateMessages.Answer;
+import com.projectForum.PrivateMessages.AnswerRepository;
+import com.projectForum.PrivateMessages.Conversation;
+import com.projectForum.PrivateMessages.ConversationRepository;
 import com.projectForum.REST.DeleteUserForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
@@ -29,18 +33,22 @@ import com.projectForum.user.UserRepository;
 @Service
 public class DeleteService {
 	
-	private UserRepository	userRepo;
-	private PostRepository	postRepo;
-	private TopicRepository	topicRepo;
-	private ForumRepository	forumRepo;
+	private UserRepository		userRepo;
+	private PostRepository		postRepo;
+	private TopicRepository		topicRepo;
+	private ForumRepository		forumRepo;
+	private AnswerRepository	answerRepo;
+	private ConversationRepository	convRepo;
 	
 	@Autowired
 	public DeleteService(UserRepository userRepo, PostRepository postRepo, TopicRepository topicRepo,
-			ForumRepository forumRepo) {
+			ForumRepository forumRepo, AnswerRepository answerRepo, ConversationRepository	convRepo) {
 		this.userRepo = userRepo;
 		this.postRepo = postRepo;
 		this.topicRepo = topicRepo;
 		this.forumRepo = forumRepo;
+		this.answerRepo = answerRepo;
+		this.convRepo = convRepo;
 	}
 	/** This method will delete an exists user.
 	 *  It will remove user's data dependent on Keep activity boolean.
@@ -300,6 +308,55 @@ public class DeleteService {
 			Forum updateForum = forumRepo.findByPriority(i);
 			updateForum.setPriority(i - 1);
 			forumRepo.save(updateForum);
+		}
+	}
+	/**
+	 * 	This method will delete a answer by answerId
+	 * @param int*/
+	public void deleteAnswer(int answerId) {
+		Answer answer = answerRepo.findById(answerId);
+		
+		if (answer!=null)
+			this.deleteAnswer(answer);
+	}
+	/**
+	 * 	This method will delete a answer in a conversation by Answer object
+	 * @param Answer*/
+	public void deleteAnswer(Answer answer) {
+		if (answer!=null)
+			answerRepo.delete(answer);
+		
+	}
+	
+	/**
+	 * This method will delete a list of answers 
+	 * @param List<Answer>
+	 * */
+	public void deleteAnswer(List<Answer> answers) {
+		
+		if(answers.isEmpty())
+			return;
+		
+		for (int i=0; i<answers.size(); i++)
+			this.deleteAnswer(answers.get(i));
+	}
+	/**
+	 * 	This method will delete an conversation by id
+	 * @param int */
+	public void deleteConversation(int conId) {
+		Conversation conversation = convRepo.findById(conId);
+		
+		if(conversation!=null) 
+			this.deleteConversation(conversation);
+	}
+	/**
+	 * 	This method will delete an conversation by Conversation
+	 * @param Conversation*/
+	public void deleteConversation(Conversation conversation) {
+		if (conversation != null) {
+			List<Answer> answers = answerRepo.findByConversation(conversation);
+			this.deleteAnswer(answers);
+			convRepo.delete(conversation);
 		}
 	}
 }

@@ -189,29 +189,4 @@ public class TopicController {
 		return "redirect:/forum/" + topic.getForum().getId();
 	}
 	
-	/* BACK UP BEFORE TESTING
-	@GetMapping("delete/{topicId}")
-	public String deleteTopic(@PathVariable int topicId, Authentication authentication,
-									RedirectAttributes model) {
-		// find topic to remove and all it posts
-		Topic topic = topicRepo.findTopicById(topicId);
-		List<Post> posts = postRepo.findPostsByTopic(topic);
-		
-		// making sure that topic is exists and user allowed to remove it		
-		if (topic == null || authentication == null || !authentication.getName().equals(topic.getUser().getUsername())) {
-			//topic can't be removed
-			return "redirect:/";
-		}
-		// at this point topic can be removed and posts as well.
-		// Removing posts
-		if(posts != null) {
-			while( !posts.isEmpty() ) {
-				postRepo.delete(posts.get(0));
-			}
-		}
-		// Topic has no posts, removing topic
-		topicRepo.delete(topic);
-		model.addFlashAttribute("message", "Topic has been removed.");
-		return "redirect:/forum/" + topic.getForum().getId();
-	}*/
 }
