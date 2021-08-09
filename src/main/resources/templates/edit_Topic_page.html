@@ -7,58 +7,39 @@
 	
 		<div th:replace="fragments.html :: topnav"></div>
 
-		<div class="container text-center">
-			<div>
-				<h1>עדכן שרשור</h1>
-			</div>
-		</div>
+		<h1>עדכן שרשור</h1>
 			
-		<div class="container text-center">
-			<div>
-	
-				<form th:action = "@{/topic/editTopic}" method = "post"
-				style ="max-width:600px; margin: 0 auto;"
-				th:object = "${editTopic}">
-				
-				<!--  
-				<div class="row">
-					<div class="input-field col s12">
-						<select class="browser-default" id="forum" th:field="${newTopic.forumId}">
-						<option value="0" disabled="disabled" selected="selected">Choose section</option>
-						<option th:each="forum : ${forums}" th:text="${forum.name}" th:value="${forum.id}"></option>
-					</select>
-					</div>
-				</div> 
-				-->
-						
-				<!-- Title -->
-					<div class ="row">
-						<div class="input-field col s12">
-						<input type="text" th:field="*{title}" class="validate" length="50"/>
-							<label>כותרת</label>
-							<p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="red-text">Incorrect title!</p>
-						</div>
-					</div>
-					
-				<!-- content -->
-				<!-- This one need a big text area -->
-				<div class ="row">
-						<div class="input-field col s12">
-						<textarea name='content' th:field="*{content}" ></textarea>
+		<form th:action = "@{/topic/editTopic}" method = "post"
+		style ="max-width:600px; margin: 0 auto;"
+		th:object = "${editTopic}">
+
+			<table>
+				<tr>
+					<td>
+						<label>כותרת</label>
+					</td>
+					<td>
+						<input type="text" th:field="*{title}" class="validate"/>
+						<p th:if="${#fields.hasErrors('title')}" th:errors="*{title}">כותרת לא תקינה!</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
 						<label>תוכן</label>
-						<p th:if="${#fields.hasErrors('content')}" th:errors="content" class="red-text">Incorrect content!</p>
-					</div>
-				</div>
-	
-				<!-- Submit button -->
-				<div class="from-row py-1">
-					<input type="hidden" name = "topicId" th:value="${editTopic.topicId}"/>
-					<input class="btn btn-primary" type="submit" value="Submit" />
-				</div>
-					
-				</form>
+					</td>
+					<td>
+						<textarea name='content' th:field="*{content}" ></textarea>
+						<p th:if="${#fields.hasErrors('content')}" th:errors="content">תוכן לא תקין!</p>
+					</td>
+				</tr>
+			</table>
+			
+			<!-- Submit button -->
+			<div>
+				<input type="hidden" name = "topicId" th:value="${editTopic.topicId}"/>
+				<input class="button" type="submit" value="עדכן" />
 			</div>
 			
-		</div>
+		</form>
 	</body>
 </html>

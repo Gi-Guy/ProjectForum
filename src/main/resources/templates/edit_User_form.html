@@ -2,30 +2,7 @@
 <html 	xmlns:th="http://www.thymeleaf.org"
 		lang="he"> <!-- Declaring  XML using-->
     
-   	<head th:replace="fragments.html :: headerfiles('ערוך משתמש')">
-		<style type="text/css">
-		    label {
-		        display: inline-block;
-		        width: 100px;
-		        margin: 5px;
-		        text-align: right;
-		    }
-		    input[type=text], input[type=password], select {
-		        display: inline-block;
-		        width: 200px;
-		    }
-		    input[type=radio] {
-		        margin-left: 45px;
-		    }
-		    input[type=checkbox] {
-		        margin-right: 190px;
-		    }  
-		    button {
-		        padding: 5px;
-		        margin: 10px;
-		    }
-		</style>
-	</head>
+   	<head th:replace="fragments.html :: headerfiles('ערוך משתמש')"></head>
 	
 	<body>
 	
@@ -37,7 +14,7 @@
 	        <form action="#" th:action="@{/a/updateUser}" th:object="${editUser}"
 	            method="post">
 	 
-	            <table border="0" cellpadding="10">
+	            <table style ="max-width:600px; border:0; cellpadding:10">
 	
 	                <tr>
 	                    <td>מזהה:</td>
@@ -72,9 +49,7 @@
 	                    <td><input type="checkbox" th:field="*{keepActivity}" /></td>
 	                </tr>
 	                <tr>
-	                	<td></td>
-	                    <td colspan="2"><button type="submit">Save</button> </td>
-	                    
+	                    <td><button class="button" type="submit">שמור</button> </td>
 	                </tr>
 	            </table>
 	        </form>

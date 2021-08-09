@@ -8,34 +8,29 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 	
 		<div th:replace="fragments.html :: topnav"></div>
 		
-		 <div class="container text-right">
-	        <div class="row">
-	            <div class="col s12">
-	                <div class="row">
-	                    <div class="col s12">
-						    <h1>ברוכים הבאים לפורום הכי טוב בתבל</h1>
-							<h3 style="text-align: center">אל תמליצו לחברים שלכם לבוא לפה בבקשה</h3>
-							<hr><br>
-							<p>רשימת כל הפורומים</p>
-                  		</div>
-             	 	</div>
-	                <div class="divider"></div>
-	                <div class="row" th:each="forum : ${forums}">
-	                    <div class="col s12">	
-	                        <div class="forum">
-	                            <a th:href="@{/forum/} + ${forum.id}" th:text="${forum.name} + '  :' + ${forum.description}"></a>
-	                            <!-- 
-	                             <span class="right"></span> <span class="truncate"
-	                                th:text="${topic.content}"></span>
-	                             -->
-	                            <hr>
-	                           
-	                        </div>
-	                        <div class="divider"></div>
-	                    </div>
-	                </div>
-	            </div>
-	        </div>
-	    </div>
+		<h1>ברוכים הבאים לפורום הכי טוב בתבל</h1>
+		<h3 style="text-align: center">אל תמליצו לחברים שלכם לבוא לפה בבקשה</h3>
+		
+		<hr><br>
+		
+		<table class="table-striped" border="1" cellpadding="10" style="text-align:right">
+			<thead>
+					<tr>
+						<th colspan="6">
+							<h2>רשימת כל הפורומים</h2>
+						</th>	
+					</tr>
+					<tr>
+						<th>שם הפורום</th>
+						<th>תקציר</th>
+					</tr>
+			</thead>
+			<tbody>
+				<tr th:each = "forum : ${forums}">
+					<td><a th:href="@{/forum/} + ${forum.id}" th:text="${forum.name}"></a></td>
+					<td th:text = "${forum.description}"></td>
+				</tr>
+			</tbody>
+		</table>
 	</body>
 </html>

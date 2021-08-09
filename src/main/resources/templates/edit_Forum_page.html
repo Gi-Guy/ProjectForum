@@ -7,46 +7,39 @@
 	
 		<div th:replace="fragments.html :: topnav"></div>
 
-		<div class="container text-center">
-			<div>
-				<h1>עדכון פורום</h1>
-			</div>
-		</div>
+		<h1>עדכון פורום</h1>
 			
-		<div class="container text-center">
-			<div>
-	
-				<form th:action = "@{/a/editForum}" method = "post"
-				style ="max-width:600px; margin: 0 auto;"
-				th:object = "${editForum}">
-				<!-- Title -->
-					<div class ="row">
-						<div class="input-field col s12">
-						<input type="text" th:field="*{name}" class="validate" length="50"/>
-							<label>שם הפורום</label>
-							<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="red-text">ERROR</p>
-						</div>
-					</div>
-					
-				<!-- content -->
-				<!-- This one need a big texting area -->
-				<div class ="row">
-						<div class="input-field col s12">
-						<textarea name='description' th:field="*{description}" ></textarea>
+		<form th:action = "@{/a/editForum}" method = "post"
+		style ="max-width:800px; margin: 0 auto;"
+		th:object = "${editForum}">
+		
+			<table>
+				<tr>
+					<td>
+						<label>שם הפורום</label>
+					</td>
+					<td>
+						<input type="text" th:field="*{name}" class="validate"/>
+						<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">שם פורום לא תקין!</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
 						<label>תיאור</label>
-						<p th:if="${#fields.hasErrors('description')}" th:errors="description" class="red-text">ERROR</p>
-					</div>
-				</div>
-	
-				<!-- Sumbit button -->
-				<div class="from-row py-1">
-					<input type="hidden" name = "forumId" th:value="${editForum.forumId}"/>
-					<input class="btn btn-primary" type="submit" value="Submit" />
-				</div>
-					
-				</form>
+					</td>
+					<td>
+						<textarea name='description' th:field="*{description}" ></textarea>
+						<p th:if="${#fields.hasErrors('description')}" th:errors="description">תיאור פורום לא תקין!</p>
+					</td>
+				</tr>
+			</table>
+			
+			<!-- Submit button -->
+			<div>
+				<input type="hidden" name = "forumId" th:value="${editForum.forumId}"/>
+				<input class="button" type="submit" value="עדכן" />
 			</div>
 			
-		</div>
+		</form>
 	</body>
 </html>

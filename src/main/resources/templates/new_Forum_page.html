@@ -7,48 +7,38 @@
 	
 		<div th:replace="fragments.html :: topnav"></div>
 		
-		<div class="container text-center">
-			<div>
-				<h1>צור פורום חדש</h1>
-			</div>
-		</div>
+		<h1>צור פורום חדש</h1>
 			
-		<div class="container text-center">
-			<div>
-	
-				<!--  <form th:action = "@{/forum/newForum}" method = "post"
-				-->
-				<form th:action = "@{/a/newForum}" method = "post"
-				style ="max-width:600px; margin: 0 auto;"
-				th:object = "${newForum}">
-				
-				<!-- name -->
-					<div class ="row">
-						<div class="input-field col s12">
-							<input type="text" th:field="*{name}" class="validate" length="50" required/>
-							<label>כותרת</label>
-							<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="red-text">Incorrect name!</p>
-						</div>
-					</div>
-					
-				<!-- description -->
-				<!-- This one need a big text area -->
-				<div class ="row">
-						<div class="input-field col s12">
-						<textarea name='description' th:field="*{description}" required></textarea>
+		<!--  <form th:action = "@{/forum/newForum}" method = "post"
+		-->
+		<form th:action = "@{/a/newForum}" method = "post"
+		style ="max-width:600px; margin: 0 auto;"
+		th:object = "${newForum}">
+		
+			<table>
+				<tr>
+					<td>
+						<label>כותרת</label>
+					</td>
+					<td>
+						<input type="text" th:field="*{name}" class="validate" length="50" required/>
+						<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">כותרת לא תקינה!</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
 						<label>תוכן</label>
-						<p th:if="${#fields.hasErrors('description')}" th:errors="description" class="red-text">Incorrect description!</p>
-					</div>
-				</div>
-	
-				<!-- Submit button -->
-				<div class="from-row py-1">
-					<input class="btn btn-primary" type="submit" value="Submit" />
-				</div>
-					
-				</form>
-			</div>
+					</td>
+					<td>
+						<textarea name='description' th:field="*{description}" required></textarea>
+						<p th:if="${#fields.hasErrors('description')}" th:errors="description">תוכן לא תקין!</p>
+					</td>
+				</tr>
+			</table>
+		
+			<!-- Submit button -->
+			<input class="button" type="submit" value="פורום חדש" />
 			
-		</div>
+		</form>
 	</body>
 </html>

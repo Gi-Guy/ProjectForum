@@ -7,104 +7,64 @@
 	<body>
 	
 		<div th:replace="fragments.html :: topnav"></div>
+		
+		<br>
+		
+		<a th:href="@{/forum/} + ${topic.getForum().getId()}">חזרה לפורום</a>
 
-		<!-- Each page should have Top section, Mid Section and Footer
-		The topic should be in the top of mid sections, then posts and then add new post. -->
-		<div class="container text-center">
-			<div>
-			<!-- This should be the top section -->
-				<h1>This is a topic example</h1>
-				<hr>
-			</div>
-		</div>
-			
-		<div class="container text-right">
-		<!-- this should be the Mid section -->
-		
-		<!-- Topic: Title + Content -->
-		<!-- add user information display -->
-		<!-- add dates -->
-		<!-- https://getbootstrap.com/docs/5.0/layout/grid/ -->
-		<!-- This page is broken, make a new one. -->
-	
-	
-		
 		<!-- TOPIC -->
-		<section class = "row">
-			<!-- TITLE -->
-	
-				<p class = "col s12" style="text-align: justify; display:block; white-space:pre-wrap"
-				th:text = "${topic.getTitle()}"> Title:</p>
-				<label class = "col s12">:כותרת</label>
-		</section>
-			<!-- Topic content - Left side of the row-->
-		<section class = "row">
-				<p class = "col s12" style="text-align: justify; display:block; white-space:pre-wrap"
-					th:text = "${topic.getContent()}"> Content:</p>
-					<label class = "col s12">:תוכן</label>
-					
-					<div class="col s12" th:if="${#authentication.name} eq ${topic.user.username}">
-						 <a class="btn btn-primary" th:href="@{/topic/edit/} + ${topic.id}">
-	                        <i class="material-icons white black-text">edit</i>
-	                        </a>
-					</div>
-				<hr>
-				<hr>
-		</section>
-		<!-- END OF TOPIC -->
+		<h1 th:text = "${topic.getTitle()}"> Title:>Topic name</h1>
+		<hr>
 		
-			<!-- Posts -->
-		<header class="row">
-			<div class="col s12">
-				<blockquote class="flow-text right" th:text="|תגובות: | + ${posts.size()}">מספר תגובות</blockquote>
+		<section>
+			<p style="text-align: justify; display:block; white-space:pre-wrap"
+				th:text = "${topic.getUser().getUsername()} + ': ' + ${topic.getContent()}">Content</p>
+			
+			<div th:if="${#authentication.name} eq ${topic.user.username}">
+				 <a class="button" th:href="@{/topic/edit/} + ${topic.id}">
+                       <i class="material-icons white black-text">ערוך שרשור</i>
+                       </a>
 			</div>
+			<hr>
+		</section>
+		
+		<!-- Number of posts -->
+		<header>
+			<blockquote th:text="|תגובות: | + ${posts.size()}">מספר תגובות</blockquote>
 		</header>
+		<hr>
 		
 		<!-- displaying all posts -->
 		
-			<div th:each = "post: ${posts}">
-				<!-- username -->
-				<section class = "row justify-content-md-center">
-				<p class = "col s12>" th:text = "${post.getUser().getUsername()}">
-					Post author</p>
-					<label class = "col s12">:שם משתמש</label>
-				</section>
-				<!-- post -->
-				<section class = "row">
-					<p class = "col s12" style="text-align: justify; display:block; white-space:pre-wrap"
-					th:text = "${post.getContent()}"> Content</p>
-					<label class = "col s12">:תגובה</label>
-				</section>
-							<hr>
-			</div>
-	
-		
-		<!-- Reply -->
-		<header class="row">
-			<div class="col s12">
-				<blockquote class="flow-text right">:הוסף תגובה</blockquote>
-			</div>
-		</header>
-			<div class="row flow-text right" sec:authorize="isAuthenticated()">
-				<form th:action="@{/topic/} + ${topic.getId()}" method="POST" th:object="${post}">
-					<div class="row">
-						<div class="input-field col s12">
-							<label for="content">תגובתך</label>
-							<textarea name="content" class="materialize-textarea" required></textarea>
-						</div>
-						<input type="hidden" name="id_topic" th:value="${topic.getId()}"/>
-					</div>
-								<!-- Submit button -->
-					<div class="from-row py-1">
-						<input class="btn btn-primary" type="submit" value="שלח" />
-					</div>
-				</form>
-			</div>
-			<div class="row z-depth-1" sec:authorize="!isAuthenticated()">
-	            <div class="col s12">
-	                <h3 style="color:blue"><a th:href="@{/register}">הירשם כדי להגיב</a></h3>
-	            </div>
-	        </div>
+		<div th:each = "post: ${posts}">
+			<!-- username -->
+			<section>
+				<p th:text = "${post.getUser().getUsername()} + ':'">Post author</p>
+			</section>
+			
+			<!-- post -->
+			<section>
+				<p style="text-align: justify; display:block; white-space:pre-wrap"
+				th:text = "${post.getContent()}"> Content</p>
+			</section>
+			<hr>
 		</div>
+	
+		<!-- New Reply -->
+		<header>
+			<blockquote>הוסף תגובה:</blockquote>
+		</header>
+			
+		<div sec:authorize="isAuthenticated()">
+			<form th:action="@{/topic/} + ${topic.getId()}" method="POST" th:object="${post}">
+				<textarea name="content" required></textarea>
+				<input type="hidden" name="id_topic" th:value="${topic.getId()}"/>
+				<input class="button" type="submit" value="שלח" />
+			</form>
+		</div>
+		
+		<div sec:authorize="!isAuthenticated()">
+			<h3 style="color:blue"><a th:href="@{/register}">הירשם כדי להגיב</a></h3>
+        </div>
 	</body>
 </html>

@@ -56,8 +56,22 @@ label {
 	font-weight: 700;
 }
 
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: rgba(0, 0, 0, .05);
+}
+
+.table-bordered {
+    border: 1px solid #dee2e6;
+}
+
+textarea {
+	height: 8em;
+    width: 40em;
 }
 
 /* -------- */
