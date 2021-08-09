@@ -1,6 +1,7 @@
 package com.projectForum.Services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.projectForum.ControlPanel.EditUserForm;
@@ -34,15 +35,17 @@ public class EditServices {
 	private TopicRepository	topicRepo;
 	private ForumRepository	forumRepo;
 	private RoleRepository	roleRepo;
+	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
 	public EditServices(UserRepository userRepo, PostRepository postRepo, TopicRepository topicRepo,
-			ForumRepository forumRepo, RoleRepository	roleRepo) {
+			ForumRepository forumRepo, RoleRepository	roleRepo, PasswordEncoder passwordEncoder) {
 		this.userRepo = userRepo;
 		this.postRepo = postRepo;
 		this.topicRepo = topicRepo;
 		this.forumRepo = forumRepo;
 		this.roleRepo = roleRepo;
+		this.passwordEncoder = passwordEncoder;
 	}
 	
 	/** This method will update exists post with new Content.
@@ -95,12 +98,60 @@ public class EditServices {
 	 * 	In case that there is any blank information, there will be no update.
 	 * 	@param User to update.
 	 * 	@param */
-	public void updateUser(User user) {
+	public void updateUser(User updateUser) {
+		// Checking if user is exists
+		User targetUser = userRepo.findUserById(updateUser.getId());
 		
-		userRepo.save(user);
+		if (targetUser == null) {
+			// TODO add exciption
+			System.err.println("ERROR: USER ISN'T EXISTS!");
+		}
+		
+		// User is exists:
+		// Checking if users has different information
+		if(!targetUser.equals(updateUser)) {
+			
+			// ###Nor user or admin can change user's username.###
+			
+			// updating email
+			if(!targetUser.getEmail().equals(updateUser.getEmail())) {
+				if(!updateUser.getEmail().isBlank())
+					targetUser.setEmail(updateUser.getEmail());
+			}
+			// updating firstName
+			if(!targetUser.getFirstName().equals(updateUser.getFirstName())) {
+				if(!updateUser.getFirstName().isBlank())
+					targetUser.setFirstName(updateUser.getFirstName());
+			}
+			
+			// updating lastName
+			if(!targetUser.getLastName().equals(updateUser.getLastName())) {
+				if(!updateUser.getLastName().isBlank())
+					targetUser.setLastName(updateUser.getLastName());
+			}
+			// updating password
+			if(!updateUser.getPassword().isBlank()) {
+				// Matching between current password to new password
+				if(!passwordEncoder.matches(updateUser.getPassword(), targetUser.getPassword()))
+					targetUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
+			}
+			// Updating Role
+			if(!targetUser.getRole().equals(updateUser.getRole())) {
+				targetUser.removeRole();
+				targetUser.setRole(updateUser.getRole());
+			}
+					
+			
+			// Saving all changes
+			userRepo.save(targetUser);
+		}
+		
+		// There are no new changes.
 	}
 	
+	
 	/** This method will update user's roles to editUser role traget.
+	 * @param EditUserForm
 	 * */
 	public void updateUserRole(EditUserForm editUser) {
 		Role role = roleRepo.findRoleByName(editUser.getRole());

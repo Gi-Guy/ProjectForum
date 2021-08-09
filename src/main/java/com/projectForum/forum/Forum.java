@@ -10,6 +10,15 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
+
 /**
  * A fourm is a collection of topics
  * A forum has a title and a description only.
@@ -23,6 +32,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "forums")
+@JsonIdentityInfo(
+		  generator = ObjectIdGenerators.PropertyGenerator.class, 
+		  property = "id")
 public class Forum {
 
 	@Id
@@ -134,5 +146,11 @@ public class Forum {
 			return false;
 		return true;
 	}
+	@Override
+	public String toString() {
+		return "Forum [id=" + id + ", name=" + name + ", description=" + description + ", createdDate=" + createdDate
+				+ ", priority=" + priority + "]";
+	}
+	
 	
 }
