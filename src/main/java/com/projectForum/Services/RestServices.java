@@ -3,7 +3,6 @@ package com.projectForum.Services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.projectForum.REST.AddUserForm;
@@ -11,6 +10,7 @@ import com.projectForum.REST.DeleteUserForm;
 import com.projectForum.REST.UpdateUser;
 import com.projectForum.Security.Role;
 import com.projectForum.Security.RoleRepository;
+import com.projectForum.forum.EditForumForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
@@ -29,8 +29,6 @@ public class RestServices {
 
 	@Autowired
 	private UserRepository	userRepo;
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private RoleRepository	roleRepo;
 	@Autowired
@@ -284,7 +282,35 @@ public class RestServices {
 		forumRepo.save(forum);
 		return forumRepo.findByPriority(forums.size() + 1);
 	}
-	
+	/**
+	 * 	This method will return to user an example of editforum form.
+	 * @return EditForumForm*/
+	public EditForumForm updateForumExample() {
+		EditForumForm newEdit = new EditForumForm();
+		
+		newEdit.setForumId(0);
+		newEdit.setName("Example Name");
+		newEdit.setDescription("Example Description");
+		
+		return newEdit;
+	}
+	/**
+	 * 	This method will update an exists forum.*/
+	public boolean updateforum(EditForumForm updateForum) {
+		
+		// Checking if forum id is legal
+		if(updateForum.getForumId() == 0) {
+			return false;
+		}
+		
+		Forum forum = forumRepo.findById(updateForum.getForumId());
+			
+		if(forum!=null) {
+			editServices.updateForum(forum, updateForum);
+			return true;
+		}
+		return false;
+	}
 	/**
 	 * 	This method will delete a Forum by forumId.
 	 * */
@@ -313,6 +339,21 @@ public class RestServices {
 		
 		return topic;
 	}
+	/**
+	 *  This method will delete an exists Topic with all it posts.
+	 *  @param Int topicId.
+	 *  @return boolean false if topic isn't exists.*/
+	public boolean deleteTopic(int topicId) {
+		
+		// Checking if topic is exists
+		Topic topic = topicRepo.findTopicById(topicId);
+		
+		if(topic != null) {
+			deleteService.deleteTopic(topic);
+			return true;
+		}
+		return false;
+	}
 	/*
 	 * ################################################################
 	 * 							POSTS
@@ -333,5 +374,20 @@ public class RestServices {
 		Post post = postRepo.findById(postId);
 		
 		return post;
+	}
+	/**
+	 *  This method will delete an exists post.
+	 *  @param Int postId.
+	 *  @return boolean false if post isn't exists.*/
+	public boolean deletePost(int postId) {
+		
+		// Checking if topic is exists
+		Post post = postRepo.findById(postId);
+		
+		if(post != null) {
+			deleteService.deletePost(post);
+			return true;
+		}
+		return false;
 	}
 }

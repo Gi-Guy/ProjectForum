@@ -2,7 +2,6 @@ package com.projectForum.REST;
 
 import java.util.List;
 
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.projectForum.Services.RestServices;
+import com.projectForum.forum.EditForumForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;
@@ -45,8 +45,7 @@ public class DataRESTController {
 			return new ResponseEntity<List<User>> (HttpStatus.NOT_FOUND);
 		
 		return new ResponseEntity<List<User>> (users, HttpStatus.OK);
-	}
-	
+	}	
 	@GetMapping("getUser/{username}")
 	public ResponseEntity<User> getUser(@PathVariable("username") String username){
 		User user = restService.getUser(username);
@@ -54,16 +53,14 @@ public class DataRESTController {
 		if (user == null)
 			return new ResponseEntity<User> (HttpStatus.NOT_FOUND);
 		return new ResponseEntity<User> (user, HttpStatus.OK);
-	}
-	
+	}	
 	/**
 	 *  This method will print to user how to add user to database.*/
 	@GetMapping("/addUser/example")
 	public ResponseEntity<AddUserForm> giveUserExample(){
 		
 		return new ResponseEntity<AddUserForm>(restService.getExampleUser(), HttpStatus.OK);
-	}
-	
+	}	
 	@PostMapping("/addUser/add")
 	public ResponseEntity<User> addUser(@RequestBody AddUserForm addUser) {
 		User user = restService.addNewUser(addUser);
@@ -72,7 +69,6 @@ public class DataRESTController {
 			return new ResponseEntity<User>(HttpStatus.METHOD_FAILURE);
 		return new ResponseEntity<User>(user, HttpStatus.CREATED);
 	}
-	
 	@GetMapping("/removeUser/example")
 	public ResponseEntity<DeleteUserForm> removeUserExample(){
 		return new ResponseEntity<DeleteUserForm>(restService.removeUserExample(), HttpStatus.OK);
@@ -83,8 +79,7 @@ public class DataRESTController {
 		if(!restService.removeUser(deleteUser))
 			return new ResponseEntity<String>("Could not delete user.", HttpStatus.METHOD_FAILURE);
 		return new ResponseEntity<String>(HttpStatus.OK);
-	}
-	
+	}	
 	@GetMapping("updateUser/example")
 	public ResponseEntity<UpdateUser> giveUpdateExample(){
 		
@@ -101,7 +96,6 @@ public class DataRESTController {
 		return new ResponseEntity<UpdateUser>(HttpStatus.NOT_FOUND);
 	}
 	
-
 	/*
 	 * ################################################################
 	 * 							FORUMS
@@ -123,9 +117,7 @@ public class DataRESTController {
 		if (forum == null)
 			return new ResponseEntity<Forum> (HttpStatus.NOT_FOUND);
 		return new ResponseEntity<Forum> (forum, HttpStatus.OK);
-	
 	}
-	
 	@GetMapping("getforumByPriority/{priority}")
 	public ResponseEntity<Forum> getForumByPriority(@PathVariable("priority") int priority){
 		Forum forum = restService.getForumByPriority(priority);
@@ -133,9 +125,7 @@ public class DataRESTController {
 		if (forum == null)
 			return new ResponseEntity<Forum> (HttpStatus.NOT_FOUND);
 		return new ResponseEntity<Forum> (forum, HttpStatus.OK);
-	
 	}
-	
 	@GetMapping("/addForum/example")
 	public ResponseEntity<String> giveForumExample(){
 		// TODO solve how to send JSON and not String.
@@ -149,7 +139,18 @@ public class DataRESTController {
 			return new ResponseEntity<Forum>(HttpStatus.FAILED_DEPENDENCY);
 		return new ResponseEntity<Forum>(newForum, HttpStatus.CREATED);
 	}
-	
+	@GetMapping("updateForum/example")
+	public ResponseEntity<?> updateForumExample(){
+		return new ResponseEntity<EditForumForm>(restService.updateForumExample(), HttpStatus.OK);
+	}
+	@PutMapping("updateForum")
+	public ResponseEntity<?> updateForum(@RequestBody EditForumForm updateForum){
+		
+		if(restService.updateforum(updateForum))
+			return new ResponseEntity<Forum>(restService.getForumById(updateForum.getForumId()),
+															HttpStatus.OK);
+		return new ResponseEntity<HttpStatus>(HttpStatus.NOT_FOUND);
+	}
 	@DeleteMapping("/deleteForum/{forumId}")
 	public ResponseEntity<?> deleteForum(@PathVariable("forumId") int forumId){
 		Forum forum = restService.getForumById(forumId);
@@ -166,6 +167,7 @@ public class DataRESTController {
 	 * 							TOPICS
 	 * ################################################################
 	 * */
+	// Topics will not include editing option.
 	@GetMapping("getAllTopics")
 	public ResponseEntity<List<Topic>> getAllTopics() {
 		List<Topic> topics = restService.getAllTopics();
@@ -183,13 +185,20 @@ public class DataRESTController {
 		if (topic == null)
 			return new ResponseEntity<Topic> (HttpStatus.NOT_FOUND);
 		return new ResponseEntity<Topic> (topic, HttpStatus.OK);
-	
 	}
+	@DeleteMapping("deleteTopic/{topicId}")
+	public ResponseEntity<?> deleteTopic(@PathVariable("topicId") int topicId){
+		if(restService.deleteTopic(topicId))
+			return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+		return new ResponseEntity<HttpStatus>(HttpStatus.NOT_FOUND);
+	}
+	
 	/*
 	 * ################################################################
 	 * 							POSTS
 	 * ################################################################
 	 * */
+	// Posts will not include editing option.
 	@GetMapping("getAllPosts")
 	public ResponseEntity<List<Post>> getAllPosts() {
 		List<Post> posts = restService.getAllPosts();
@@ -207,6 +216,11 @@ public class DataRESTController {
 		if (post == null)
 			return new ResponseEntity<Post> (HttpStatus.NOT_FOUND);
 		return new ResponseEntity<Post> (post, HttpStatus.OK);
-	
+	}
+	@DeleteMapping("deletePost/{postId}")
+	public ResponseEntity<?> deletePost(@PathVariable("postId") int postId){
+		if(restService.deletePost(postId))
+			return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+		return new ResponseEntity<HttpStatus>(HttpStatus.NOT_FOUND);
 	}
 }
