@@ -6,7 +6,7 @@ public class Path {
     		"/",
     		"/index",
     		"/forum/**",
-    		"/api/**"
+    		"/css/**"
     };
 
     private static final String[] AUTHORIZED_ACCESS = {

@@ -32,7 +32,6 @@ import com.projectForum.user.UserRepository;
  * Topic creation is in TopicController where the topic will also be attached to a forum .*/
 
 	@Controller
-	@RequestMapping("/forum")
 public class ForumController {
 	
 	private UserRepository 	userRepo;
@@ -54,34 +53,36 @@ public class ForumController {
 	}
 	
 	/**
-	 * This method will display all forums in a List<Forum>
+	 * This method will display all forums in a List<Forum>.
 	 */
-	// TODO move this to homepage controller.
-	@GetMapping("/forums")
+	@GetMapping("")
 	public String displayForums(Model model) {
 		// returning a List<Forum> order by priority {highest priority = 1}
 		model.addAttribute("forums", forumRepo.findByOrderByPriorityAsc());
 		return "forums";
 	}
 	 
-	/**This method will display all topics that attached to {forumId}*/
-	@GetMapping("{forumId}")
+	/** This method will display all topics that attached to {forumId}. */
+	@GetMapping("/forum/{forumId}")
 	public String getTopicsById(@PathVariable int forumId, Model model) {
 		model.addAttribute("forum", forumRepo.findById(forumId));
 		model.addAttribute("topics", topicRepo.findTopicsByForumId(forumId));
 		return "forum";
 	}
 	
-	/**This method will lead user to create new forum page
-	 * This should be only in Control panel*/
-	@GetMapping("newForum")
+	/** 
+	 * This method will lead user to create a new forum page.
+	 * This should be only in Control panel.
+	 */
+	@GetMapping("/forum/newForum")
 	public String createNewForum(Model model) {
 		
 		model.addAttribute("newForum", new Forum());		
 		return "new_Forum_page";
 	}
-	/**This method will create a new forum*/
-	@PostMapping("newForum")
+	
+	/** This method will create a new forum according to the request of a user */
+	@PostMapping("/forum/newForum")
 	public String proccesNewForum(@Valid @ModelAttribute Forum forum, BindingResult bindingResult, Authentication authentication, Model model) {
 		
 		if(bindingResult.hasErrors()) {
@@ -105,8 +106,10 @@ public class ForumController {
 		return "redirect:/forum/" + forum.getId();
 	}
 	
-	
-	@GetMapping("edit/{forumId}")
+	/**
+	 * This method will lead a user to edit a forum
+	 */
+	@GetMapping("/forum/edit/{forumId}")
 	public String editForum(@PathVariable int forumId, Model model) {
 		Forum forum = new Forum();
 		
@@ -116,7 +119,10 @@ public class ForumController {
 		return "";
 	}
 	
-	@PostMapping("editForum")
+	/**
+	 * This method will update the changes a user made to a forum 
+	 */
+	@PostMapping("/forum/editForum")
 	public String editForum(@Valid @ModelAttribute("editForum") Forum editForum, BindingResult bindingResult, Authentication authentication, Model model) {
 		Forum forum = forumRepo.findById(editForum.getId());
 		

@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<!-- TODO remove this at the end - made our own CSS file --> 
+	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+
+	<!-- Information at the start of every HTML page -->
+	<head th:fragment="headerfiles(title)">
+		<meta charset="UTF-8" />
+		<title th:text=${title}></title>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}" />
+		<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+		<script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+	</head>
+	
+	<body>
+		<!-- Navigation bar at the top of the page -->
+		<nav th:fragment="topnav" class="topnav">
+			<a th:href="@{/}">רשימת כל הפורומים</a>
+			
+		    <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/a/controlPanel}">לוח בקרה</a>
+		    
+	    	<p sec:authorize="isAuthenticated()">ברוך הבא <b sec:authentication="name"></b></p>
+			<form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+				<input class="button" type="submit" value="התנתק" />
+			</form>
+			
+			<a sec:authorize="isAnonymous()" th:href="@{/register}">הרשמה</a>
+			<a sec:authorize="isAnonymous()" th:href="@{/login}">התחבר</a>
+		
+			<p style = "background-color:purple">הפורום הטוב בתבל</p>
+		</nav>
+	    
+	</body>
+	
+</html>

@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 //import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-
+import com.projectForum.Services.DeleteService;
 import com.projectForum.user.Profile.UserProfile;
 import com.projectForum.user.Profile.UserProfileServices;
 
@@ -31,7 +32,7 @@ public class UserController {
 	private UserProfileServices userService;
 	
 	@Autowired
-	public UserController(UserRepository userReop, UserProfileServices userService) {
+	public UserController(UserRepository userReop, UserProfileServices userService, DeleteService deleteService) {
 		super();
 		this.userRepo = userReop;
 		this.userService = userService;
@@ -74,5 +75,4 @@ public class UserController {
 		model.addAttribute(userProfile);
 		return "user";
 	}
-	
 }
