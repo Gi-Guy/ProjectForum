@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.projectForum.REST.AddUserForm;
 import com.projectForum.REST.DeleteUserForm;
+import com.projectForum.REST.UpdateUser;
+import com.projectForum.Security.Role;
 import com.projectForum.Security.RoleRepository;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
@@ -41,6 +43,8 @@ public class RestServices {
 	private PostRepository	postRepo;
 	@Autowired
 	private DeleteService	deleteService;
+	@Autowired
+	private EditServices	editServices;
 	
 	
 	/*
@@ -105,6 +109,119 @@ public class RestServices {
 	 * @return boolean true if user deleted*/
 	public boolean removeUser(DeleteUserForm deleteUser) {
 		return deleteService.deleteUser(deleteUser);
+	}
+	
+	
+	/**
+	 * 	This method will return an User object via UpdateUser object.
+	 * 
+	 * @param 	updateUser
+	 * @return	User*/
+	public User findUserByUpdateUser(UpdateUser updateUser) {
+		User findUser = null;
+		
+		// Need to find the user by id/username/email
+		
+		// Looking for user by id 
+		findUser = userRepo.findUserById(updateUser.getId());
+		// is user exist?
+		if(findUser != null) 
+			return findUser;
+		
+		// Looking for user by username
+		findUser = userRepo.findByUsername(updateUser.getUsername());
+		// is user exist?
+		if(findUser != null)
+			return findUser;
+			
+		// Looking for user by email 
+		findUser = userRepo.findByEmail(updateUser.getEmail());
+		// is user exist?
+		if(findUser != null) 
+			return findUser;
+		
+		return null;
+	}
+	/**
+	 * This method will update an exists user.
+	 * 
+	 * @return boolean false if user isn't exists.*/
+	
+	public boolean updateUser(UpdateUser updateUser) {
+		User findUser = null;
+		
+		// Need to find the user by id/username/email and then find out what new.
+		// Looking for user by id 
+		findUser = userRepo.findUserById(updateUser.getId());
+		// is user exist?
+		if(findUser != null) {
+			this.updateUser(findUser, updateUser);
+			return true;
+		}
+		// Looking for user by username
+		findUser = userRepo.findByUsername(updateUser.getUsername());
+		// is user exist?
+		if(findUser != null) {
+			this.updateUser(findUser, updateUser);
+			return true;
+		}
+		
+		// Looking for user by email 
+		findUser = userRepo.findByEmail(updateUser.getEmail());
+		// is user exist?
+		if(findUser != null) {
+			this.updateUser(findUser, updateUser);
+			return true;
+		}
+		
+		// user's isn't exists!
+		return false;
+	}
+	
+	/**
+	 * 	This method will update target user with new information from user object.*/
+	private void updateUser(User target, UpdateUser updateUser) {
+		// At this point user must be exists.
+		// To use EditServices updateUser must be transform into USER object.
+		
+		User user = new User();
+		user.setId(target.getId());
+		user.setUsername(updateUser.getUsername());
+		user.setEmail(updateUser.getEmail());
+		user.setFirstName(updateUser.getFirstName());
+		user.setLastName(updateUser.getLastName());
+		user.setPassword(updateUser.getPassword());
+		
+		// Setting Role
+		if(!updateUser.getRole().isBlank()) {
+			Role role = roleRepo.findRoleByName(updateUser.getRole());
+			user.setRole(role);
+		}
+		else if(target.getRole()==null) {
+			Role role = roleRepo.findRoleByName("USER");
+			user.setRole(role);
+		}
+		else user.setRole(target.getRole());
+		
+		// Sending new user information to editUser
+		editServices.updateUser(user);
+	}
+	
+	/**
+	 *  This method will return an example form for updating user.
+	 *  
+	 *  @return UpdateUser*/
+	public UpdateUser updateUserExample() {
+		UpdateUser updateUser = new UpdateUser();
+		updateUser.setId(0);
+		updateUser.setUsername("example username");
+		updateUser.setEmail("Example@Example.example");
+		updateUser.setFirstName("Example firstName");
+		updateUser.setLastName("Example lastName");
+		updateUser.setRole("ADMIN/USER");
+		updateUser.setPassword("Example password");
+		
+		return updateUser;
 	}
 	/*
 	 * ################################################################
