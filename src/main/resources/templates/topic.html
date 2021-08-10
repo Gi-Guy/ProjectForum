@@ -13,20 +13,19 @@
 		<a th:href="@{/forum/} + ${topic.getForum().getId()}">חזרה לפורום</a>
 
 		<!-- TOPIC -->
-		<h1 th:text = "${topic.getTitle()}"> Title:>Topic name</h1>
-		<hr>
-		
 		<section>
-			<a th:href="@{/user/} + ${topic.getUser().getUsername()}" th:text = "${topic.getUser().getUsername()} + ':'">Topic Author</a>
-			<p class="indentend" th:text = "${topic.getContent()}">Content</p>
+			<h1 th:text = "${topic.getTitle()}"> Title:>Topic name</h1>
+			<hr>
+			
+			<h2><a th:href="@{/user/} + ${topic.getUser().getUsername()}" th:text = "${topic.getUser().getUsername()} + ':'">Topic Author</a></h2>
+			<p class="indented" th:text = "${topic.getContent()}">Content</p>
 			
 			<div th:if="${#authentication.name} eq ${topic.user.username}">
-				 <a class="button" th:href="@{/topic/edit/} + ${topic.id}">
-                       <i class="material-icons white black-text">ערוך שרשור</i>
-                       </a>
+				<a class="button" th:href="@{/topic/edit/} + ${topic.id}">ערוך שרשור</a>
 			</div>
-			<hr>
 		</section>
+			
+		<hr>
 		
 		<!-- Number of posts -->
 		<header>
@@ -35,38 +34,29 @@
 		<hr>
 		
 		<!-- displaying all posts -->
-		
 		<div th:each = "post: ${posts}">
 			<div th:id="${post.getId()}">
-				<!-- username -->
 				<section>
-					<a th:href="@{/user/} + ${post.getUser().getUsername()}" th:text = "${post.getUser().getUsername()} + ':'">Post author</a>
-				</section>
-				
-				<!-- post -->
-				<section>
-					<p style="text-align: justify; display:block; white-space:pre-wrap"
-					th:text = "${post.getContent()}"> Content</p>
+					<h3><a th:href="@{/user/} + ${post.getUser().getUsername()}" th:text = "${post.getUser().getUsername()} + ':'">Post author</a></h3>
+					<p class="indented" th:text = "${post.getContent()}">Content</p>
 				</section>
 				<hr>
 			</div>
 		</div>
 	
 		<!-- New Reply -->
-		<header>
-			<blockquote>הוסף תגובה:</blockquote>
-		</header>
-			
-		<div sec:authorize="isAuthenticated()">
-			<form th:action="@{/topic/} + ${topic.getId()}" method="POST" th:object="${post}">
-				<textarea name="content" required></textarea>
-				<input type="hidden" name="id_topic" th:value="${topic.getId()}"/>
-				<input class="button" type="submit" value="שלח" />
-			</form>
-		</div>
-		
-		<div sec:authorize="!isAuthenticated()">
-			<h3 style="color:blue"><a th:href="@{/register}">הירשם כדי להגיב</a></h3>
-        </div>
+		<section>
+			<div sec:authorize="isAuthenticated()">
+				<h3>הוסף תגובה:</h3>
+				<form th:action="@{/topic/} + ${topic.getId()}" method="POST" th:object="${post}">
+					<textarea name="content" required></textarea>
+					<input type="hidden" name="id_topic" th:value="${topic.getId()}"/>
+					<input class="button" type="submit" value="שלח" />
+				</form>
+			</div>
+			<div sec:authorize="!isAuthenticated()">
+				<h3><a th:href="@{/register}">הירשם</a> או <a th:href="@{/login}">התחבר</a> כדי להגיב</h3>
+	        </div>
+		</section>
 	</body>
 </html>

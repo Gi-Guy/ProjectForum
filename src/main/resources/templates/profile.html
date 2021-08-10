@@ -75,7 +75,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 					<!-- List of links to topics by this user (and a message if none were made) ordered by number of posts -->
 					<h2>שרשורים שנוצרו על ידי משתמש זה:</h2>
 					<div class="indented" th:each = "topic: ${userProfile.getTopics()}">
-						<h3 th:text="'בפורום ' + ${topic.getForum().getName()} + ' כתב:'"></h3>
+						<h3 th:text="'בפורום ' + ${topic.getForum().getName()} + ' פתח את השרשור:'"></h3>
 						<a class="indented" th:href="@{/topic/} + ${topic.getId()}" th:text="${topic.getTitle()}"></a>
 					</div>
 					

@@ -10,14 +10,14 @@
 		<div align="center">
 		
 			<h1>לוח בקרה</h1>
-			<h3>ערוך ונהל את הפורום</h3>
+			<h2>ערוך ונהל את הפורום</h2>
 			
-            <p> ברוך הבא <b>[[${#request.userPrincipal.principal.fullName}]]</b> </p>
+            <p> ברוך הבא <b>[[${#request.userPrincipal.principal.fullName}]]</b></p>
 		
 			<!-- Forums section  -->
 			<hr>
 			
-			<h1>ערוך ונהל פורומים</h1>
+			<h3>ערוך ונהל פורומים</h3>
 			
 			<table class = "table-striped" border="1" cellpadding="10" style="text-align:right">
 				<thead>
@@ -63,7 +63,7 @@
 			<!-- Users section  -->
 			<hr>
 			
-			<h1>ערוך ונהל משתמשים</h1>
+			<h3>ערוך ונהל משתמשים</h3>
 			
 			<form th:action="@{/a/editUser}" >
 				<label>חפש משתמש:</label>
