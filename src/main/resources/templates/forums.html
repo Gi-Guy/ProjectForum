@@ -23,12 +23,14 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 					<tr>
 						<th>שם הפורום</th>
 						<th>תקציר</th>
+						<th>מספר שרשורים</th>
 					</tr>
 			</thead>
 			<tbody>
 				<tr th:each = "forum : ${forums}">
-					<td><a th:href="@{/forum/} + ${forum.id}" th:text="${forum.name}"></a></td>
-					<td th:text = "${forum.description}"></td>
+					<td><a th:href="@{/forum/} + ${forum.forum.id}" th:text="${forum.forum.name}"></a></td>
+					<td th:text = "${forum.forum.description}"></td>
+					<td th:text = "${forum.getNumOfTopics()}"></td>
 				</tr>
 			</tbody>
 		</table>
