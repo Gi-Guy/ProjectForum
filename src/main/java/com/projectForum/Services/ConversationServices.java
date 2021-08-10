@@ -41,8 +41,11 @@ public class ConversationServices {
 		public List<Conversation> getAllConversationsByUserId(int userId, Authentication authentication){
 			User user = userRepo.findUserById(userId);
 			List<Conversation> convs = null;
-			if (user != null) 
-				convs = convRepo.findBySenderOrReceiver(user,user);
+			if(user != null && user.getUsername().equals(authentication.getName()) || 
+					userRepo.findByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {
+				
+					convs = convRepo.findBySenderOrReceiver(user,user);	
+			}
 				
 			return convs;
 		}
@@ -112,5 +115,13 @@ public class ConversationServices {
 		 *	@return Conversation*/
 		public Conversation getConversation(int conversationId) {
 			return convRepo.findById(conversationId);
+		}
+		/**
+		 * This Method will return a list of answers by conversationId.
+		 * @param Int conversationId
+		 * @return List<Answer> answers*/
+		public List<Answer> getAllAnswersInConversation(int conversationId){
+			Conversation conv = convRepo.findById(conversationId);
+			return answerRepo.findByConversation(conv);
 		}
 }

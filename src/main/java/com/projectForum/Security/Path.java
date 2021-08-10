@@ -13,7 +13,8 @@ public class Path {
     private static final String[] AUTHORIZED_ACCESS = {
     		"/post/**",
     		"/topic/newTopic",
-    		"/topic/*"
+    		"/topic/*",
+    		"/messages/**"
     };
     
     private static final String[] ADMIN_ACCESS = {

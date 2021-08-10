@@ -30,7 +30,7 @@ public class Answer {
 	private User user;
 	
 	@Column (nullable = false, columnDefinition = "TEXT")
-	private String answer;
+	private String content;
 	
 	@ManyToOne
 	@JoinColumn(name = "id_conversation")
@@ -70,12 +70,12 @@ public class Answer {
 		this.user = user;
 	}
 	
-	public String getAnswer() {
-		return answer;
+	public String getContent() {
+		return content;
 	}
 
-	public void setAnswer(String answer) {
-		this.answer = answer;
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 	public Conversation getConversation() {
@@ -106,7 +106,7 @@ public class Answer {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((answer == null) ? 0 : answer.hashCode());
+		result = prime * result + ((content == null) ? 0 : content.hashCode());
 		result = prime * result + ((conversation == null) ? 0 : conversation.hashCode());
 		result = prime * result + ((createdDate == null) ? 0 : createdDate.hashCode());
 		result = prime * result + id;
@@ -124,10 +124,10 @@ public class Answer {
 		if (getClass() != obj.getClass())
 			return false;
 		Answer other = (Answer) obj;
-		if (answer == null) {
-			if (other.answer != null)
+		if (content == null) {
+			if (other.content != null)
 				return false;
-		} else if (!answer.equals(other.answer))
+		} else if (!content.equals(other.content))
 			return false;
 		if (conversation == null) {
 			if (other.conversation != null)
@@ -156,7 +156,7 @@ public class Answer {
 
 	@Override
 	public String toString() {
-		return "Answer [id=" + id + ", user=" + user.getUsername() + ", answer=" + answer + ", conversation=" + conversation
+		return "Answer [id=" + id + ", user=" + user.getUsername() + ", answer=" + content + ", conversation=" + conversation
 				+ ", createdDate=" + createdDate + ", lastActivity=" + lastActivity + "]";
 	}
 	

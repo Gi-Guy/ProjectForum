@@ -34,13 +34,13 @@ public class ConversationController {
 	}
 	/**
 	 * 	This method will display all messages of an user.*/
-	@GetMapping("{userId}")
+	@GetMapping("test/{userId}")
 	public String displayAllUserMessages(@PathVariable int userId, Authentication authentication,
 												Model model) {
-		
+		// TODO FIX THIS METHOD
 		List<Conversation> convs = conversationServices.getAllConversationsByUserId(userId, authentication);
 		
-		if(convs.isEmpty())
+		if(convs.isEmpty() || convs == null)
 			model.addAttribute("isEmpty", true);
 		else
 			model.addAttribute("convs",convs);
@@ -55,19 +55,21 @@ public class ConversationController {
 										Authentication authentication) {
 		
 		Conversation conv = conversationServices.findConversation(conversationId);
-		if (conv == null)
-			// TODO direct to an error page
+		List<Answer> answers = conversationServices.getAllAnswersInConversation(conversationId);
+		if (conv == null) {
+			// TODO direct to an error page	
+		}
 			
 		// Checking if user is allowed to watch the conversation
-		if (authentication.getName().equals(conv.getSender().getUsername()) ||
+		if ( conv.getSender().getUsername().equals(authentication.getName())||
 				authentication.getName().equals(conv.getReceiver().getUsername()) ||
 				userRepo.findByUsername(authentication.getName()).getRole().getName().equals("ADMIN")){
 			// User allowed to watch the conversation.
 			model.addAttribute("conversation",conv);
+			model.addAttribute("answers",answers);
 			model.addAttribute("newAnswer", new Answer());
 			return "conversation";
 		}
-		
 		 return "redirect:";
 	}
 	
@@ -124,12 +126,11 @@ public class ConversationController {
 		}
 		
 		// Message is legit
-		conversationServices.proccessNewConversation(conversation, authentication);
-		return "redirect:/";
+		return "redirect:/messages/" + conversationServices.proccessNewConversation(conversation, authentication).getId();
 	}
 	/**
 	 * This method will delete an Answer*/
-	@GetMapping("delete/answer{answerId}")
+	@GetMapping("delete/answer/{answerId}")
 	public String deleteAnswer(@PathVariable int answerId,Authentication authentication,
 								RedirectAttributes model) {
 		// find if answer is exists and user allowed to delete it
@@ -147,13 +148,14 @@ public class ConversationController {
 		// User allowed to remove answer
 		conversationServices.deleteAnswer(answerId);
 		model.addFlashAttribute("message", "Answer has been removed.");
-		return "redirect:/messages/";
+		return "redirect:/messages/" + conversation.getId();
 	}
 	/**
 	 * This method will delete an conversation*/
-	@GetMapping("delete/conversation{conversationId}")
+	@GetMapping("delete/conversation/{conversationId}")
 	public String deleteConversation(@PathVariable int conversationId,Authentication authentication,
 										RedirectAttributes model) {
+		
 		// Finding conversation
 		Conversation conversation = conversationServices.getConversation(conversationId);
 		
@@ -167,6 +169,6 @@ public class ConversationController {
 		//	User allowed to remove conversation
 		conversationServices.deleteConversation(conversationId);
 		model.addFlashAttribute("message", "Conversation has been removed.");
-		return "messages";
+		return "redirect:/";
 	}
 }

@@ -21,11 +21,6 @@ import com.projectForum.user.User;
 import com.projectForum.user.UserRepository;
 
 
-//TODO TEST THIS FILE
-/* ###########################################################
-* 		WARNING: THIS SERVICE FILE ISN'T TESTED YET!
-* ###########################################################*/
-
 
 /**
  *  This Class will use as a service to all deletion option in the application */
@@ -50,10 +45,18 @@ public class DeleteService {
 		this.answerRepo = answerRepo;
 		this.convRepo = convRepo;
 	}
-	/** This method will delete an exists user.
+	
+	/*
+	 * ################################################################
+	 * 						DELETE USERS
+	 * ################################################################
+	 * */
+	/** 
+	 * 			#####REST ONLY#####
+	 * This method will delete an exists user.
 	 *  It will remove user's data dependent on Keep activity boolean.
 	 *  
-	 *  @see REST ONLY
+	 *  @see REST ONLY 
 	 *  @return boolean true if deleted user.*/
 	public boolean deleteUser(DeleteUserForm deleteUser) {
 		User userByID = null;
@@ -77,12 +80,25 @@ public class DeleteService {
 		}
 		// At this point one of the users isn't null
 		if(userByUsername != null) {
+			
+			//	### USER'S PRIVATE MESSAGES MUST BE DELETED IN ANY CASE!
+			// Deleting user's private messages
+			List<Conversation> conversations = convRepo.findBySenderOrReceiver(userByUsername, userByUsername);
+			this.deleteConversations(conversations);
+			
 			if(deleteUser.isKeepActivity())
 				this.deleteUserKeepActivity(userByUsername);
 			else
 				this.deleteUserDontKeepActivity(userByUsername);	
 		}
 		else if(userByID != null) {
+			
+			//	### USER'S PRIVATE MESSAGES MUST BE DELETED IN ANY CASE!
+			// Deleting user's private messages
+			List<Conversation> conversations = convRepo.findBySenderOrReceiver(userByID, userByID);
+			this.deleteConversations(conversations);
+			
+			
 			if(deleteUser.isKeepActivity())
 				this.deleteUserKeepActivity(userByID);
 			else
@@ -99,11 +115,19 @@ public class DeleteService {
 		
 		if(user == null)
 			return;
+
+		//	### USER'S PRIVATE MESSAGES MUST BE DELETED IN ANY CASE!
+		// Deleting user's private messages
+		List<Conversation> conversations = convRepo.findBySenderOrReceiver(user, user);
+		this.deleteConversations(conversations);
+		
 		
 		if(editUser.isKeepActivity())
 			this.deleteUserKeepActivity(user);
 		else
 			this.deleteUserDontKeepActivity(user);
+
+
 	}
 	
 	/** This method will delete an exists user.
@@ -192,7 +216,11 @@ public class DeleteService {
 	public void deleteUser(int userId) {
 		this.deleteUserKeepActivity(userRepo.findUserById(userId));
 	}
-	
+	/*
+	 * ################################################################
+	 * 						DELETE POSTS
+	 * ################################################################
+	 * */
 	/** This method will delete a post by postId
 	 * @param int postId*/
 	public void deletePost (int postId) {
@@ -217,7 +245,11 @@ public class DeleteService {
 			this.deletePost(posts.get(i));
 			
 	}
-	
+	/*
+	 * ################################################################
+	 * 						DELETE TOPICS
+	 * ################################################################
+	 * */
 	/** This method will delete a topic and it posts by topicId.
 	 * @param int topicId*/
 	public void deleteTopic(int topidId) {
@@ -251,6 +283,11 @@ public class DeleteService {
 			this.deleteTopic(topics.get(i));
 	}
 	
+	/*
+	 * ################################################################
+	 * 						DELETE FORUMS
+	 * ################################################################
+	 * */
 	/** This method will delete a forum by forumId
 	 *  @param int forumId*/
 	public void deleteForum(int forumId) {
@@ -310,6 +347,11 @@ public class DeleteService {
 			forumRepo.save(updateForum);
 		}
 	}
+	/*
+	 * ################################################################
+	 * 						DELETE ANSWERS
+	 * ################################################################
+	 * */
 	/**
 	 * 	This method will delete a answer by answerId
 	 * @param int*/
@@ -340,6 +382,11 @@ public class DeleteService {
 		for (int i=0; i<answers.size(); i++)
 			this.deleteAnswer(answers.get(i));
 	}
+	/*
+	 * ################################################################
+	 * 						DELETE CONVERSATION
+	 * ################################################################
+	 * */
 	/**
 	 * 	This method will delete an conversation by id
 	 * @param int */
@@ -357,6 +404,13 @@ public class DeleteService {
 			List<Answer> answers = answerRepo.findByConversation(conversation);
 			this.deleteAnswer(answers);
 			convRepo.delete(conversation);
+		}
+	}
+	public void deleteConversations(List<Conversation> conversations) {
+		if(conversations.isEmpty())
+			return;
+		for(int i=0; i<conversations.size(); i++) {
+			this.deleteConversation(conversations.get(i));
 		}
 	}
 }
