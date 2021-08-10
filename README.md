@@ -1,9 +1,75 @@
 # ProjectForum
  This is my final project in the university - A Java forum web application.
 
+Last Update:
+
+
+-----------------------------
+
+This update represent a whole new REST web services update including:
+
+**CRUD actions for entitys:**
+*Users entities
+- Forums entities
+- Topics entities
+- Posts entities
+* Might add a private messages entities in the future
+*CRUD = Create, Read, Update, Delete
+
+**New services are:**
+Users: 
+- Get all users list
+- Find User by: username, ID
+- Create new user
+- Update an exists user - Change email, FirstName, LastName, Password && Role.
+- Delete an exists user
+- System also provides examples of: Creating a new User, Update/Delete an exists user.
+
+Forums:
+- Get all Forums list
+- Find Forum by: ID, Priority
+- Create new Forum
+- Update an exists Forum - Change Name && Description.
+- Delete an exists Forum
+- System also provides examples of: Creating a new Forum, Update/Delete an exists Forum.
+
+Topics:
+- Get all Topics list
+- Find Topic by: ID
+- Delete an exists Topic by ID
+
+Posts:
+- Get all Posts list
+- Find Post by: ID
+- Delete an exists Post by ID
+
+**Also:**
+Fixed many bugs and improve some methods.
+
+
+-----------------------------
+
+New Update: Private Messages
+Users now has the ability to send private messages between them and other users.
+
+**USER features**
+- Users can send private messages between them and other users.
+- Users can responde in a private Conversation.
+- Each user can delete it own answers.
+- Each user can delete the conversation itself.
+
+**ADMIN features**
+- Admins can read users private messages.
+- Admins can delete users private messages.
+- Admins can respone in other users private messages.
+- When Admin delete an exists user, All user's private messages will be deleted as well.
+
+**Missing features**
+- There is no limit to a number of conversations that user can have.
+- There is no time limit for a conversation
+
 ##################################################################################################
 
-LAST UPDATE:
 
 This update has a servel majors updates:
 
