@@ -33,7 +33,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 							</tr>
 							<tr>
 								<td>אימייל</td>
-								<td th:text="${userProfile.getUser().getEmail()}"></td>
+								<td><a th:href="'mailto: '+ ${userProfile.getUser().getEmail()}" th:text ="${userProfile.getUser().getEmail()}">כתובת אימייל</a></td>
 							</tr>
 							<tr>
 								<td>כרגע באתר</td>

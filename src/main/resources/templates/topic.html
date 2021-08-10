@@ -17,8 +17,8 @@
 		<hr>
 		
 		<section>
-			<p style="text-align: justify; display:block; white-space:pre-wrap"
-				th:text = "${topic.getUser().getUsername()} + ': ' + ${topic.getContent()}">Content</p>
+			<a th:href="@{/user/} + ${topic.getUser().getUsername()}" th:text = "${topic.getUser().getUsername()} + ':'">Topic Author</a>
+			<p class="indentend" th:text = "${topic.getContent()}">Content</p>
 			
 			<div th:if="${#authentication.name} eq ${topic.user.username}">
 				 <a class="button" th:href="@{/topic/edit/} + ${topic.id}">
@@ -40,7 +40,7 @@
 			<div th:id="${post.getId()}">
 				<!-- username -->
 				<section>
-					<p th:text = "${post.getUser().getUsername()} + ':'">Post author</p>
+					<a th:href="@{/user/} + ${post.getUser().getUsername()}" th:text = "${post.getUser().getUsername()} + ':'">Post author</a>
 				</section>
 				
 				<!-- post -->

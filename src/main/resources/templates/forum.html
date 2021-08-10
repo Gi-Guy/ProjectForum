@@ -30,7 +30,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 				<tr th:each="topic : ${topics}">
 					<td><a th:href="@{/topic/} + ${topic.id}" th:text="${topic.title}"></a></td>
 					<td th:text = "${topic.content}"></td>
-					<td th:text = "${topic.user.username}"></td>
+					<td><a th:href="@{/user/} + ${topic.user.username}" th:text = "${topic.user.username}"></a></td>
 					<td th:text = "${topic.views}"></td>
 				</tr>
 			</tbody>
