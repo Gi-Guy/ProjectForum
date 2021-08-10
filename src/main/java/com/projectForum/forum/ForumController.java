@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.projectForum.Services.ControlPanelServices;
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
 import com.projectForum.post.PostRepository;
@@ -40,16 +41,18 @@ public class ForumController {
 	private ForumRepository forumRepo;
 	private DeleteService	deleteService;
 	private EditServices	editService;
+	private ControlPanelServices controlPanelService;
 	
 	@Autowired
 	public ForumController(UserRepository userReop, TopicRepository topicRepo, PostRepository postRepo,
-			ForumRepository forumRepo, DeleteService deleteService, EditServices editService) {
+			ForumRepository forumRepo, DeleteService deleteService, EditServices editService, ControlPanelServices controlPanelService) {
 		this.userRepo = userReop;
 		this.topicRepo = topicRepo;
 		this.postRepo = postRepo;
 		this.forumRepo = forumRepo;
 		this.deleteService = deleteService;
 		this.editService = editService;
+		this.controlPanelService = controlPanelService; 
 	}
 	
 	/**
@@ -58,7 +61,7 @@ public class ForumController {
 	@GetMapping("")
 	public String displayForums(Model model) {
 		// returning a List<Forum> order by priority {highest priority = 1}
-		model.addAttribute("forums", forumRepo.findByOrderByPriorityAsc());
+		model.addAttribute("forums", controlPanelService.createForumDisplayList(forumRepo.findByOrderByPriorityAsc()));
 		return "forums";
 	}
 	 

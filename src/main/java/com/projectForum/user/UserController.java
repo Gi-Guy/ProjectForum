@@ -55,24 +55,6 @@ public class UserController {
 		UserProfile userProfile = userService.findUserByUsername(username);
 		model.addAttribute("userProfile", userProfile);
 		
-		return "user";
-	}
-	
-	/**
-	 * This method will will find a userProfile entity and display it 'myProfile' page.
-	 * @param Authentication object
-	 * @param Model
-	 */
-	@RequestMapping("/myprofile")
-	public String myProfileDisplay(Authentication authentication, Model model) {
-		
-		// Authentication should hold user information
-		String username = authentication.getName();
-		
-		// TODO make an exception in case user doesn't exist
-		UserProfile userProfile = userService.findUserByUsername(username);
-		
-		model.addAttribute(userProfile);
-		return "user";
+		return "profile";
 	}
 }
