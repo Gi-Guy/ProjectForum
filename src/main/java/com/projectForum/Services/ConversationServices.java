@@ -78,6 +78,11 @@ public class ConversationServices {
 		 * This method will proccess a new conversation between two users
 		 * */
 		public Conversation proccessNewConversation(Conversation conversation, Authentication authentication) {
+			User receiver = userRepo.findUserById(conversation.getReceiver().getId());
+			User sender = userRepo.findByUsername(authentication.getName());
+			
+			conversation.setReceiver(receiver);
+			conversation.setSender(sender);
 			return convRepo.save(conversation);
 		}
 		

@@ -10,5 +10,6 @@ public interface ConversationRepository extends JpaRepository<Conversation, Inte
 	
 	Conversation findById(int id);
 	List<Conversation> findBySenderOrReceiver(User sender,User receiver);
+	List<Conversation> findBySenderOrReceiverAndId(User sender,User receiver,int id);
 
 }

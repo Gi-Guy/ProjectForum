@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.projectForum.Services.ConversationServices;
-import com.projectForum.Services.DeleteService;
 import com.projectForum.user.UserRepository;
 
 @Controller
@@ -99,7 +98,8 @@ public class ConversationController {
 							,conversationServices.getUuserByUsername(authentication.getName()));
 		
 		model.addAttribute("newConv",newConv);
-		return "";
+		return "new_Conversation_page";
+		//http://localhost:8080/messages/newMessage/18
 	}
 	/**
 	 * 	This method will proccess a new Conversation between two users*/
@@ -109,15 +109,23 @@ public class ConversationController {
 		// If hasErrors == true, then return to Conversation page, because something went wrong
 		if(bindingResult.hasErrors()) {
 			System.err.println("ERROR :: Conversation Controller - proccesNewConversation (POST)");
-			return "";
+			
+			Conversation newConv = conversationServices.createNewConversation(conversation.getReceiver().getId()
+					,conversationServices.getUuserByUsername(authentication.getName()));
+			model.addAttribute("newConv",newConv);
+			return "new_Conversation_page";
 		}
 		// Checking if message isn't blanked
-		if(conversation.getTitle().isEmpty() || conversation.getContent().isBlank())
-			return "";
+		if(conversation.getTitle().isEmpty() || conversation.getContent().isBlank()) {
+			Conversation newConv = conversationServices.createNewConversation(conversation.getReceiver().getId()
+					,conversationServices.getUuserByUsername(authentication.getName()));
+			model.addAttribute("newConv",newConv);
+			return "new_Conversation_page";
+		}
 		
 		// Message is legit
 		conversationServices.proccessNewConversation(conversation, authentication);
-		return "";
+		return "redirect:/";
 	}
 	/**
 	 * This method will delete an Answer*/
