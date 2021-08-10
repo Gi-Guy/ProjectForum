@@ -14,18 +14,24 @@
 	</head>
 	
 	<body>
+	
 		<!-- Navigation bar at the top of the page -->
 		<nav th:fragment="topnav" class="topnav">
 			<a th:href="@{/}">רשימת כל הפורומים</a>
 			
 		    <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/a/controlPanel}">לוח בקרה</a>
 		    
-	    	<p sec:authorize="isAuthenticated()">ברוך הבא <b sec:authentication="name"></b></p>
+		    <!-- Use authentication.name or ${#request.remoteUser} -->
+	    	<a sec:authorize="isAuthenticated()" th:href="@{/user/} + ${#authentication.name}"><b sec:authentication="name"></b></a>
+	    	
+			<a sec:authorize="isAuthenticated()" th:href="@{/}">ההודעות שלי</a>
+			
 			<form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
 				<input class="button" type="submit" value="התנתק" />
 			</form>
 			
 			<a sec:authorize="isAnonymous()" th:href="@{/register}">הרשמה</a>
+			
 			<a sec:authorize="isAnonymous()" th:href="@{/login}">התחבר</a>
 		
 			<p style = "background-color:purple">הפורום הטוב בתבל</p>
