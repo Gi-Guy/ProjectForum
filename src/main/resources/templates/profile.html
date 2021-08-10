@@ -61,7 +61,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 						<button class="button" th:if="${#authentication.name} eq ${userProfile.getUser().getUsername()}">עדכן את המשתמש</button>
 						
 						<form th:unless="${#authentication.name} eq ${userProfile.getUser().getUsername()}"
-							th:action="@{/messages/} + ${userProfile.getUser().getUsername()}">
+							th:action="@{/messages/newMessage/} + ${userProfile.getUser().getId()}">
 							<input class="button" type="submit" value="שלח הודעה" />
 						</form>
 						
