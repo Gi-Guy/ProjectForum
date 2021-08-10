@@ -37,17 +37,19 @@
 		<!-- displaying all posts -->
 		
 		<div th:each = "post: ${posts}">
-			<!-- username -->
-			<section>
-				<p th:text = "${post.getUser().getUsername()} + ':'">Post author</p>
-			</section>
-			
-			<!-- post -->
-			<section>
-				<p style="text-align: justify; display:block; white-space:pre-wrap"
-				th:text = "${post.getContent()}"> Content</p>
-			</section>
-			<hr>
+			<div th:id="${post.getId()}">
+				<!-- username -->
+				<section>
+					<p th:text = "${post.getUser().getUsername()} + ':'">Post author</p>
+				</section>
+				
+				<!-- post -->
+				<section>
+					<p style="text-align: justify; display:block; white-space:pre-wrap"
+					th:text = "${post.getContent()}"> Content</p>
+				</section>
+				<hr>
+			</div>
 		</div>
 	
 		<!-- New Reply -->

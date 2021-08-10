@@ -85,7 +85,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 					<h2>הודעות שנוצרו על ידי משתמש זה:</h2>
 					<div class="indented" th:each = "post: ${userProfile.getPosts()}">
 						<h3 th:text="'בשרשור ' + ${post.getTopic().getTitle()} + ' כתב:'"></h3>
-						<a class="indented" th:text="${post.getContent()}" th:href="@{/topic/} + ${post.getTopic().getId()}"></a>
+						<a class="indented" th:text="${post.getContent()}" th:href="@{/topic/} + ${post.getTopic().getId()} + '#' + ${post.getId()}"></a>
 					</div>
 				</td>
 		
