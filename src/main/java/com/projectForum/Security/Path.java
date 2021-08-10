@@ -6,14 +6,13 @@ public class Path {
     		"/",
     		"/index",
     		"/forum/**",
+    		"/topic/**",
     		"/css/**",
     		"/api/**"
     };
 
     private static final String[] AUTHORIZED_ACCESS = {
-    		"/post/**",
     		"/topic/newTopic",
-    		"/topic/*",
     		"/messages/**"
     };
     
