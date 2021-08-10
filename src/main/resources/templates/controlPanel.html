@@ -45,16 +45,16 @@
 						<td th:text = "${forum.forum.priority}"></td>
 						<td><a th:href="@{/forum/} + ${forum.forum.id}" th:text = "${forum.forum.name}"></a></td>
 						<td th:text = "${forum.shortDescription}"></td>
-						<td th:text = "${forum.numOfTopics}"></td>
+						<td th:text = "${forum.numOfTopics}" ></td>
 						<td>
-							<a th:href="@{/a/forum/delete/} + ${forum.forum.id}">מחק</a>
+							<a th:href="@{/a/forum/delete/} + ${forum.forum.id}" >מחק</a>
 							&nbsp;&nbsp;
 							<a th:href="@{/a/forum/edit/} + ${forum.forum.id}">ערוך</a>
 						</td>
 						<td>
-							<a th:href="@{/a/downPriority/} + ${forum.forum.id}">למטה</a>
+							<b><a th:href="@{/a/downPriority/} + ${forum.forum.id}" style="font-size: 20px">&#8595;</a></b>
 							&nbsp;&nbsp;
-							<a th:href="@{/a/addPriority/} + ${forum.forum.id}">למעלה</a>
+							<b><a th:href="@{/a/addPriority/} + ${forum.forum.id}" style="font-size: 20px">&#8593;</a></b>
 						</td>
 					</tr>
 				</tbody>
