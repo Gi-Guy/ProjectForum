@@ -24,6 +24,8 @@
 		    <!-- Use authentication.name or ${#request.remoteUser} -->
 	    	<a sec:authorize="isAuthenticated()" th:href="@{/user/} + ${#authentication.name}"><b sec:authentication="name"></b></a>
 	    	
+			<a sec:authorize="isAuthenticated()" th:href="@{/}">ההודעות שלי</a>
+			
 			<form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
 				<input class="button" type="submit" value="התנתק" />
 			</form>
