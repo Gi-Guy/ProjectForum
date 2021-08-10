@@ -97,8 +97,8 @@ public class TopicController {
 		post.setTopic(topicRepo.findTopicById(topicId));
 		postRepo.save(post);
 
-		model.asMap().clear();//Cleaning model because it don't some weird things if not.
-		return "redirect:/topic/" + topicId; //User will return to the same topic page
+		model.asMap().clear(); // Cleaning the model as it does some weird things if not.
+		return "redirect:" + topicId + '#' + post.getId(); // User will be redirected to the post they wrote.
 	}
 	
 	/** This method will return a model and navigate the user to newTopic page */
