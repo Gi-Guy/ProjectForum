@@ -62,8 +62,7 @@ public class ConversationController {
 			
 		// Checking if user is allowed to watch the conversation
 		if ( conv.getSender().getUsername().equals(authentication.getName())||
-				authentication.getName().equals(conv.getReceiver().getUsername()) ||
-				userRepo.findByUsername(authentication.getName()).getRole().getName().equals("ADMIN")){
+				authentication.getName().equals(conv.getReceiver().getUsername())){
 			// User allowed to watch the conversation.
 			model.addAttribute("conversation",conv);
 			model.addAttribute("answers",answers);
@@ -106,7 +105,6 @@ public class ConversationController {
 		}
 		model.addAttribute("newConv",newConv);
 		return "new_Conversation_page";
-		//http://localhost:8080/messages/newMessage/18
 	}
 	/**
 	 * 	This method will proccess a new Conversation between two users*/
@@ -144,8 +142,7 @@ public class ConversationController {
 		
 		// Checking everything. 
 		if(answer == null || conversation == null || authentication == null ||
-				!answer.getUser().getUsername().equals(authentication.getName()) &&
-				!conversationServices.getUuserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {
+				!answer.getUser().getUsername().equals(authentication.getName())){
 			// User not allowed to remove this
 			return "redirect:/messages/" + conversation.getId();
 		}
@@ -164,8 +161,7 @@ public class ConversationController {
 		
 		if(	conversation == null || authentication == null ||
 			!conversation.getSender().getUsername().equals(authentication.getName()) &&
-			!conversation.getReceiver().getUsername().equals(authentication.getName()) &&
-			!conversationServices.getUuserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {
+			!conversation.getReceiver().getUsername().equals(authentication.getName())){
 			// User not allowed to remove this
 			return "redirect:/messages/" + conversation.getId();
 		}
