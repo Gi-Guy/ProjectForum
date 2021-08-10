@@ -98,7 +98,12 @@ public class ConversationController {
 												Model model) {
 		Conversation newConv = conversationServices.createNewConversation(receiverId
 							,conversationServices.getUuserByUsername(authentication.getName()));
-		
+		// Checking if user sending messages to itself
+		if(newConv.getSender().equals(newConv.getReceiver())) {
+			// User can't create a new conversation with itself!
+			// TODO return error message
+			return "redirect:/";
+		}
 		model.addAttribute("newConv",newConv);
 		return "new_Conversation_page";
 		//http://localhost:8080/messages/newMessage/18
@@ -137,10 +142,9 @@ public class ConversationController {
 		Answer answer = conversationServices.getAnswer(answerId);
 		Conversation conversation = answer.getConversation();
 		
-		// Checking everything.
+		// Checking everything. 
 		if(answer == null || conversation == null || authentication == null ||
-				!conversation.getSender().getUsername().equals(authentication.getName()) &&
-				!conversation.getReceiver().getUsername().equals(authentication.getName()) ||
+				!answer.getUser().getUsername().equals(authentication.getName()) &&
 				!conversationServices.getUuserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {
 			// User not allowed to remove this
 			return "redirect:/messages/" + conversation.getId();
@@ -155,13 +159,12 @@ public class ConversationController {
 	@GetMapping("delete/conversation/{conversationId}")
 	public String deleteConversation(@PathVariable int conversationId,Authentication authentication,
 										RedirectAttributes model) {
-		
 		// Finding conversation
 		Conversation conversation = conversationServices.getConversation(conversationId);
 		
 		if(	conversation == null || authentication == null ||
 			!conversation.getSender().getUsername().equals(authentication.getName()) &&
-			!conversation.getReceiver().getUsername().equals(authentication.getName()) ||
+			!conversation.getReceiver().getUsername().equals(authentication.getName()) &&
 			!conversationServices.getUuserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {
 			// User not allowed to remove this
 			return "redirect:/messages/" + conversation.getId();
