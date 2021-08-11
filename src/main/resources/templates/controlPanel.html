@@ -41,22 +41,24 @@
 						</tr>
 				</thead>
 				<tbody>
-					<tr th:each = "forum : ${forums}">
-						<td th:text = "${forum.forum.priority}"></td>
-						<td><a th:href="@{/forum/} + ${forum.forum.id}" th:text = "${forum.forum.name}"></a></td>
-						<td th:text = "${forum.shortDescription}"></td>
-						<td th:text = "${forum.numOfTopics}" ></td>
-						<td>
-							<a th:href="@{/a/forum/delete/} + ${forum.forum.id}" >מחק</a>
-							&nbsp;&nbsp;
-							<a th:href="@{/a/forum/edit/} + ${forum.forum.id}">ערוך</a>
-						</td>
-						<td>
-							<b><a th:href="@{/a/downPriority/} + ${forum.forum.id}" style="font-size: 20px">&#8595;</a></b>
-							&nbsp;&nbsp;
-							<b><a th:href="@{/a/addPriority/} + ${forum.forum.id}" style="font-size: 20px">&#8593;</a></b>
-						</td>
-					</tr>
+					<th:block th:each = "form : ${forumForms}"> 
+						<tr th:id="${form.forum.getId()}">
+							<td th:text = "${form.forum.priority}"></td>
+							<td><a th:href="@{/forum/} + ${form.forum.id}" th:text = "${form.forum.name}"></a></td>
+							<td th:text = "${form.shortDescription}"></td>
+							<td th:text = "${form.numOfTopics}"></td>
+							<td>
+								<a th:href="@{/a/forum/delete/} + ${form.forum.id}">מחק</a>
+								&nbsp;&nbsp;
+								<a th:href="@{/a/forum/edit/} + ${form.forum.id}">ערוך</a>
+							</td>
+							<td>
+								<b><a th:href="@{/a/downPriority/} + ${form.forum.id}" style="font-size: 20px">&#8595;</a></b>
+								&nbsp;&nbsp;
+								<b><a th:href="@{/a/addPriority/} + ${form.forum.id}" style="font-size: 20px">&#8593;</a></b>
+							</td>
+						</tr>
+					</th:block>
 				</tbody>
 			</table>
 			

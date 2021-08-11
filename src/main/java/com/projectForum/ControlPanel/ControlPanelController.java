@@ -71,7 +71,7 @@ public class ControlPanelController {
 		 * */
 		
 		List<Forum> forums = forumRepo.findByOrderByPriorityAsc();
-		model.addAttribute("forums", controlService.createForumDisplayList(forums));
+		model.addAttribute("forumForms", controlService.createForumDisplayList(forums));
 		
 		/*
 		 * Users section
@@ -114,7 +114,8 @@ public class ControlPanelController {
 			forum.setPriority(forums.size() + 1);	
 		}
 		forumRepo.save(forum);
-		return "redirect:/a/controlPanel";
+		// User will be redirected to the place in the control panel where the forum they made is shown.
+		return "redirect:controlPanel" + '#' + forum.getId(); 
 	}
 	
 	/**
@@ -140,7 +141,7 @@ public class ControlPanelController {
 		if(userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN")) 
 			editService.updateForum(forum, editForum);
 		
-		return "redirect:/a/controlPanel";
+		return "redirect:controlPanel" + '#' + forum.getId();
 	}
 	
 	/**
@@ -150,7 +151,7 @@ public class ControlPanelController {
 	public String addForumPriority(@PathVariable int forumId) {
 		controlService.updatePriorityUp(forumId);
 		
-		return "redirect:/a/controlPanel";
+		return "redirect:/a/controlPanel" + '#' + forumId;
 	}
 	/**
 	 *  This method will set forumId to a lower priority level.
@@ -159,7 +160,7 @@ public class ControlPanelController {
 	public String downForumPriority(@PathVariable int forumId) {
 		controlService.updatePriorityDown(forumId);
 		
-		return "redirect:/a/controlPanel";
+		return "redirect:/a/controlPanel" + '#' + forumId;
 	}
 	/**This method will delete a forum
 	 * A forum can't be deleted until all topics attached to it are exists*/
