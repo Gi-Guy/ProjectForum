@@ -5,51 +5,34 @@
 	
 	<body>
 	
-		<div th:replace="fragments.html :: topnav"></div>
-		
-		<div class="container text-center">
-			<h1>התחברות</h1>
-		</div>
+	<div th:replace="fragments.html :: topnav"></div>
+		<section>
+			<h1>התחבר</h1>
 			
-			
-		<div>
-			<h2>ברוכים הבאים לאתר הפורומים שלנו, תתחברו בבקשה</h2>
-			
-			<div th:if="${param.error}" class="alert alert-danger">    
-	        	Invalid username and password.
-	        </div>
-	        
-	        <div th:if="${param.logout}" class="alert alert-success"> 
-	            You have been logged out.
-	        </div>
-	        
-			<form method="POST" th:action="@{/login}">
-			
-				<!-- Email -->
-				<div>
-					<Label>אימייל</Label>
-					<div>
-						<input type="email" th:field="*{email}" required
-						minlength="1" maxlength="64" th:errorClass="is-invalid"/>
-						<div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="invalid-feedback"></div>
-					</div>
+		    <p th:if="${loginError}">אימייל או סיסמה לא נכונים</p>
+		    <form th:action="@{/login}" method="post">
+		    	<table class="center">
+		    		<!-- Email -->
+		    		<tr>
+		    			<td><label for="email">איימיל:</label></td>
+		    			<td><input type="text" id="email" name="email" autofocus="autofocus" /></td>
+		    		</tr>
+		    		
+		    		<!-- Password -->
+		    		<tr>
+		    			<td><label for="password">סיסמה:</label></td>
+		    			<td><input type="password" id="password" name="password" /> <br /></td>
+		    		</tr>
+		    	</table>
+				
+				<!-- Submit button -->
+				<div align="center">
+					<input class="button" type="submit" value="התחבר" />
 				</div>
 				
-				<!-- Password -->
-				<div>
-					<Label>סיסמה</Label>
-					<div>
-						<input type="password" th:field="*{password}" required
-						minlength="8" maxlength="60" th:errorClass="is-invalid"/>
-					</div>
-				</div>
-				
-				<button type="submit">התחבר</button>
-			</form>
-			
-			<p>אין לך חשבון?  &nbsp; <a th:href="@{/register}">לחץ כאן כדי להרשם</a></p>
-			
-		</div>	
+		    </form>
 		
+			<p> אין לך חשבון? &nbsp; <a th:href="@{/register}">לחץ כאן כדי להרשם</a></p>
+		</section>
 	</body>
 </html>
