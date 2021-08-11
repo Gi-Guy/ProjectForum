@@ -56,7 +56,8 @@ public class ConversationController {
 		
 		if (user == null || !user.getUsername().equals(authentication.getName())) {
 			// TODO Handle this exception
-			 return null;
+			mav = new ModelAndView("404");
+			return mav;
 		}
 		List<Conversation> convs = conversationServices.getAllConversationsByUser(user, authentication);
 		if(convs.isEmpty() || convs == null)
