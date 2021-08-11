@@ -18,7 +18,7 @@
 								<th>מזהה משתמש</th>
 								<th>דרגה</th>
 								<th>שם משתמש</th>
-								<th>Email</th>
+								<th>כתובת אימייל</th>
 								<th>שם פרטי</th>
 								<th>שם משפחה</th>
 								<th>תאריך הצטרפות</th>
@@ -29,8 +29,8 @@
 						<tr th:each = "user: ${listofUsers}">
 							<td th:text = "${user.id}">מזהה משתמש</td>
 							<td th:text = "${user.getRole().name}">דרגה</td>
-							<td th:text = "${user.username}">מזהה משתמש</td>
-							<td th:text = "${user.email}">Email</td>
+							<td><a th:href="@{/user/} + ${user.username}" th:text = "${user.username}">מזהה משתמש</a></td>
+							<td><a th:href="'mailto: '+ ${user.email}"  th:text = "${user.email}">כתובת אימייל</a></td>
 							<td th:text = "${user.firstName}">שם פרטי</td>
 							<td th:text = "${user.lastName}">שם משפחה</td>
 							<td th:text = "${user.joiningDate}">joining date</td>

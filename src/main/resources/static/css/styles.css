@@ -9,6 +9,7 @@ body {
 	background-color: LightGray;
 	margin-left:auto;
 	margin-right:auto;
+	overflow-x: hidden;
 	width:80%;
 }
 	
@@ -18,6 +19,10 @@ h1 {
 	margin: auto;
  	font-family: verdana;
 	font-size: 400%;
+}
+
+h2 {
+	font-size: 250%;
 }
 
 h3 {
@@ -72,6 +77,15 @@ table {
 textarea {
 	height: 8em;
     width: 40em;
+}
+
+
+
+/* ------- */
+/* General */
+/* ------- */
+.indented {
+	margin-right: 40px;
 }
 
 /* -------- */
