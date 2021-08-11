@@ -7,19 +7,16 @@
 	
 		<div th:replace="fragments.html :: topnav"></div>
 		
-		<div align="center">
+		<div>
 		
 			<h1>לוח בקרה</h1>
-			<h2>ערוך ונהל את הפורום</h2>
-			
             <p> ברוך הבא <b>[[${#request.userPrincipal.principal.fullName}]]</b></p>
-		
-			<!-- Forums section  -->
 			<hr>
 			
-			<h3>ערוך ונהל פורומים</h3>
+			<!-- Forums section  -->
+			<h2>ערוך ונהל את הפורום</h2>
 			
-			<table class = "table-striped" border="1" cellpadding="10" style="text-align:right">
+			<table class = "table-striped stretch" border="1" style="text-align:right">
 				<thead>
 						<tr>
 							<th colspan="6">
