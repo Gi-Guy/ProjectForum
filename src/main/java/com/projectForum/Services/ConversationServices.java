@@ -36,10 +36,9 @@ public class ConversationServices {
 			return userRepo.findByUsername(username);
 		}
 		/**
-		 * 	This method will return a list of all Conversation by userId
+		 * 	This method will return a list of all Conversation by User
 		 * */
-		public List<Conversation> getAllConversationsByUserId(int userId, Authentication authentication){
-			User user = userRepo.findUserById(userId);
+		public List<Conversation> getAllConversationsByUser(User user, Authentication authentication){
 			List<Conversation> convs = null;
 			if(user != null && user.getUsername().equals(authentication.getName()) || 
 					userRepo.findByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {

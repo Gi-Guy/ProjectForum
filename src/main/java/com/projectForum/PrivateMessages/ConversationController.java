@@ -14,43 +14,62 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.projectForum.Services.ConversationServices;
-import com.projectForum.user.UserRepository;
+import com.projectForum.user.User;
 
 @Controller
 @RequestMapping("/messages/")
 public class ConversationController {
 	
-	
-	private ConversationServices conversationServices;
-	private UserRepository		userRepo;
-	
 	@Autowired
-	public ConversationController(ConversationServices conversationServices, UserRepository userRepo) {
-		this.conversationServices = conversationServices;
-		this.userRepo = userRepo;
-	}
+	private ConversationServices conversationServices;
+	
 	/**
 	 * 	This method will display all messages of an user.*/
-	@GetMapping("test/{userId}")
-	public String displayAllUserMessages(@PathVariable int userId, Authentication authentication,
+	//@RequestMapping("{username}")
+	/*@GetMapping("{username}")
+	public String displayAllUserMessages(@PathVariable String username, Authentication authentication,
 												Model model) {
-		// TODO FIX THIS METHOD
-		List<Conversation> convs = conversationServices.getAllConversationsByUserId(userId, authentication);
+		User user = conversationServices.getUuserByUsername(username);
+		
+		if (user == null) {
+			// TODO Handle this exception
+			return null;
+		}
+		List<Conversation> convs = conversationServices.getAllConversationsByUser(user, authentication);
 		
 		if(convs.isEmpty() || convs == null)
 			model.addAttribute("isEmpty", true);
 		else
 			model.addAttribute("convs",convs);
 		
-		return "";
+		return "messages";
+	}*/
+	@RequestMapping("")
+	ModelAndView displayAllUserMessages(@RequestParam(name = "username") String username,Authentication authentication ) {
+		ModelAndView mav = new ModelAndView("messages");
+		User user = conversationServices.getUuserByUsername(username);
+		
+		if (user == null || !user.getUsername().equals(authentication.getName())) {
+			// TODO Handle this exception
+			 return null;
+		}
+		List<Conversation> convs = conversationServices.getAllConversationsByUser(user, authentication);
+		if(convs.isEmpty() || convs == null)
+			mav.addObject("isEmpty", true);
+		else
+			mav.addObject("convs",convs);
+		
+		return mav;
 	}
 	/**
 	 * 	This method will display a Conversation by conversationId
 	 * */
-	@GetMapping("{conversationId}")
+	@GetMapping("id/{conversationId}")
 	public String getConversationbyId(@PathVariable int conversationId, Model model, 
 										Authentication authentication) {
 		
@@ -69,7 +88,7 @@ public class ConversationController {
 			model.addAttribute("newAnswer", new Answer());
 			return "conversation";
 		}
-		 return "redirect:";
+		 return "redirect:/messages/";
 	}
 	
 	/**
@@ -88,7 +107,7 @@ public class ConversationController {
 		// No errors, adding new answer
 		conversationServices.addNewAnswer(conversationId, answer, authentication);
 		model.asMap().clear();
-		return "redirect:/messages/" + conversationId;
+		return "redirect:/messages/id/" + conversationId;
 	}
 	/**
 	 * 	This method will create an Conversation between two users*/
