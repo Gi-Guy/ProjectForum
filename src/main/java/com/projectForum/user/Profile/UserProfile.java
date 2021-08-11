@@ -13,7 +13,7 @@ public class UserProfile {
 	private List<Topic> topics;
 	
 	private List<Post> posts;
-	// TODO add list of private messages, I think.
+	
 	
 	public UserProfile() {
 		

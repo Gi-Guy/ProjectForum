@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.projectForum.user.UserRepository;
 
+// TODO delete this temporary index.
 @Controller
 public class tempIndex {
 	

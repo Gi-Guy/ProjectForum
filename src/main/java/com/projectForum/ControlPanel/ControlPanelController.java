@@ -71,7 +71,7 @@ public class ControlPanelController {
 		 * */
 		
 		List<Forum> forums = forumRepo.findByOrderByPriorityAsc();
-		model.addAttribute("forums", controlService.createForumDisplayList(forums));
+		model.addAttribute("forumForms", controlService.createForumDisplayList(forums));
 		
 		/*
 		 * Users section
@@ -96,6 +96,7 @@ public class ControlPanelController {
 		model.addAttribute("newForum", new Forum());		
 		return "new_Forum_page";
 	}
+	
 	/**This method will create a new forum*/
 	@PostMapping("newForum")
 	public String proccesNewForum(@Valid @ModelAttribute Forum forum, BindingResult bindingResult, Authentication authentication, Model model) {
@@ -114,7 +115,8 @@ public class ControlPanelController {
 			forum.setPriority(forums.size() + 1);	
 		}
 		forumRepo.save(forum);
-		return "redirect:/a/controlPanel";
+		// User will be redirected to the place in the control panel where the forum they made is shown.
+		return "redirect:controlPanel" + '#' + forum.getId(); 
 	}
 	
 	/**
@@ -128,7 +130,7 @@ public class ControlPanelController {
 		return "edit_Forum_page";
 	}
 	/**
-	 * This method will proccess all admins actions in forum's editing page.
+	 * This method will process the actions in the forum's editing page.
 	 * */
 	@PostMapping("editForum")
 	public String editForum(@Valid @ModelAttribute("editForum") EditForumForm editForum,
@@ -140,7 +142,7 @@ public class ControlPanelController {
 		if(userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN")) 
 			editService.updateForum(forum, editForum);
 		
-		return "redirect:/a/controlPanel";
+		return "redirect:controlPanel" + '#' + forum.getId();
 	}
 	
 	/**
@@ -150,7 +152,7 @@ public class ControlPanelController {
 	public String addForumPriority(@PathVariable int forumId) {
 		controlService.updatePriorityUp(forumId);
 		
-		return "redirect:/a/controlPanel";
+		return "redirect:/a/controlPanel" + '#' + forumId;
 	}
 	/**
 	 *  This method will set forumId to a lower priority level.
@@ -159,7 +161,7 @@ public class ControlPanelController {
 	public String downForumPriority(@PathVariable int forumId) {
 		controlService.updatePriorityDown(forumId);
 		
-		return "redirect:/a/controlPanel";
+		return "redirect:/a/controlPanel" + '#' + forumId;
 	}
 	/**This method will delete a forum
 	 * A forum can't be deleted until all topics attached to it are exists*/
@@ -192,7 +194,7 @@ public class ControlPanelController {
 	}
 	
 	/**
-	 *  This method will disply to Admin an User editing page.
+	 *  This method will display to Admin an User editing page.
 	 *  Admin can edit user's role rank or delete User.*/
 	@RequestMapping("/editUser")
 	ModelAndView showUserEditForm(@RequestParam(name = "username") String username) {
@@ -207,7 +209,7 @@ public class ControlPanelController {
 		return mav;
 	}
 	/**
-	 *  This method will proccess all admin actions in user editing page.
+	 *  This method will process all admin actions in user editing page.
 	 *  */
 	@RequestMapping("/updateUser")
 	public String updateUser(@Valid @ModelAttribute("editUser") EditUserForm editUser, BindingResult bindingResult, 

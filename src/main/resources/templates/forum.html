@@ -1,62 +1,44 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Declaring  XML using-->
-<head>
-    <meta charset="UTF-8">
-    <title th:text="${forum.name}"></title>
-    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
-    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
-    
-    <style>
-	.button {
-  		background-color: #04AA6D; /* Green */
-  		border: none;	  
-  		color: white;
-  		padding: 20px;
-  		text-align: center;
-  		text-decoration: none;
-  		display: inline-block;
-  		font-size: 16px;
-  		margin: 4px 2px;
- 	 	cursor: pointer;
-	}
-	.button5 {border-radius: 15%;}
-	</style>
-</head>
-<body>
-	 <div class="container text-right">
-
-        <div class="row">
-            <div class="col s12">
-                <div class="row">
-                    <div class="col s12">
-                        <h3 th:text=" ${forum.name} + '        :' + 'פורום'"></h3>
-                        <p th:text="${forum.description} + '   :'  + 'תיאר'"></p>
-          					<hr>
-                        <a sec:authorize="isAuthenticated()" th:href="@{/topic/newTopic/} + ${forum.id}">צור שרשור חדש</a>
-                        	<hr>
-                    </div>
-                </div>
-                <div class="divider"></div>
-                <div class="row" th:each="topic : ${topics}">
-                    <div class="col s12">	
-                        <div class="forum">
-                            <a th:href="@{/topic/} + ${topic.id}" th:text="${topic.title} + '  :' + ${topic.user.username}"></a>
-                            <!-- 
-                             <span class="right"></span> <span class="truncate"
-                                th:text="${topic.content}"></span>
-                             -->
-                            <hr>
-                           
-                        </div>
-                        <div class="divider"></div>
-                    </div>
-						<hr>
-                </div>
-            </div>
-        </div>
-    </div>
+ 
+	<head th:replace="fragments.html :: headerfiles(title=${forum.name})"></head>
+	
+	<body>
+	
+		<div th:replace="fragments.html :: topnav"></div>
+		 
+		<h1 th:text="${forum.name}"></h1>
+		<h2 th:text="${forum.description}"></h2>
+		<hr>
+		 
+		<table class="table-striped" border="1" cellpadding="10" style="text-align:right">
+			<thead>
+					<tr>
+						<th colspan="6">
+							<h2>רשימת כל השרשורים</h2>
+						</th>	
+					</tr>
+					<tr>
+						<th>שם השרשור</th>
+						<th>תקציר</th>
+						<th>נוצר על ידי</th>
+						<th>מספר צפיות</th>
+					</tr>
+			</thead>
+			<tbody>
+				<tr th:each="topic : ${topics}">
+					<td><a th:href="@{/topic/} + ${topic.id}" th:text="${topic.title}"></a></td>
+					<td th:text = "${topic.content}"></td>
+					<td><a th:href="@{/user/} + ${topic.user.username}" th:text = "${topic.user.username}"></a></td>
+					<td th:text = "${topic.views}"></td>
+				</tr>
+			</tbody>
+		</table>
 		
-</body>
+		<hr>
+	
+        <a sec:authorize="isAuthenticated()" th:href="@{/topic/newTopic/} + ${forum.id}">צור שרשור חדש</a>
+
+	</body>
 </html>

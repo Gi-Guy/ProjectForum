@@ -1,7 +1,6 @@
-package com.projectForum.post;
+package com.projectForum.PrivateMessages;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,25 +14,16 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.projectForum.topic.Topic;
 import com.projectForum.user.User;
 
 @Entity
-@Table(name = "post")
-public class Post {
-	
+@Table(name = "answer")
+public class Answer {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	
-	@Column(updatable = false, nullable = false)
-	private LocalDateTime createdDate;
-	
-	@Column(updatable = true, nullable = false)
-	private LocalDateTime lastActivity;
-	
-	/* User Author Information */
 	@ManyToOne
 	@JoinColumn(name="user_id")
 	@JsonManagedReference
@@ -42,12 +32,16 @@ public class Post {
 	@Column (nullable = false, columnDefinition = "TEXT")
 	private String content;
 	
-	// Each post has to be attached to a topic but each topic can have many posts
 	@ManyToOne
-	@JoinColumn(name = "id_topic")
+	@JoinColumn(name = "id_conversation")
 	@JsonManagedReference
-	 private Topic topic;
+	 private Conversation conversation;
 	
+	@Column(updatable = false, nullable = false)
+	private LocalDateTime createdDate;
+	
+	@Column(updatable = true, nullable = false)
+	private LocalDateTime lastActivity;
 	
 	@PrePersist
 	 protected void onCreate() {
@@ -59,42 +53,13 @@ public class Post {
 	protected void onUpdate() {
 		this.lastActivity = LocalDateTime.now();
 	}
-	
-	public Topic getTopic() {
-		return topic;
-	}
 
-	public void setTopic(Topic topic) {
-		this.topic = topic;
-	}
-	
 	public int getId() {
 		return id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String conent) {
-		this.content = conent;
-	}
-
-	public LocalDateTime getCreatedDate() {
-		return createdDate;
-	}
-
-	public void setCreatedDate(LocalDateTime createDate) {
-		this.createdDate = createDate;
-		this.lastActivity = createDate;
-	}
-
-	public LocalDateTime getLastActivity() {
-		return lastActivity;
 	}
 
 	public User getUser() {
@@ -105,24 +70,51 @@ public class Post {
 		this.user = user;
 	}
 	
-    public String displayParsedCreatedDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm - dd.MM.yyyy");
-        return this.createdDate.format(formatter);
-    }
-    //Auto generated 
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public Conversation getConversation() {
+		return conversation;
+	}
+
+	public void setConversation(Conversation conversation) {
+		this.conversation = conversation;
+	}
+
+	public LocalDateTime getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(LocalDateTime createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public LocalDateTime getLastActivity() {
+		return lastActivity;
+	}
+
+	public void setLastActivity(LocalDateTime lastActivity) {
+		this.lastActivity = lastActivity;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((content == null) ? 0 : content.hashCode());
+		result = prime * result + ((conversation == null) ? 0 : conversation.hashCode());
 		result = prime * result + ((createdDate == null) ? 0 : createdDate.hashCode());
 		result = prime * result + id;
 		result = prime * result + ((lastActivity == null) ? 0 : lastActivity.hashCode());
-		result = prime * result + ((topic == null) ? 0 : topic.hashCode());
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		return result;
 	}
-    //Auto generated 
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -131,11 +123,16 @@ public class Post {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Post other = (Post) obj;
+		Answer other = (Answer) obj;
 		if (content == null) {
 			if (other.content != null)
 				return false;
 		} else if (!content.equals(other.content))
+			return false;
+		if (conversation == null) {
+			if (other.conversation != null)
+				return false;
+		} else if (!conversation.equals(other.conversation))
 			return false;
 		if (createdDate == null) {
 			if (other.createdDate != null)
@@ -149,11 +146,6 @@ public class Post {
 				return false;
 		} else if (!lastActivity.equals(other.lastActivity))
 			return false;
-		if (topic == null) {
-			if (other.topic != null)
-				return false;
-		} else if (!topic.equals(other.topic))
-			return false;
 		if (user == null) {
 			if (other.user != null)
 				return false;
@@ -161,8 +153,12 @@ public class Post {
 			return false;
 		return true;
 	}
-    
-    
-    
-    //TODO add quick display for content
+
+	@Override
+	public String toString() {
+		return "Answer [id=" + id + ", user=" + user.getUsername() + ", answer=" + content + ", conversation=" + conversation
+				+ ", createdDate=" + createdDate + ", lastActivity=" + lastActivity + "]";
+	}
+	
+	
 }

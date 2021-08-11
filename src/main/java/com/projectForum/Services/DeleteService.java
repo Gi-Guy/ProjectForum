@@ -6,6 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.projectForum.ControlPanel.EditUserForm;
+import com.projectForum.PrivateMessages.Answer;
+import com.projectForum.PrivateMessages.AnswerRepository;
+import com.projectForum.PrivateMessages.Conversation;
+import com.projectForum.PrivateMessages.ConversationRepository;
+import com.projectForum.REST.DeleteUserForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
@@ -16,11 +21,6 @@ import com.projectForum.user.User;
 import com.projectForum.user.UserRepository;
 
 
-//TODO TEST THIS FILE
-/* ###########################################################
-* 		WARNING: THIS SERVICE FILE ISN'T TESTED YET!
-* ###########################################################*/
-
 
 /**
  *  This Class will use as a service to all deletion option in the application */
@@ -28,18 +28,84 @@ import com.projectForum.user.UserRepository;
 @Service
 public class DeleteService {
 	
-	private UserRepository	userRepo;
-	private PostRepository	postRepo;
-	private TopicRepository	topicRepo;
-	private ForumRepository	forumRepo;
+	private UserRepository		userRepo;
+	private PostRepository		postRepo;
+	private TopicRepository		topicRepo;
+	private ForumRepository		forumRepo;
+	private AnswerRepository	answerRepo;
+	private ConversationRepository	convRepo;
 	
 	@Autowired
 	public DeleteService(UserRepository userRepo, PostRepository postRepo, TopicRepository topicRepo,
-			ForumRepository forumRepo) {
+			ForumRepository forumRepo, AnswerRepository answerRepo, ConversationRepository	convRepo) {
 		this.userRepo = userRepo;
 		this.postRepo = postRepo;
 		this.topicRepo = topicRepo;
 		this.forumRepo = forumRepo;
+		this.answerRepo = answerRepo;
+		this.convRepo = convRepo;
+	}
+	
+	/*
+	 * ################################################################
+	 * 						DELETE USERS
+	 * ################################################################
+	 * */
+	/** 
+	 * 			#####REST ONLY#####
+	 * This method will delete an exists user.
+	 *  It will remove user's data dependent on Keep activity boolean.
+	 *  
+	 *  @see REST ONLY 
+	 *  @return boolean true if deleted user.*/
+	public boolean deleteUser(DeleteUserForm deleteUser) {
+		User userByID = null;
+		User userByUsername = null;
+		if (deleteUser.getUserId() != 0)
+			userByID = userRepo.findUserById(deleteUser.getUserId());
+		if(!deleteUser.getUsername().isBlank())
+			userByUsername = userRepo.findByUsername(deleteUser.getUsername());
+		
+		// Checking if username and ID lead to same user
+		if(userByID!=null && userByUsername!=null) {
+			if(!userByID.equals(userByUsername))
+				// ID and username are not the same user!
+				return false;
+		}
+		
+		// Checking if both are null
+		if(userByID == null && userByUsername == null) {
+			// User isn't exists!
+			return false;
+		}
+		// At this point one of the users isn't null
+		if(userByUsername != null) {
+			
+			//	### USER'S PRIVATE MESSAGES MUST BE DELETED IN ANY CASE!
+			// Deleting user's private messages
+			List<Conversation> conversations = convRepo.findBySenderOrReceiver(userByUsername, userByUsername);
+			this.deleteConversations(conversations);
+			
+			if(deleteUser.isKeepActivity())
+				this.deleteUserKeepActivity(userByUsername);
+			else
+				this.deleteUserDontKeepActivity(userByUsername);	
+		}
+		else if(userByID != null) {
+			
+			//	### USER'S PRIVATE MESSAGES MUST BE DELETED IN ANY CASE!
+			// Deleting user's private messages
+			List<Conversation> conversations = convRepo.findBySenderOrReceiver(userByID, userByID);
+			this.deleteConversations(conversations);
+			
+			
+			if(deleteUser.isKeepActivity())
+				this.deleteUserKeepActivity(userByID);
+			else
+				this.deleteUserDontKeepActivity(userByID);
+		}
+		
+		return true;
 	}
 	
 	/** This method will delete an exists user.
@@ -47,10 +113,21 @@ public class DeleteService {
 	public void deleteUser(EditUserForm editUser) {
 		User user = userRepo.findUserById(editUser.getId());
 		
+		if(user == null)
+			return;
+
+		//	### USER'S PRIVATE MESSAGES MUST BE DELETED IN ANY CASE!
+		// Deleting user's private messages
+		List<Conversation> conversations = convRepo.findBySenderOrReceiver(user, user);
+		this.deleteConversations(conversations);
+		
+		
 		if(editUser.isKeepActivity())
 			this.deleteUserKeepActivity(user);
 		else
 			this.deleteUserDontKeepActivity(user);
+
+
 	}
 	
 	/** This method will delete an exists user.
@@ -139,7 +216,11 @@ public class DeleteService {
 	public void deleteUser(int userId) {
 		this.deleteUserKeepActivity(userRepo.findUserById(userId));
 	}
-	
+	/*
+	 * ################################################################
+	 * 						DELETE POSTS
+	 * ################################################################
+	 * */
 	/** This method will delete a post by postId
 	 * @param int postId*/
 	public void deletePost (int postId) {
@@ -164,7 +245,11 @@ public class DeleteService {
 			this.deletePost(posts.get(i));
 			
 	}
-	
+	/*
+	 * ################################################################
+	 * 						DELETE TOPICS
+	 * ################################################################
+	 * */
 	/** This method will delete a topic and it posts by topicId.
 	 * @param int topicId*/
 	public void deleteTopic(int topidId) {
@@ -198,6 +283,11 @@ public class DeleteService {
 			this.deleteTopic(topics.get(i));
 	}
 	
+	/*
+	 * ################################################################
+	 * 						DELETE FORUMS
+	 * ################################################################
+	 * */
 	/** This method will delete a forum by forumId
 	 *  @param int forumId*/
 	public void deleteForum(int forumId) {
@@ -255,6 +345,72 @@ public class DeleteService {
 			Forum updateForum = forumRepo.findByPriority(i);
 			updateForum.setPriority(i - 1);
 			forumRepo.save(updateForum);
+		}
+	}
+	/*
+	 * ################################################################
+	 * 						DELETE ANSWERS
+	 * ################################################################
+	 * */
+	/**
+	 * 	This method will delete a answer by answerId
+	 * @param int*/
+	public void deleteAnswer(int answerId) {
+		Answer answer = answerRepo.findById(answerId);
+		
+		if (answer!=null)
+			this.deleteAnswer(answer);
+	}
+	/**
+	 * 	This method will delete a answer in a conversation by Answer object
+	 * @param Answer*/
+	public void deleteAnswer(Answer answer) {
+		if (answer!=null)
+			answerRepo.delete(answer);
+		
+	}
+	
+	/**
+	 * This method will delete a list of answers 
+	 * @param List<Answer>
+	 * */
+	public void deleteAnswer(List<Answer> answers) {
+		
+		if(answers.isEmpty())
+			return;
+		
+		for (int i=0; i<answers.size(); i++)
+			this.deleteAnswer(answers.get(i));
+	}
+	/*
+	 * ################################################################
+	 * 						DELETE CONVERSATION
+	 * ################################################################
+	 * */
+	/**
+	 * 	This method will delete an conversation by id
+	 * @param int */
+	public void deleteConversation(int conId) {
+		Conversation conversation = convRepo.findById(conId);
+		
+		if(conversation!=null) 
+			this.deleteConversation(conversation);
+	}
+	/**
+	 * 	This method will delete an conversation by Conversation
+	 * @param Conversation*/
+	public void deleteConversation(Conversation conversation) {
+		if (conversation != null) {
+			List<Answer> answers = answerRepo.findByConversation(conversation);
+			this.deleteAnswer(answers);
+			convRepo.delete(conversation);
+		}
+	}
+	public void deleteConversations(List<Conversation> conversations) {
+		if(conversations.isEmpty())
+			return;
+		for(int i=0; i<conversations.size(); i++) {
+			this.deleteConversation(conversations.get(i));
 		}
 	}
 }

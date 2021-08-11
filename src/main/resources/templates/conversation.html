@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> 
+
+	<head th:replace="fragments.html :: headerfiles('שרשור')"></head>
+	
+	<body>
+	
+		<div th:replace="fragments.html :: topnav"></div>
+		
+		<br>
+		
+
+		<!-- conversation -->
+		<h1 th:text = "${conversation.getTitle()}"> Title:>conversation name</h1>
+		<hr>
+		
+		<section>
+			<p style="text-align: justify; display:block; white-space:pre-wrap"
+				th:text = "${conversation.getSender().getUsername()} + ': ' + ${conversation.getContent()}">Content</p>
+			
+					<!-- DELETE conversation -->
+				 <a class="button" th:href="@{/messages/delete/conversation/} + ${conversation.id}">
+                       <i class="material-icons white black-text">מחק שיחה</i>
+                   </a>
+		</section>
+		
+		<!-- Number of answers -->
+		<header>
+			<blockquote th:text="|תגובות: | + ${answers.size()}">מספר הודעות:</blockquote>
+		</header>
+		<hr>
+		
+		<!-- displaying all answers -->
+		
+		<div th:each = "answer: ${answers}">
+			<!-- username -->
+			<section>
+				<p th:text = "${answer.getUser().getUsername()} + ':'">Answer author</p>
+			</section>
+			
+			<!-- Answer -->
+			<section>
+				<p style="text-align: justify; display:block; white-space:pre-wrap"
+				th:text = "${answer.getContent()}"> Answer</p>
+			</section>
+			<hr>
+					<!-- DELETE ANSWER -->
+				 <a class="button" th:href="@{/messages/delete/answer/} + ${answer.id}">
+                       <i class="material-icons white black-text">מחק הודעה</i>
+                   </a>
+			<hr>
+		</div>
+	
+		<!-- New Answer -->
+		<header>
+			<blockquote>הוסף תגובה:</blockquote>
+		</header>
+			
+		<div sec:authorize="isAuthenticated()">
+			<form th:action="@{/messages/} + ${conversation.getId()}" method="POST" th:object="${answer}">
+				<textarea  name="content" required></textarea>
+				<input type="hidden" name="id_conversation" th:value="${conversation.getId()}"/>
+				<input class="button" type="submit" value="שלח" />
+			</form>
+		</div>
+	</body>
+</html>

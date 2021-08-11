@@ -1,59 +1,38 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Declaring  XML using-->
-<head>
-    <meta charset="UTF-8">
-    <title>רשימת כל הפורומים</title>
-    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
-    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
-    
-    <style>
-	.button {
-  		background-color: #04AA6D; /* Green */
-  		border: none;	  
-  		color: white;
-  		padding: 20px;
-  		text-align: center;
-  		text-decoration: none;
-  		display: inline-block;
-  		font-size: 16px;
-  		margin: 4px 2px;
- 	 	cursor: pointer;
-	}
-	.button5 {border-radius: 15%;}
-	</style>
-</head>
-<body>
-	 <div class="container text-right">
-        <div class="row">
-            <div class="col s12">
-                <div class="row">
-                    <div class="col s12">
-                        <p>רשימת כל הפורומים</p>
-          					<hr>
-                        <a sec:authorize="isAuthenticated()" th:href="@{/forum/newForum}">צור פורום חדש</a>
-                        	<hr>
-                    </div>
-                </div>
-                <div class="divider"></div>
-                <div class="row" th:each="forum : ${forums}">
-                    <div class="col s12">	
-                        <div class="forum">
-                            <a th:href="@{/forum/} + ${forum.id}" th:text="${forum.name} + '  :' + ${forum.description}"></a>
-                            <!-- 
-                             <span class="right"></span> <span class="truncate"
-                                th:text="${topic.content}"></span>
-                             -->
-                            <hr>
-                           
-                        </div>
-                        <div class="divider"></div>
-                    </div>
-						<hr>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
+
+	<head th:replace="fragments.html :: headerfiles('רשימת כל הפורומים')"></head>
+	
+	<body>
+	
+		<div th:replace="fragments.html :: topnav"></div>
+		
+		<h1>ברוכים הבאים לפורום הכי טוב בתבל</h1>
+		<h3 style="text-align: center">אל תמליצו לחברים שלכם לבוא לפה בבקשה</h3>
+		
+		<hr><br>
+		
+		<table class="table-striped" border="1" cellpadding="10" style="text-align:right">
+			<thead>
+					<tr>
+						<th colspan="6">
+							<h2>רשימת כל הפורומים</h2>
+						</th>	
+					</tr>
+					<tr>
+						<th>שם הפורום</th>
+						<th>תקציר</th>
+						<th>מספר שרשורים</th>
+					</tr>
+			</thead>
+			<tbody>
+				<tr th:each = "forum : ${forums}">
+					<td><a th:href="@{/forum/} + ${forum.forum.id}" th:text="${forum.forum.name}"></a></td>
+					<td th:text = "${forum.forum.description}"></td>
+					<td th:text = "${forum.getNumOfTopics()}"></td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
 </html>

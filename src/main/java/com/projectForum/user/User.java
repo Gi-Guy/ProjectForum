@@ -20,6 +20,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.projectForum.Security.Role;
 
 
@@ -58,6 +59,7 @@ public class User {
 			joinColumns = @JoinColumn(name = "user_id"),
 			inverseJoinColumns = @JoinColumn(name = "role_id")
 			)
+	@JsonManagedReference
 	private Set<Role> roles = new HashSet<>();
 	
 	
@@ -186,7 +188,7 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", email=" + email + ", firstName=" + firstName
-				+ ", lastName=" + lastName + ", password=" + password + ", isActive=" + isActive + ", roles=" + roles
+				+ ", lastName=" + lastName + ", password=" + password + ", isActive=" + isActive + ", role=" + this.getRole().getName()
 				+ ", joiningDate=" + joiningDate + ", lastLogin=" + lastLogin + "]";
 	}
 
@@ -253,7 +255,7 @@ public class User {
 		if (roles == null) {
 			if (other.roles != null)
 				return false;
-		} else if (!roles.equals(other.roles))
+		} else if (!getRole().getName().equals(other.getRole().getName()))
 			return false;
 		if (username == null) {
 			if (other.username != null)

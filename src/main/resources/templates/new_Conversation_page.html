@@ -7,11 +7,12 @@
 	
 		<div th:replace="fragments.html :: topnav"></div>
 		
-		<h1>צור שרשור חדש</h1>
-			
-		<form th:action = "@{/topic/newTopic}" method = "post"
+		<h1>שלח הודעה חדשה ל: 
+		<label th:text = "${newConv.getReceiver().getUsername()}"></label>
+		</h1>
+		<form th:action = "@{/messages/NewConversation}" method = "post"
 		style ="max-width:600px; margin: 0 auto;"
-		th:object = "${newTopic}">
+		th:object = "${newConv}">
 		
 			<table>
 				<tr>
@@ -25,7 +26,7 @@
 				</tr>
 				<tr>
 					<td>
-						<label>תוכן</label>
+						<label>הודעה</label>
 					</td>
 					<td>
 						<textarea name='content' th:field="*{content}" required></textarea>
@@ -35,7 +36,9 @@
 			</table>
 		
 			<!-- Submit button -->
-			<input type="hidden" name = "forumId" th:value="${newTopic.forumId}"/>
+			<!-- Saving Receiver information -->
+			<input type="hidden" id = "receiver" name = "receiver.setReceiver()" th:value="${newConv.getReceiver()}"/>
+			<input type="hidden"  name = "receiver.id" th:value="${newConv.receiver.id}"/>
 			<input class="button" type="submit" value="שרשור חדש" />
 			
 		</form>

@@ -11,7 +11,6 @@ import com.projectForum.ControlPanel.EditUserForm;
 import com.projectForum.ControlPanel.ForumForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.forum.ForumRepository;
-import com.projectForum.post.PostRepository;
 import com.projectForum.topic.TopicRepository;
 import com.projectForum.user.User;
 import com.projectForum.user.UserRepository;
@@ -26,15 +25,13 @@ import com.projectForum.user.UserRepository;
 public class ControlPanelServices {
 
 	private UserRepository	userRepo;
-	private PostRepository	postRepo;
 	private TopicRepository	topicRepo;
 	private ForumRepository	forumRepo;
 	
 	@Autowired
-	public ControlPanelServices(UserRepository userRepo, PostRepository postRepo, TopicRepository topicRepo,
+	public ControlPanelServices(UserRepository userRepo, TopicRepository topicRepo,
 			ForumRepository forumRepo) {
 		this.userRepo = userRepo;
-		this.postRepo = postRepo;
 		this.topicRepo = topicRepo;
 		this.forumRepo = forumRepo;
 	}

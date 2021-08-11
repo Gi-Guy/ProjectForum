@@ -97,8 +97,8 @@ public class TopicController {
 		post.setTopic(topicRepo.findTopicById(topicId));
 		postRepo.save(post);
 
-		model.asMap().clear();//Cleaning model because it don't some weird things if not.
-		return "redirect:/topic/" + topicId; //User will return to the same topic page
+		model.asMap().clear(); // Cleaning the model as it does some weird things if not.
+		return "redirect:" + topicId + '#' + post.getId(); // User will be redirected to the post they wrote.
 	}
 	
 	/** This method will return a model and navigate the user to newTopic page */
@@ -124,6 +124,9 @@ public class TopicController {
 			// TODO I'm not really sure what should we put into model.
 			return "new_Topic_page";
 		}
+		// Checking if title or content are blanked.
+		if(newTopic.getContent().isBlank() || newTopic.getTitle().isBlank())
+			return "new_Topic_page";
 		
 		// Creating new Topic
 		Topic topic = new Topic();
@@ -186,29 +189,4 @@ public class TopicController {
 		return "redirect:/forum/" + topic.getForum().getId();
 	}
 	
-	/* BACK UP BEFORE TESTING
-	@GetMapping("delete/{topicId}")
-	public String deleteTopic(@PathVariable int topicId, Authentication authentication,
-									RedirectAttributes model) {
-		// find topic to remove and all it posts
-		Topic topic = topicRepo.findTopicById(topicId);
-		List<Post> posts = postRepo.findPostsByTopic(topic);
-		
-		// making sure that topic is exists and user allowed to remove it		
-		if (topic == null || authentication == null || !authentication.getName().equals(topic.getUser().getUsername())) {
-			//topic can't be removed
-			return "redirect:/";
-		}
-		// at this point topic can be removed and posts as well.
-		// Removing posts
-		if(posts != null) {
-			while( !posts.isEmpty() ) {
-				postRepo.delete(posts.get(0));
-			}
-		}
-		// Topic has no posts, removing topic
-		topicRepo.delete(topic);
-		model.addFlashAttribute("message", "Topic has been removed.");
-		return "redirect:/forum/" + topic.getForum().getId();
-	}*/
 }

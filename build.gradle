@@ -13,7 +13,7 @@ repositories {
 }
 
 ext {
-  set('springCloudVersion', "2020.0.3")
+	set('springCloudVersion', "2020.0.3")
 }
 
 dependencies {
@@ -28,15 +28,12 @@ dependencies {
 	runtimeOnly 'mysql:mysql-connector-java'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-	implementation 'org.webjars:bootstrap:4.3.1'
-	implementation 'org.webjars:webjars-locator-core'
-	
 }
 
 dependencyManagement {
-  imports {
-    mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-  }
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }
 
 test {
