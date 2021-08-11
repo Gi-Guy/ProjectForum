@@ -75,7 +75,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 					<!-- List of links to topics by this user (and a message if none were made) ordered by number of posts -->
 					<h2>שרשורים שנוצרו על ידי משתמש זה:</h2>
 					<div class="indented" th:each = "topic: ${userProfile.getTopics()}">
-						<h3 th:text="'בפורום ' + ${topic.getForum().getName()} + ' פתח את השרשור:'"></h3>
+						<h3 th:text="'בפורום &quot' + ${topic.getForum().getName()} + '&quot פתח את השרשור:'"></h3>
 						<a class="indented" th:href="@{/topic/} + ${topic.getId()}" th:text="${topic.getTitle()}"></a>
 					</div>
 					
@@ -84,7 +84,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 					<!-- List of posts by this user (with links to them) (message if none were made) ordered by number of views -->
 					<h2>הודעות שנוצרו על ידי משתמש זה:</h2>
 					<div class="indented" th:each = "post: ${userProfile.getPosts()}">
-						<h3 th:text="'בשרשור ' + ${post.getTopic().getTitle()} + ' כתב:'"></h3>
+						<h3 th:text="'בשרשור &quot' + ${post.getTopic().getTitle()} + '&quot כתב:'"></h3>
 						<a class="indented" th:href="@{/topic/} + ${post.getTopic().getId()} + '#' + ${post.getId()}" th:text="${post.getContent()}"></a>
 					</div>
 				</td>
