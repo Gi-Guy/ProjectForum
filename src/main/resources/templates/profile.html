@@ -14,82 +14,86 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 		
 
 		<table>
-			<col style="width: 20%;" />
-			<col style="width: 10%;" />
-			<col style="width: 70%;" />
+			<colgroup>
+				<col style="width: 20%;" />
+				<col style="width: 10%;" />
+				<col style="width: 70%;" />
+			</colgroup>
 		
-			<tr style="vertical-align: top;">		
-				<td>
-					<!-- Information about the user -->
-					<table class="table-striped">
-						<tbody>
-							<tr>
-								<td>שם פרטי</td>
-								<td th:text="${userProfile.getUser().getFirstName()}"></td>
-							</tr>
-							<tr>
-								<td>שם משפחה</td>
-								<td th:text="${userProfile.getUser().getLastName()}"></td>
-							</tr>
-							<tr>
-								<td>אימייל</td>
-								<td><a th:href="'mailto: '+ ${userProfile.getUser().getEmail()}" th:text ="${userProfile.getUser().getEmail()}">כתובת אימייל</a></td>
-							</tr>
-							<tr>
-								<td>כרגע באתר</td>
-								<td th:text="${userProfile.getUser().isActive()}"></td>
-							</tr>
-							<tr>
-								<td>סוג משתמש</td>
-								<td th:text="${userProfile.getUser().getRole().getName()}"></td>
-							</tr>
-							<tr>
-								<td>נרשם בתאריך</td>
-								<td th:text="${userProfile.getUser().getJoiningDate().toLocalDate()}"></td>
-							</tr>
-							<tr>
-								<td>נכנס פעם אחרונה</td>
-								<td th:text="${userProfile.getUser().getLastLogin().toLocalTime()} 
-									+ ', ' + ${userProfile.getUser().getLastLogin().toLocalDate()}"></td>
-							</tr>
-						</tbody>
-					</table>
-					
-					<!-- Update user or send them a message (unless not signed in and then neither) -->
-					
-					<div sec:authorize="isAuthenticated()">
-					
-						<button class="button" th:if="${#authentication.name} eq ${userProfile.getUser().getUsername()}">עדכן את המשתמש</button>
+			<tbody>
+				<tr style="vertical-align: top;">		
+					<td>
+						<!-- Information about the user -->
+						<table class="table-striped">
+							<tbody>
+								<tr>
+									<td>שם פרטי</td>
+									<td th:text="${userProfile.getUser().getFirstName()}"></td>
+								</tr>
+								<tr>
+									<td>שם משפחה</td>
+									<td th:text="${userProfile.getUser().getLastName()}"></td>
+								</tr>
+								<tr>
+									<td>אימייל</td>
+									<td><a th:href="'mailto: '+ ${userProfile.getUser().getEmail()}" th:text ="${userProfile.getUser().getEmail()}">כתובת אימייל</a></td>
+								</tr>
+								<tr>
+									<td>כרגע באתר</td>
+									<td th:text="${userProfile.getUser().isActive()}"></td>
+								</tr>
+								<tr>
+									<td>סוג משתמש</td>
+									<td th:text="${userProfile.getUser().getRole().getName()}"></td>
+								</tr>
+								<tr>
+									<td>נרשם בתאריך</td>
+									<td th:text="${userProfile.getUser().getJoiningDate().toLocalDate()}"></td>
+								</tr>
+								<tr>
+									<td>נכנס פעם אחרונה</td>
+									<td th:text="${userProfile.getUser().getLastLogin().toLocalTime()} 
+										+ ', ' + ${userProfile.getUser().getLastLogin().toLocalDate()}"></td>
+								</tr>
+							</tbody>
+						</table>
 						
-						<form th:unless="${#authentication.name} eq ${userProfile.getUser().getUsername()}"
-							th:action="@{/messages/newMessage/} + ${userProfile.getUser().getId()}">
-							<input class="button" type="submit" value="שלח הודעה" />
-						</form>
+						<!-- Update user or send them a message (unless not signed in and then neither) -->
 						
-					</div>
-				</td>
-				
-				<td></td>
-				
-				<td>
-					<!-- List of links to topics by this user (and a message if none were made) ordered by number of posts -->
-					<h2>שרשורים שנוצרו על ידי משתמש זה:</h2>
-					<div class="indented" th:each = "topic: ${userProfile.getTopics()}">
-						<h3 th:text="'בפורום &quot' + ${topic.getForum().getName()} + '&quot פתח את השרשור:'"></h3>
-						<a class="indented" th:href="@{/topic/} + ${topic.getId()}" th:text="${topic.getTitle()}"></a>
-					</div>
+						<div sec:authorize="isAuthenticated()">
+						
+							<button class="button" th:if="${#authentication.name} eq ${userProfile.getUser().getUsername()}">עדכן את המשתמש</button>
+							
+							<form th:unless="${#authentication.name} eq ${userProfile.getUser().getUsername()}"
+								th:action="@{/messages/newMessage/} + ${userProfile.getUser().getId()}">
+								<input class="button" type="submit" value="שלח הודעה" />
+							</form>
+							
+						</div>
+					</td>
 					
-					<hr>
+					<td></td>
 					
-					<!-- List of posts by this user (with links to them) (message if none were made) ordered by number of views -->
-					<h2>הודעות שנוצרו על ידי משתמש זה:</h2>
-					<div class="indented" th:each = "post: ${userProfile.getPosts()}">
-						<h3 th:text="'בשרשור &quot' + ${post.getTopic().getTitle()} + '&quot כתב:'"></h3>
-						<a class="indented" th:href="@{/topic/} + ${post.getTopic().getId()} + '#' + ${post.getId()}" th:text="${post.getContent()}"></a>
-					</div>
-				</td>
-		
-			</tr>
+					<td>
+						<!-- List of links to topics by this user (and a message if none were made) ordered by number of posts -->
+						<h2>שרשורים שנוצרו על ידי משתמש זה:</h2>
+						<div class="indented" th:each = "topic: ${userProfile.getTopics()}">
+							<h3 th:text="'בפורום &quot' + ${topic.getForum().getName()} + '&quot פתח את השרשור:'"></h3>
+							<a class="indented" th:href="@{/topic/} + ${topic.getId()}" th:text="${topic.getTitle()}"></a>
+						</div>
+						
+						<hr>
+						
+						<!-- List of posts by this user (with links to them) (message if none were made) ordered by number of views -->
+						<h2>הודעות שנוצרו על ידי משתמש זה:</h2>
+						<div class="indented" th:each = "post: ${userProfile.getPosts()}">
+							<h3 th:text="'בשרשור &quot' + ${post.getTopic().getTitle()} + '&quot כתב:'"></h3>
+							<a class="indented" th:href="@{/topic/} + ${post.getTopic().getId()} + '#' + ${post.getId()}" th:text="${post.getContent()}"></a>
+						</div>
+					</td>
+			
+				</tr>
+			</tbody>
 		</table>
 		
 	</body>
