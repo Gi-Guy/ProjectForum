@@ -44,8 +44,8 @@ public class UserController {
 	// how to change password.
 	
 	/** This method will find a userProfile entity (including User object) by a username and display it profile page.
-	 * @param String username
-	 * @param Model
+	 * @param username 
+	 * @param model
 	 */
 	@GetMapping("/user/{username}")
 	public String findUserByUsernameAndDisplay(@PathVariable String username, Model model) {
