@@ -96,6 +96,7 @@ public class ControlPanelController {
 		model.addAttribute("newForum", new Forum());		
 		return "new_Forum_page";
 	}
+	
 	/**This method will create a new forum*/
 	@PostMapping("newForum")
 	public String proccesNewForum(@Valid @ModelAttribute Forum forum, BindingResult bindingResult, Authentication authentication, Model model) {
@@ -129,7 +130,7 @@ public class ControlPanelController {
 		return "edit_Forum_page";
 	}
 	/**
-	 * This method will proccess all admins actions in forum's editing page.
+	 * This method will process the actions in the forum's editing page.
 	 * */
 	@PostMapping("editForum")
 	public String editForum(@Valid @ModelAttribute("editForum") EditForumForm editForum,
@@ -193,7 +194,7 @@ public class ControlPanelController {
 	}
 	
 	/**
-	 *  This method will disply to Admin an User editing page.
+	 *  This method will display to Admin an User editing page.
 	 *  Admin can edit user's role rank or delete User.*/
 	@RequestMapping("/editUser")
 	ModelAndView showUserEditForm(@RequestParam(name = "username") String username) {
@@ -208,7 +209,7 @@ public class ControlPanelController {
 		return mav;
 	}
 	/**
-	 *  This method will proccess all admin actions in user editing page.
+	 *  This method will process all admin actions in user editing page.
 	 *  */
 	@RequestMapping("/updateUser")
 	public String updateUser(@Valid @ModelAttribute("editUser") EditUserForm editUser, BindingResult bindingResult, 
