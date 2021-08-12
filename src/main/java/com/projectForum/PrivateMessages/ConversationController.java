@@ -97,6 +97,7 @@ public class ConversationController {
 	@PostMapping("{conversationId}")
 	public String addNewAnswer(@Valid @ModelAttribute Answer answer, @PathVariable int conversationId,
 								Authentication authentication, Model model, BindingResult bindingResult) {
+	
 		// If hasErrors == true, then return to conversation page, because something went wrong
 		if(bindingResult.hasErrors()) {
 			System.err.println("ERROR :: Conversation Controller - addNewAnswer (POST)");
@@ -149,7 +150,7 @@ public class ConversationController {
 		}
 		
 		// Message is legit
-		return "redirect:/messages/" + conversationServices.proccessNewConversation(conversation, authentication).getId();
+		return "redirect:/messages/id/" + conversationServices.proccessNewConversation(conversation, authentication).getId();
 	}
 	/**
 	 * This method will delete an Answer*/
@@ -164,12 +165,12 @@ public class ConversationController {
 		if(answer == null || conversation == null || authentication == null ||
 				!answer.getUser().getUsername().equals(authentication.getName())){
 			// User not allowed to remove this
-			return "redirect:/messages/" + conversation.getId();
+			return "redirect:/messages/id/" + conversation.getId();
 		}
 		// User allowed to remove answer
 		conversationServices.deleteAnswer(answerId);
 		model.addFlashAttribute("message", "Answer has been removed.");
-		return "redirect:/messages/" + conversation.getId();
+		return "redirect:/messages/id/" + conversation.getId();
 	}
 	/**
 	 * This method will delete an conversation*/
@@ -183,7 +184,7 @@ public class ConversationController {
 			!conversation.getSender().getUsername().equals(authentication.getName()) &&
 			!conversation.getReceiver().getUsername().equals(authentication.getName())){
 			// User not allowed to remove this
-			return "redirect:/messages/" + conversation.getId();
+			return "redirect:/messages/id/" + conversation.getId();
 		}
 		//	User allowed to remove conversation
 		conversationServices.deleteConversation(conversationId);
