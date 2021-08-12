@@ -99,4 +99,11 @@ public class ForumServices {
 			throw new EntityRequestException("Could not save new Forum");
 		}
 	}
+	public void delete(Forum forum) throws EntityRequestException{
+		try {
+			forumRepo.delete(forum);
+		} catch (Exception e) {
+			throw new EntityRequestException("Could not delete Forum");
+		}
+	}
 }

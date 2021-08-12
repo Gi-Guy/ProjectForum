@@ -38,8 +38,8 @@ public class TopicServices {
 		} catch (Exception e) {
 			throw new EntityRequestException("Could not find a topic by id");
 		}
-		if (topic == null)
-			throw new EntityRequestException("Could not find a topic by id");
+		/*if (topic == null)
+			throw new EntityRequestException("Could not find a topic by id");*/
 		return topic;
 	}
 	
@@ -57,8 +57,8 @@ public class TopicServices {
 		} catch (Exception e) {
 			throw new EntityRequestException("Could not find all topics by User");
 		}
-		if(topics == null)
-			throw new EntityRequestException("Could not find all topics by User");
+		/*if(topics == null)
+			throw new EntityRequestException("Could not find all topics by User");*/
 		
 		return topics;
 	}
@@ -86,8 +86,19 @@ public class TopicServices {
 		} catch (Exception e) {
 			throw new EntityRequestException("Could not find all topics by forum");
 		}	
-		if(topics == null)
-			throw new EntityRequestException("Could not find all topics by forum");
+	/*	if(topics == null)
+			throw new EntityRequestException("Could not find all topics by forum");*/
+		
+		return topics;
+	}
+	public List<Topic> findAll() throws EntityRequestException{
+		List<Topic> topics = null;
+		
+		try {
+			topics = topicRepo.findAll();
+		} catch (Exception e) {
+			throw new EntityRequestException("Could not find all topics");
+		}
 		
 		return topics;
 	}
@@ -96,6 +107,13 @@ public class TopicServices {
 			topicRepo.save(topic);
 		} catch (Exception e) {
 			throw new EntityRequestException("Could not save new topic");
+		}
+	}
+	public void delete(Topic topic) throws EntityRequestException{
+		try {
+			topicRepo.delete(topic);
+		} catch (Exception e) {
+			throw new EntityRequestException("Could not delete topic");
 		}
 	}
 }

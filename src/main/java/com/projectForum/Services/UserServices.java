@@ -145,7 +145,35 @@ public class UserServices {
 		} catch (Exception e) {
 			throw new EntityRequestException("Could not find all users");
 		}
-		
+	//	if (users == null)
+		//	throw new EntityRequestException("Could not find all users");
 		return users;
+	}
+	public List<User> findAll() throws EntityRequestException{
+		List<User> users = null;
+		
+		try {
+			users = userRepo.findAll();
+		} catch (Exception e) {
+			throw new EntityRequestException("Could not find all users");
+		}
+		
+	//	if (users == null)
+	//		throw new EntityRequestException("Could not find all users");
+		return users;
+	}
+	public void save(User user) throws EntityRequestException{
+		try {
+			userRepo.save(user);
+		} catch (Exception e) {
+			throw new EntityRequestException("Could not save new User");
+		}
+	}
+	public void delete(User user) throws EntityRequestException{
+		try {
+			userRepo.delete(user);
+		} catch (Exception e) {
+			throw new EntityRequestException("Could not delete user");
+		}
 	}
 }
