@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.Services.ConversationServices;
 import com.projectForum.user.User;
 
@@ -52,12 +53,13 @@ public class ConversationController {
 	@RequestMapping("")
 	ModelAndView displayAllUserMessages(@RequestParam(name = "username") String username,Authentication authentication ) {
 		ModelAndView mav = new ModelAndView("messages");
-		User user = conversationServices.getUuserByUsername(username);
+		User user = conversationServices.getUserByUsername(username);
 		
 		if (user == null || !user.getUsername().equals(authentication.getName())) {
-			// TODO Handle this exception
-			mav = new ModelAndView("404");
-			return mav;
+			throw new EntityRequestException("user '" + authentication.getName() + 
+												"' trying to access '" + username +"' messages page.");
+			//mav = new ModelAndView("404");
+			//return mav;
 		}
 		List<Conversation> convs = conversationServices.getAllConversationsByUser(user, authentication);
 		if(convs.isEmpty() || convs == null)
@@ -117,7 +119,7 @@ public class ConversationController {
 	public String createNewConversation(@PathVariable int receiverId,Authentication authentication,
 												Model model) {
 		Conversation newConv = conversationServices.createNewConversation(receiverId
-							,conversationServices.getUuserByUsername(authentication.getName()));
+							,conversationServices.getUserByUsername(authentication.getName()));
 		// Checking if user sending messages to itself
 		if(newConv.getSender().equals(newConv.getReceiver())) {
 			// User can't create a new conversation with itself!
@@ -137,14 +139,14 @@ public class ConversationController {
 			System.err.println("ERROR :: Conversation Controller - proccesNewConversation (POST)");
 			
 			Conversation newConv = conversationServices.createNewConversation(conversation.getReceiver().getId()
-					,conversationServices.getUuserByUsername(authentication.getName()));
+					,conversationServices.getUserByUsername(authentication.getName()));
 			model.addAttribute("newConv",newConv);
 			return "new_Conversation_page";
 		}
 		// Checking if message isn't blanked
 		if(conversation.getTitle().isEmpty() || conversation.getContent().isBlank()) {
 			Conversation newConv = conversationServices.createNewConversation(conversation.getReceiver().getId()
-					,conversationServices.getUuserByUsername(authentication.getName()));
+					,conversationServices.getUserByUsername(authentication.getName()));
 			model.addAttribute("newConv",newConv);
 			return "new_Conversation_page";
 		}
