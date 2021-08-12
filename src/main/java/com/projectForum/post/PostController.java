@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
 import com.projectForum.Services.PostServices;
@@ -45,7 +46,6 @@ public class PostController {
 		this.editServices = editServices;
 	}
 
-	// TODO Test those methods
 	/** This method will give the user the option to edit the post content*/
 	@GetMapping("edit/{postId}")
 	public String editPost(@PathVariable int postId, Model model) {
@@ -62,6 +62,8 @@ public class PostController {
 		// finding original post
 		Post post = postServices.findPostById(newEdit.getPostId());
 		
+		if(post == null)
+			throw new EntityRequestException("Could not edit post :: " + newEdit.getPostId());
 		// making sure user is allowed to edit post or Admin
 		if(authentication.getName().equals(post.getUser().getUsername())
 				|| userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {

@@ -74,7 +74,6 @@ public class ControlPanelController {
 		 * Users section
 		 * */
 		
-		// model.addAttribute("searchUserForm",searchUserForm);
 		
 		
 		return "controlPanel";

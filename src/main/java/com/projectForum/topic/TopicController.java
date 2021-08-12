@@ -2,6 +2,8 @@ package com.projectForum.topic;
 
 
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
 import com.projectForum.Services.ForumServices;
@@ -23,7 +26,6 @@ import com.projectForum.Services.PostServices;
 import com.projectForum.Services.TopicServices;
 import com.projectForum.Services.UserServices;
 import com.projectForum.post.Post;
-import com.projectForum.user.UserRepository;
 
 
 /**
@@ -65,13 +67,20 @@ public class TopicController {
 	public String getTopicById(@PathVariable int topicId, Model model) {
 		
 		Topic topic = topicServices.findTopicById(topicId);
+		List<Post> posts = postServices.findPostsByTopic(topic);
+		
+		if(topic == null)
+			throw new EntityRequestException("Could not display topic :: " + topicId);
+		if(posts == null)
+			throw new EntityRequestException("Could not find posts for topic :: " + topicId);
+		
 		// Each view have to update the views counter by 1
 		topic.setViews(topic.getViews() + 1);
 		topicServices.save(topic);
 		
 		model.addAttribute("topic", topic);
 		// Each topic can have 0 or more posts in it
-		model.addAttribute("posts", postServices.findPostsByTopicId(topicId));
+		model.addAttribute("posts", posts);
 		// In each topic there is an option to create a new post
 		model.addAttribute("newPost", new Post());
 		

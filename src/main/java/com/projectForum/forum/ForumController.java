@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.Services.ControlPanelServices;
 import com.projectForum.Services.ForumServices;
 import com.projectForum.Services.TopicServices;
@@ -59,7 +60,13 @@ public class ForumController {
 	/** This method will display all topics that attached to {forumId}. */
 	@GetMapping("/forum/{forumId}")
 	public String getTopicsById(@PathVariable int forumId, Model model) {
-		model.addAttribute("forum", forumServices.findFourmById(forumId));
+		
+		Forum forum = forumServices.findFourmById(forumId);
+		// Checking if Forum is exists
+		if (forum == null)
+			throw new EntityRequestException("could not find the Forum.");
+		
+		model.addAttribute("forum", forum);
 		model.addAttribute("topics", topicservices.findTopicsByForumIs(forumId));
 		return "forum";
 	}
