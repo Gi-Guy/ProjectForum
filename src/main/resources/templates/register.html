@@ -15,10 +15,9 @@
 			th:object - Our model-->
 			<!-- <form th:action = "@{/process_register}" method = "post" -->
 				<form th:action = "@{/register}" method = "post"
-				style ="max-width:600px; margin: 0 auto;"
 				th:object = "${user}">
 				
-					<table>
+					<table class="center">
 						<tr> <!-- Username -->
 							<td>
 								<label>שם משתמש</label>
@@ -69,7 +68,10 @@
 					</table>
 					
 					<!-- Submit button -->
-					<input class="button" type="submit" value="הרשמה" />
+				
+					<div align="center">
+						<input class="button" type="submit" value="הרשמה" />
+					</div>
 					
 				</form>
 				

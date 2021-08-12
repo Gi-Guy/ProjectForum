@@ -63,7 +63,10 @@ label {
 
 table {
     border-collapse: collapse;
-    width: 100%;
+}
+
+td, th {
+	padding: 10px;
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
@@ -86,6 +89,15 @@ textarea {
 /* ------- */
 .indented {
 	margin-right: 40px;
+}
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.stretch {
+	width: 100%;
 }
 
 /* -------- */
