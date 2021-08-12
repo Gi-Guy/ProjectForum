@@ -1,5 +1,6 @@
 package com.projectForum.PrivateMessages;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projectForum.Exceptions.AccessDeniedRequestException;
 import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.Services.ConversationServices;
 import com.projectForum.user.User;
@@ -55,12 +57,17 @@ public class ConversationController {
 		ModelAndView mav = new ModelAndView("messages");
 		User user = conversationServices.getUserByUsername(username);
 		
-		if (user == null || !user.getUsername().equals(authentication.getName())) {
-			throw new EntityRequestException("user '" + authentication.getName() + 
-												"' trying to access '" + username +"' messages page.");
-			//mav = new ModelAndView("404");
-			//return mav;
+		// Checking if user isn't null
+		if (user == null) {
+			throw new EntityRequestException("Something went wrong, could not reload messages for :: '" + username+"'");
+
 		}
+		// Checking if user allowed to access page
+		if(!user.getUsername().equals(authentication.getName())) {
+			throw new AccessDeniedRequestException("user '" + authentication.getName() + 
+					"' trying to access '" + username +"' messages page.");
+		}
+		
 		List<Conversation> convs = conversationServices.getAllConversationsByUser(user, authentication);
 		if(convs.isEmpty() || convs == null)
 			mav.addObject("isEmpty", true);

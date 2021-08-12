@@ -64,7 +64,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          .defaultSuccessUrl("/")
          .permitAll()
          .and()
-         .logout().logoutSuccessUrl("/").permitAll().and().csrf().disable();
+         .logout().logoutSuccessUrl("/").permitAll()
+//         .and().exceptionHandling().accessDeniedPage("405")
+         .and().csrf().disable();
+         
     	 configureEncodingFilter(http);
     	 
     }

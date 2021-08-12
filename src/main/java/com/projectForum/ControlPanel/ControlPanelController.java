@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projectForum.Exceptions.AccessDeniedRequestException;
 import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.Security.Role;
 import com.projectForum.Security.RoleRepository;
@@ -42,7 +43,6 @@ public class ControlPanelController {
 	private RoleRepository			roleRepo;
 	
 	
-	
 	@Autowired
 	public ControlPanelController(ControlPanelServices controlService, ForumServices forumService,
 			DeleteService deleteService, EditServices editService,
@@ -61,8 +61,15 @@ public class ControlPanelController {
 	 * */
 	
 	@GetMapping("/controlPanel")
-	public String displayControlPanel(Model model) {
-
+	public String displayControlPanel(Model model, Authentication authentication) {
+		User user = userService.findUserByUsername(authentication.getName());
+		final Role adminRole = roleRepo.findRoleByName("Admin");
+		// Checking if user allowed to access control panel
+		if(!user.getRole().equals(adminRole)) {
+			// User isn't allowed to access to control panel
+			throw new AccessDeniedRequestException("user '" + authentication.getName() + 
+					"' trying to access the Control Panel.");
+		}
 		/*
 		 * Forums section
 		 * */
