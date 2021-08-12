@@ -13,14 +13,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.projectForum.Services.ControlPanelServices;
-import com.projectForum.Services.DeleteService;
-import com.projectForum.Services.EditServices;
-import com.projectForum.post.PostRepository;
-import com.projectForum.topic.TopicRepository;
-import com.projectForum.user.UserRepository;
+import com.projectForum.Services.ForumServices;
+import com.projectForum.Services.TopicServices;
+
 
 /**
  * This Controller will handle the next actions:
@@ -35,24 +32,17 @@ import com.projectForum.user.UserRepository;
 	@Controller
 public class ForumController {
 	
-	private UserRepository 	userRepo;
-	private TopicRepository topicRepo;
-	private PostRepository 	postRepo;
-	private ForumRepository forumRepo;
-	private DeleteService	deleteService;
-	private EditServices	editService;
+
+	private TopicServices	topicservices;
+	private ForumServices	forumServices;
 	private ControlPanelServices controlPanelService;
 	
 	@Autowired
-	public ForumController(UserRepository userReop, TopicRepository topicRepo, PostRepository postRepo,
-			ForumRepository forumRepo, DeleteService deleteService, EditServices editService, ControlPanelServices controlPanelService) {
-		this.userRepo = userReop;
-		this.topicRepo = topicRepo;
-		this.postRepo = postRepo;
-		this.forumRepo = forumRepo;
-		this.deleteService = deleteService;
-		this.editService = editService;
-		this.controlPanelService = controlPanelService; 
+	public ForumController(TopicServices topicservices, ForumServices forumServices,
+			ControlPanelServices controlPanelService) {
+		this.topicservices = topicservices;
+		this.forumServices = forumServices;
+		this.controlPanelService = controlPanelService;
 	}
 	
 	/**
@@ -61,15 +51,16 @@ public class ForumController {
 	@GetMapping("")
 	public String displayForums(Model model) {
 		// returning a List<Forum> order by priority {highest priority = 1}
-		model.addAttribute("forums", controlPanelService.createForumDisplayList(forumRepo.findByOrderByPriorityAsc()));
+		model.addAttribute("forums", controlPanelService.createForumDisplayList(forumServices.findForumsByPriorityAsc()));
 		return "forums";
 	}
 	 
+
 	/** This method will display all topics that attached to {forumId}. */
 	@GetMapping("/forum/{forumId}")
 	public String getTopicsById(@PathVariable int forumId, Model model) {
-		model.addAttribute("forum", forumRepo.findById(forumId));
-		model.addAttribute("topics", topicRepo.findTopicsByForumId(forumId));
+		model.addAttribute("forum", forumServices.findFourmById(forumId));
+		model.addAttribute("topics", topicservices.findTopicsByForumIs(forumId));
 		return "forum";
 	}
 	
@@ -98,14 +89,14 @@ public class ForumController {
 			return "new_Forum_page";
 		
 		//Each forum must have a priority value, 1 is the lowest.
-		List<Forum> forums = forumRepo.findAll();
+		List<Forum> forums = forumServices.findAll();
 		if(forums.isEmpty()) {
 			forum.setPriority(1);	
 		}
 		else {
 			forum.setPriority(forums.size() + 1);	
 		}
-		forumRepo.save(forum);
+		forumServices.save(forum);
 		return "redirect:/forum/" + forum.getId();
 	}
 	
@@ -121,16 +112,4 @@ public class ForumController {
 		// TODO update this after you create the control panel
 		return "";
 	}
-	
-	/**
-	 * This method will update the changes a user made to a forum 
-	 */
-	@PostMapping("/forum/editForum")
-	public String editForum(@Valid @ModelAttribute("editForum") Forum editForum, BindingResult bindingResult, Authentication authentication, Model model) {
-		Forum forum = forumRepo.findById(editForum.getId());
-		
-		// TODO solve how to check authentication == ADMIN
-		return "";
-	}
-	
 }	

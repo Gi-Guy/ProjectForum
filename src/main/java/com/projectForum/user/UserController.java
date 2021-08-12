@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.projectForum.REST.UpdateUser;
 import com.projectForum.Services.DeleteService;
+import com.projectForum.Services.UserServices;
 import com.projectForum.user.Profile.UserProfile;
 import com.projectForum.user.Profile.UserProfileServices;
 
@@ -25,13 +26,13 @@ import javax.validation.Valid;
 //@RequestMapping(value ="/user")
 public class UserController {
 
-	private UserRepository 	userRepo;
-	private UserProfileServices userService;
+	private UserServices	userServices;
+	private UserProfileServices userProfileService;
 	
 	@Autowired
-	public UserController(UserRepository userReop, UserProfileServices userService, DeleteService deleteService) {
-		this.userRepo = userReop;
-		this.userService = userService;
+	public UserController(UserServices userServices, UserProfileServices userProfileService, DeleteService deleteService) {
+		this.userServices = userServices;
+		this.userProfileService = userProfileService;
 	}
 	
 	// TODO figure out how to:
@@ -46,33 +47,33 @@ public class UserController {
 		
 		// TODO make an exception in case user doesn't exist
 		
-		UserProfile userProfile = userService.findUserByUsername(username);
+		UserProfile userProfile = userProfileService.findUserByUsername(username);
 		model.addAttribute("userProfile", userProfile);
 		
 		return "profile";
 	}
 	@GetMapping("/user/edit/{username}")
 	public String editUser(@PathVariable String username, Model model, Authentication authentication) {
-		User user = userRepo.findByUsername(username);
+		User user = userServices.findUserByUsername(username);
 		// Checking if user allowed editing user information
 		if(!user.getUsername().equals(authentication.getName()))
 			return "redirect:/";
 
 		//User allowed to edit.
-		model.addAttribute("user",userService.getUpdateForm(user));
+		model.addAttribute("user",userProfileService.getUpdateForm(user));
 		return "edit_UserProfile_form";
 	}
 
 	@PostMapping("/user/editUser")
 	public String editUser(@Valid @ModelAttribute("updateUser") UpdateUser updateUser, BindingResult bindingResult,
 						   Authentication authentication, Model model) {
-		User user = userRepo.findByUsername(updateUser.getUsername());
+		User user = userServices.findUserByUsername(updateUser.getUsername());
 		updateUser.setId(user.getId());
 
 		// Checking if there are any errors
 		if(bindingResult.hasErrors()) {
 			// Something went wrong
-			model.addAttribute("user",userService.getUpdateForm(user));
+			model.addAttribute("user",userProfileService.getUpdateForm(user));
 			return "edit_UserProfile_form";
 		}
 		// Checking if user allowed to edit
@@ -83,7 +84,7 @@ public class UserController {
 		}
 
 		// At this point user allowed to edit user information
-		userService.updateUser(updateUser);
+		userProfileService.updateUser(updateUser);
 		return "redirect:/user/" + updateUser.getUsername();
 	}
 }

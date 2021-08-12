@@ -18,7 +18,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
-import com.projectForum.user.UserRepository;
+import com.projectForum.Services.PostServices;
+import com.projectForum.Services.UserServices;
 
 /**
  * This controller will handle the next actions:
@@ -30,16 +31,16 @@ import com.projectForum.user.UserRepository;
 @RequestMapping(value = "/post")
 public class PostController {
 	
-	private PostRepository	postRepo;
-	private UserRepository	userRepo;
+	private PostServices	postServices;
+	private UserServices	userServices;
 	private DeleteService	deleteService;
 	private EditServices	editServices;	
 	
 	@Autowired
-	public PostController(PostRepository postRepo, UserRepository userRepo, DeleteService deleteService,
+	public PostController(PostServices postServices, UserServices userServices, DeleteService deleteService,
 			EditServices editServices) {
-		this.postRepo = postRepo;
-		this.userRepo = userRepo;
+		this.postServices = postServices;
+		this.userServices = userServices;
 		this.deleteService = deleteService;
 		this.editServices = editServices;
 	}
@@ -59,11 +60,11 @@ public class PostController {
 	public String editPost(@Valid @ModelAttribute("newEditPost") EditPostForm newEdit, BindingResult bindingResult, Authentication authentication, Model model) {
 		
 		// finding original post
-		Post post = postRepo.findById(newEdit.getPostId());
+		Post post = postServices.findPostById(newEdit.getPostId());
 		
 		// making sure user is allowed to edit post or Admin
 		if(authentication.getName().equals(post.getUser().getUsername())
-				|| userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN")) {
+				|| userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {
 			
 			// User or Admin allowed to update post
 			editServices.updatePost(post, newEdit);
@@ -83,7 +84,8 @@ public class PostController {
 	@GetMapping("/{username}")
 	public String getAllPostsByUsername(@PathVariable String username, Model model) {
 		
-		List<Post> posts = postRepo.findPostsByUser(userRepo.findByUsername(username));
+		List<Post> posts = postServices.findPostsByUser(userServices.findUserByUsername(username));
+		
 		model.addAttribute("posts", posts);
 		return "posts";
 	}
@@ -93,12 +95,12 @@ public class PostController {
 	public String deletePost(@PathVariable int postId, Authentication authentication,
 								RedirectAttributes model) {
 		// find post to remove
-		Post post = postRepo.findById(postId);
+		Post post = postServices.findPostById(postId);
 		
 		// Making sure that post is exsits and user allowed to remove it or Admin
 		if( post != null && authentication != null) {
 			if( !authentication.getName().equals(post.getUser().getUsername())
-					|| !userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN"))
+				|| !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 				return "redirect:/";
 			else
 			{
