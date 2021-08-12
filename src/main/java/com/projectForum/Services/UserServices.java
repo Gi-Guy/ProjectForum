@@ -1,9 +1,12 @@
 package com.projectForum.Services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.REST.AddUserForm;
 import com.projectForum.Security.RoleRepository;
 import com.projectForum.user.User;
@@ -82,5 +85,67 @@ public class UserServices {
 			return false;
 		return true;
 	}
-	
+	/**
+	 * 	This method will return a User entity by username
+	 * @param username
+	 * @return user
+	 * @throws EntityRequestException
+	 */
+	public User findUserByUsername(String username) throws EntityRequestException{
+		User user = null;
+		try {
+			user = userRepo.findByUsername(username);
+		} catch (Exception e) {
+			throw new EntityRequestException("Could not find user by username");
+		}
+		return user;
+	}
+	/**
+	 * 	This method will return a User entity by userId
+	 * @param UserId
+	 * @return user
+	 * @throws EntityRequestException
+	 * */
+	public User findUserByUserId(int userId) throws EntityRequestException{
+		User user = null;
+		try {
+			user = userRepo.findUserById(userId);
+		} catch (Exception e) {
+			throw new EntityRequestException("Could not find user by userID");
+		}
+		return user;
+	}
+	/**
+	 * 	This method will return a User entity by Email
+	 * 
+	 * @param Email
+	 * @return user
+	 * @throws EntityRequestException
+	 */
+	public User findUserByUserEmail(String Email) throws EntityRequestException{
+		User user = null;
+		try {
+			user = userRepo.findByEmail(Email);
+		} catch (Exception e) {
+			throw new EntityRequestException("Could not find user by Email");
+		}
+		return user;
+	}
+	/**
+	 * 	This method will return a List<User> of all users in the database, order by Roles ASC
+	 * 
+	 * @return users
+	 * @throws EntityRequestException
+	 */
+	public List<User> findAllUsersByRoleAsc() throws EntityRequestException{
+		List<User> users = null;
+		
+		try {
+			users = userRepo.findByOrderByRolesAsc();
+		} catch (Exception e) {
+			throw new EntityRequestException("Could not find all users");
+		}
+		
+		return users;
+	}
 }

@@ -18,9 +18,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
-import com.projectForum.forum.ForumRepository;
+import com.projectForum.Services.ForumServices;
+import com.projectForum.Services.PostServices;
+import com.projectForum.Services.TopicServices;
+import com.projectForum.Services.UserServices;
 import com.projectForum.post.Post;
-import com.projectForum.post.PostRepository;
 import com.projectForum.user.UserRepository;
 
 
@@ -35,21 +37,21 @@ import com.projectForum.user.UserRepository;
 @RequestMapping("/topic/")
 public class TopicController {
 	
-	private UserRepository 	userRepo;
-	private TopicRepository topicRepo;
-	private PostRepository 	postRepo;
-	private ForumRepository forumRepo;
+	private UserServices	userServices;
+	private PostServices	postServices;
+	private ForumServices	forumServices;
 	private DeleteService	deleteService;
 	private EditServices	editService;
+	private TopicServices	topicServices;
 	
 
 	@Autowired
-	public TopicController(UserRepository userRepo, TopicRepository topicRepo, PostRepository postRepo,
-			ForumRepository forumRepo, DeleteService deleteService, EditServices editService) {
-		this.userRepo = userRepo;
-		this.topicRepo = topicRepo;
-		this.postRepo = postRepo;
-		this.forumRepo = forumRepo;
+	public TopicController(UserServices userServices, TopicServices topicServices, PostServices postServices,
+			ForumServices forumServices, DeleteService deleteService, EditServices editService) {
+		this.userServices = userServices;
+		this.topicServices = topicServices;
+		this.postServices = postServices;
+		this.forumServices = forumServices;
 		this.deleteService = deleteService;
 		this.editService = editService;
 	}
@@ -62,14 +64,14 @@ public class TopicController {
 	@GetMapping("{topicId}")
 	public String getTopicById(@PathVariable int topicId, Model model) {
 		
-		Topic topic = topicRepo.findTopicById(topicId);
+		Topic topic = topicServices.findTopicById(topicId);
 		// Each view have to update the views counter by 1
 		topic.setViews(topic.getViews() + 1);
-		topicRepo.save(topic);
+		topicServices.save(topic);
 		
 		model.addAttribute("topic", topic);
 		// Each topic can have 0 or more posts in it
-		model.addAttribute("posts", postRepo.findPostsByTopicId(topicId));
+		model.addAttribute("posts", postServices.findPostsByTopicId(topicId));
 		// In each topic there is an option to create a new post
 		model.addAttribute("newPost", new Post());
 		
@@ -85,17 +87,17 @@ public class TopicController {
 		if(bindingResult.hasErrors()) {
 			System.err.println("ERROR :: Topic Controller - addNewPost (POST)");
 			// If there is an error we should go back to topic page and try again.
-			model.addAttribute("topic", topicRepo.findTopicById(topicId));
-			model.addAttribute("posts", postRepo.findPostsByTopicId(topicId));
+			model.addAttribute("topic", topicServices.findTopicById(topicId));
+			model.addAttribute("posts", postServices.findPostsByTopicId(topicId));
 			model.addAttribute("newPost", new Post());
 			// Keeping user in same page to fix issues
 			return "topic";
 		}
 		
 		// No errors, creating a new post in topic
-		post.setUser(userRepo.findByUsername(authentication.getName()));
-		post.setTopic(topicRepo.findTopicById(topicId));
-		postRepo.save(post);
+		post.setUser(userServices.findUserByUsername(authentication.getName()));
+		post.setTopic(topicServices.findTopicById(topicId));
+		postServices.save(post);
 
 		model.asMap().clear(); // Cleaning the model as it does some weird things if not.
 		return "redirect:" + topicId + '#' + post.getId(); // User will be redirected to the post they wrote.
@@ -132,13 +134,13 @@ public class TopicController {
 		Topic topic = new Topic();
 		topic.setTitle(newTopic.getTitle());
 		topic.setContent(newTopic.getContent());
-		topic.setForum(forumRepo.findById(newTopic.getForumId()));
-		topic.setUser(userRepo.findByUsername(authentication.getName()));
+		topic.setForum(forumServices.findFourmById(newTopic.getForumId()));
+		topic.setUser(userServices.findUserByUsername(authentication.getName()));
 		topic.setClosed(false);
 		topic.setViews(0);
 		
 		
-		topicRepo.save(topic);
+		topicServices.save(topic);
 		
 		return "redirect:/topic/" + topic.getId();
 	}
@@ -157,11 +159,11 @@ public class TopicController {
 	@PostMapping("editTopic")
 	public String editTopic(@Valid @ModelAttribute("editTopic") NewTopicPageForm editTopic, BindingResult bindingResult, Authentication authentication, Model model) {
 		
-		Topic topic = topicRepo.getById(editTopic.getTopicId());
+		Topic topic = topicServices.findTopicById(editTopic.getTopicId());
 		
 		// Approving admin or allowed user
 		if(authentication.getName().equals(topic.getUser().getUsername()) 
-				|| userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN"))
+			|| userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			editService.updateTopic(topic, editTopic);
 
 		return "redirect:/topic/" + topic.getId();
@@ -175,11 +177,11 @@ public class TopicController {
 	public String deleteTopic(@PathVariable int topicId, Authentication authentication,
 									RedirectAttributes model) {
 		// find topic to remove and all it posts
-		Topic topic = topicRepo.findTopicById(topicId);
+		Topic topic = topicServices.findTopicById(topicId);
 		
 		// making sure that topic is exists and user allowed to remove it or Admin		
 		if (topic == null || authentication == null || !authentication.getName().equals(topic.getUser().getUsername())
-				|| !userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN")) {
+				|| !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")){
 			//topic can't be removed
 			return "redirect:/";
 		}
