@@ -70,9 +70,9 @@ public class TopicController {
 		List<Post> posts = postServices.findPostsByTopic(topic);
 		
 		if(topic == null)
-			throw new EntityRequestException("Could not display topic :: " + topicId);
+			throw new EntityRequestException("Could not display topic ID :: " + topicId);
 		if(posts == null)
-			throw new EntityRequestException("Could not find posts for topic :: " + topicId);
+			throw new EntityRequestException("Could not find posts for topic ID :: " + topicId);
 		
 		// Each view have to update the views counter by 1
 		topic.setViews(topic.getViews() + 1);
