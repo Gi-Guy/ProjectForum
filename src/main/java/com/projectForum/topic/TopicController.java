@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projectForum.Exceptions.AccessDeniedRequestException;
 import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
@@ -46,6 +47,8 @@ public class TopicController {
 	private EditServices	editService;
 	private TopicServices	topicServices;
 	
+	private AccessDeniedRequestException accessDeniedRequestException = new AccessDeniedRequestException();
+	private final String localUrl = "/topic/";
 
 	@Autowired
 	public TopicController(UserServices userServices, TopicServices topicServices, PostServices postServices,
@@ -156,12 +159,18 @@ public class TopicController {
 	
 	/**This method will enter user to edit mode for exsits topic*/
 	@GetMapping("edit/{topicId}")
-	public String editTopic(@PathVariable int topicId, Model model) {
+	public String editTopic(@PathVariable int topicId, Model model, Authentication authentication) {
+		Topic topic = topicServices.findTopicById(topicId);
+		//	Checking if user allowed to edit Topic
+		if(!authentication.getName().equals(topic.getUser().getUsername()) 
+				|| !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+			//	User isn't allowed to edit Topic
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + topicId);
+			
 		// Using newTopicForm to keep the topicId while editing.
 		NewTopicPageForm editTopic = new NewTopicPageForm();
 		editTopic.setTopicId(topicId);
 		model.addAttribute("editTopic", editTopic);
-		// TODO Find out how to open a edit mode section and not using a new page.
 		return "edit_Topic_page";
 	}
 	
@@ -174,6 +183,9 @@ public class TopicController {
 		if(authentication.getName().equals(topic.getUser().getUsername()) 
 			|| userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			editService.updateTopic(topic, editTopic);
+		else	
+			//user isn't allowed to edit this topic
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "editTopic" + editTopic.getTopicId());
 
 		return "redirect:/topic/" + topic.getId();
 	}
@@ -188,12 +200,13 @@ public class TopicController {
 		// find topic to remove and all it posts
 		Topic topic = topicServices.findTopicById(topicId);
 		
-		// making sure that topic is exists and user allowed to remove it or Admin		
-		if (topic == null || authentication == null || !authentication.getName().equals(topic.getUser().getUsername())
-				|| !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")){
-			//topic can't be removed
-			return "redirect:/";
-		}
+		//	Checking if topic is exists
+		if(topic == null || authentication == null)
+			throw new EntityRequestException("Something went wrong, could not reload topic for topic :: '" + topicId+"'");
+		//	Making sure that user's allowed to delete topic
+		else if(!authentication.getName().equals(topic.getUser().getUsername())
+				|| !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "delete/" + topicId);
 		
 		deleteService.deleteTopic(topic);
 		model.addFlashAttribute("message", "Topic has been removed.");

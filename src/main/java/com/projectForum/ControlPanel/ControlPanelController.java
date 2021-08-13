@@ -42,6 +42,8 @@ public class ControlPanelController {
 	private EditServices			editService;
 	private RoleRepository			roleRepo;
 	
+	private AccessDeniedRequestException accessDeniedRequestException = new AccessDeniedRequestException();
+	private final String localUrl = "/a/";
 	
 	@Autowired
 	public ControlPanelController(ControlPanelServices controlService, ForumServices forumService,
@@ -67,8 +69,7 @@ public class ControlPanelController {
 		// Checking if user allowed to access control panel
 		if(!user.getRole().equals(adminRole)) {
 			// User isn't allowed to access to control panel
-			throw new AccessDeniedRequestException("user '" + authentication.getName() + 
-					"' trying to access the Control Panel.");
+			accessDeniedRequestException.throwNewAccessDenied(user.getUsername(), localUrl + "controlPanel");
 		}
 		/*
 		 * Forums section
@@ -144,6 +145,8 @@ public class ControlPanelController {
 		// Making sure that Admin in action
 		if(userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			editService.updateForum(forum, editForum);
+		else
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "editForum");
 		
 		return "redirect:controlPanel" + '#' + forum.getId();
 	}
@@ -177,6 +180,8 @@ public class ControlPanelController {
 			deleteService.deleteForum(forum);
 			model.addFlashAttribute("message", "Forum has been removed.");	
 		}
+		else
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "forum/delete/" + forumId);
 		return "redirect:/a/controlPanel";
 	}
 	
@@ -208,7 +213,7 @@ public class ControlPanelController {
 		try {
 			editUser = controlService.editUserForm(username);
 		} catch (NullPointerException e) {
-			throw new EntityRequestException("Could not find user");
+			throw new EntityRequestException("Could not find user :: " + username);
 		}
 
 		mav.addObject("editUser",editUser);
@@ -226,10 +231,11 @@ public class ControlPanelController {
 		User user = userService.findUserByUserId(editUser.getId());
 
 		// Checking if user is exists
-		if(authentication == null || user == null
-				|| !userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {
-			return "redirect:/";
+		if(authentication == null || user == null) {
+			throw new EntityRequestException("Could not update User :: " + editUser.getUsername());
 		}
+		if(!userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "updateUser" + editUser.getUsername());
 		
 		// Checking if need to update role
 		if(!user.getRole().getName().equals(editUser.getRole()) && !editUser.getRole().equals("UNDEFINED_USER")) {
@@ -245,6 +251,9 @@ public class ControlPanelController {
 		// if user still admin, then return to control panel
 		if(userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			return "redirect:/a/controlPanel";
+		else
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "controlPanel");
+		
 		return "redirect:/";
 	}
 	
@@ -259,9 +268,11 @@ public class ControlPanelController {
 		User user = userService.findUserByUsername(username);
 		
 		// Checking if user exists
-		if(authentication == null || user == null
-				|| !userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
-			return "redirect:/";
+		if(authentication == null || user == null) {
+			throw new EntityRequestException("Could not find User :: " + username);
+		}
+		else if(!userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "user/delete/" + username);
 		
 		deleteService.deleteUser(username);
 		return "/controlPanel/";

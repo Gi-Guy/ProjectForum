@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.projectForum.Exceptions.AccessDeniedRequestException;
 import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.Services.ControlPanelServices;
 import com.projectForum.Services.ForumServices;
 import com.projectForum.Services.TopicServices;
+import com.projectForum.Services.UserServices;
 
 
 /**
@@ -30,20 +32,27 @@ import com.projectForum.Services.TopicServices;
  * Notice:
  * Topic creation is in TopicController where the topic will also be attached to a forum .*/
 
-	@Controller
+@Controller
 public class ForumController {
 	
 
 	private TopicServices	topicservices;
 	private ForumServices	forumServices;
 	private ControlPanelServices controlPanelService;
+	private UserServices	userServices;
+	
+	
+	private AccessDeniedRequestException accessDeniedRequestException = new AccessDeniedRequestException();
+	private final String localUrl = "/forum/";
+	
 	
 	@Autowired
 	public ForumController(TopicServices topicservices, ForumServices forumServices,
-			ControlPanelServices controlPanelService) {
+			ControlPanelServices controlPanelService, UserServices userServices) {
 		this.topicservices = topicservices;
 		this.forumServices = forumServices;
 		this.controlPanelService = controlPanelService;
+		this.userServices = userServices;
 	}
 	
 	/**
@@ -76,8 +85,12 @@ public class ForumController {
 	 * This should be only in Control panel.
 	 */
 	@GetMapping("/forum/newForum")
-	public String createNewForum(Model model) {
+	public String createNewForum(Model model, Authentication authentication) {
 		
+		if(!userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+			// User not allowed to access this page
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "newForum");
+			
 		model.addAttribute("newForum", new Forum());		
 		return "new_Forum_page";
 	}
@@ -105,18 +118,5 @@ public class ForumController {
 		}
 		forumServices.save(forum);
 		return "redirect:/forum/" + forum.getId();
-	}
-	
-	/**
-	 * This method will lead a user to edit a forum
-	 */
-	@GetMapping("/forum/edit/{forumId}")
-	public String editForum(@PathVariable int forumId, Model model) {
-		Forum forum = new Forum();
-		
-		forum.setId(forumId);
-		model.addAttribute("editForum", forum);
-		// TODO update this after you create the control panel
-		return "";
 	}
 }	

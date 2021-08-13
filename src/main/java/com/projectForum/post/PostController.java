@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projectForum.Exceptions.AccessDeniedRequestException;
 import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
@@ -37,6 +38,9 @@ public class PostController {
 	private DeleteService	deleteService;
 	private EditServices	editServices;	
 	
+	private AccessDeniedRequestException accessDeniedRequestException = new AccessDeniedRequestException();
+	private final String localUrl = "/post/";
+	
 	@Autowired
 	public PostController(PostServices postServices, UserServices userServices, DeleteService deleteService,
 			EditServices editServices) {
@@ -48,7 +52,15 @@ public class PostController {
 
 	/** This method will give the user the option to edit the post content*/
 	@GetMapping("edit/{postId}")
-	public String editPost(@PathVariable int postId, Model model) {
+	public String editPost(@PathVariable int postId, Model model, Authentication authentication) {
+		Post post = postServices.findPostById(postId);
+		
+		//	Making sure that user allowed to edit post
+		if(!authentication.getName().equals(post.getUser().getUsername()) 
+				|| !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+			// User isn't allowed to edit Post
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + postId);
+		
 		EditPostForm newEditPost = new EditPostForm();
 		newEditPost.setPostId(postId);
 		model.addAttribute("editPost", newEditPost);
@@ -70,13 +82,10 @@ public class PostController {
 			
 			// User or Admin allowed to update post
 			editServices.updatePost(post, newEdit);
-		
-			/* BACKUP BEFORE TESTING
-			if(!newEdit.getContent().isEmpty())
-				post.setContent(newEdit.getContent());
-			
-			postRepo.save(post);*/
 		}
+		else
+			// User isn't allowed to edit
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "editPost/" + newEdit.getPostId());
 		// taking user back to the original topic.
 		return "redirect:/topic/" + post.getTopic().getId();
 	}
@@ -100,18 +109,16 @@ public class PostController {
 		Post post = postServices.findPostById(postId);
 		
 		// Making sure that post is exsits and user allowed to remove it or Admin
-		if( post != null && authentication != null) {
-			if( !authentication.getName().equals(post.getUser().getUsername())
-				|| !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
-				return "redirect:/";
-			else
-			{
-				// At this point user allowed to remove post
-				deleteService.deletePost(post);
-				
-			}
-			
-		}
+		if(post == null || authentication == null)
+			throw new EntityRequestException("Something went wrong, could not reload post :: '" + postId +"'");
+		
+		else if (!authentication.getName().equals(post.getUser().getUsername()) ||
+				!userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+			// User isn't allowed to delete Post
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "delete/" + post.getId());
+		
+		//	At this point user allowed to delete post
+		deleteService.deletePost(post);
 		
 		model.addFlashAttribute("message", "post has been removed.");
 		return "redirect:/topic/" + post.getTopic().getId();

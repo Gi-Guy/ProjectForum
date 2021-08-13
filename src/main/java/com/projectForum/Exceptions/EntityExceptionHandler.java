@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @ControllerAdvice
-public class ApiExceptionHandler {
+public class EntityExceptionHandler {
 
 	
 	@ExceptionHandler(value = {EntityRequestException.class})

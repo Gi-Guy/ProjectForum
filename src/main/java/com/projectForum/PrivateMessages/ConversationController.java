@@ -37,25 +37,6 @@ public class ConversationController {
 	/**
 	 * 	This method will display all messages of an user.
 	 * @throws AccessDeniedException */
-	//@RequestMapping("{username}")
-	/*@GetMapping("{username}")
-	public String displayAllUserMessages(@PathVariable String username, Authentication authentication,
-												Model model) {
-		User user = conversationServices.getUuserByUsername(username);
-		
-		if (user == null) {
-			// TODO Handle this exception
-			return null;
-		}
-		List<Conversation> convs = conversationServices.getAllConversationsByUser(user, authentication);
-		
-		if(convs.isEmpty() || convs == null)
-			model.addAttribute("isEmpty", true);
-		else
-			model.addAttribute("convs",convs);
-		
-		return "messages";
-	}*/
 	@RequestMapping("")
 	ModelAndView displayAllUserMessages(@RequestParam(name = "username") String username,Authentication authentication ) throws AccessDeniedException {
 		ModelAndView mav = new ModelAndView("messages");
@@ -90,7 +71,7 @@ public class ConversationController {
 		Conversation conv = conversationServices.findConversation(conversationId);
 		List<Answer> answers = conversationServices.getAllAnswersInConversation(conversationId);
 		if (conv == null) {
-			// TODO direct to an error page	
+			throw new EntityRequestException("Could not reload conversation: '" + conversationId +"'");
 		}
 			
 		// Checking if user is allowed to watch the conversation
@@ -102,6 +83,7 @@ public class ConversationController {
 			model.addAttribute("newAnswer", new Answer());
 			return "conversation";
 		}
+		accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "id/" + conversationId);
 		 return "redirect:/messages/";
 	}
 	
@@ -135,7 +117,7 @@ public class ConversationController {
 		if(newConv.getSender().equals(newConv.getReceiver())) {
 			// User can't create a new conversation with itself!
 			// TODO return error message
-			return "redirect:/";
+			return "redirect:" + localUrl;
 		}
 		model.addAttribute("newConv",newConv);
 		return "new_Conversation_page";
@@ -178,6 +160,7 @@ public class ConversationController {
 		if(answer == null || conversation == null || authentication == null ||
 				!answer.getUser().getUsername().equals(authentication.getName())){
 			// User not allowed to remove this
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "delete/answer/" + answerId);
 			return "redirect:/messages/id/" + conversation.getId();
 		}
 		// User allowed to remove answer
@@ -197,6 +180,7 @@ public class ConversationController {
 			!conversation.getSender().getUsername().equals(authentication.getName()) &&
 			!conversation.getReceiver().getUsername().equals(authentication.getName())){
 			// User not allowed to remove this
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "delete/conversation/" + conversationId);
 			return "redirect:/messages/id/" + conversation.getId();
 		}
 		//	User allowed to remove conversation

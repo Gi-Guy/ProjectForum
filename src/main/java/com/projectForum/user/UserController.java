@@ -7,7 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-
+import com.projectForum.Exceptions.AccessDeniedRequestException;
+import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.REST.UpdateUser;
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.UserServices;
@@ -28,6 +29,10 @@ public class UserController {
 
 	private UserServices	userServices;
 	private UserProfileServices userProfileService;
+
+	
+	private AccessDeniedRequestException accessDeniedRequestException = new AccessDeniedRequestException();
+	private final String localUrl = "/user/";
 	
 	@Autowired
 	public UserController(UserServices userServices, UserProfileServices userProfileService, DeleteService deleteService) {
@@ -45,7 +50,11 @@ public class UserController {
 	@GetMapping("/user/{username}")
 	public String findUserByUsernameAndDisplay(@PathVariable String username, Model model) {
 		
-		// TODO make an exception in case user doesn't exist
+		//	Checking if user exists
+		User user = userServices.findUserByUsername(username);
+		if(user == null)
+			//	 user isn't exists or something went wrong
+			throw new EntityRequestException("could not reload user :: " + username);
 		
 		UserProfile userProfile = userProfileService.findUserByUsername(username);
 		model.addAttribute("userProfile", userProfile);
@@ -57,9 +66,10 @@ public class UserController {
 		User user = userServices.findUserByUsername(username);
 		// Checking if user allowed editing user information
 		if(!user.getUsername().equals(authentication.getName()))
-			return "redirect:/";
+			//	User isn't allowed to edit user profile
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + username);
 
-		//User allowed to edit.
+		//User allowed to edit
 		model.addAttribute("user",userProfileService.getUpdateForm(user));
 		return "edit_UserProfile_form";
 	}
@@ -68,8 +78,14 @@ public class UserController {
 	public String editUser(@Valid @ModelAttribute("updateUser") UpdateUser updateUser, BindingResult bindingResult,
 						   Authentication authentication, Model model) {
 		User user = userServices.findUserByUsername(updateUser.getUsername());
+		
+		//	Checking if user exists
+		if (user == null)
+			throw new EntityRequestException("could not reload user :: " + updateUser.getUsername());
+		
+		//	setting user id
 		updateUser.setId(user.getId());
-
+		
 		// Checking if there are any errors
 		if(bindingResult.hasErrors()) {
 			// Something went wrong
@@ -79,8 +95,7 @@ public class UserController {
 		// Checking if user allowed to edit
 		if(!updateUser.getUsername().equals(authentication.getName())) {
 			// User not allowed to edit user information
-			// TODO handle this
-			return "redirect:/";
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "editUser/" + updateUser.getUsername());
 		}
 
 		// At this point user allowed to edit user information
