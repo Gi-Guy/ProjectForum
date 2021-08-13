@@ -156,8 +156,10 @@ public class ConversationController {
 		Answer answer = conversationServices.getAnswer(answerId);
 		Conversation conversation = answer.getConversation();
 		
+		if(authentication == null)
+			accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "delete/answer/" + answerId);
 		// Checking everything. 
-		if(answer == null || conversation == null || authentication == null ||
+		if(answer == null || conversation == null ||
 				!answer.getUser().getUsername().equals(authentication.getName())){
 			// User not allowed to remove this
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "delete/answer/" + answerId);
@@ -176,7 +178,10 @@ public class ConversationController {
 		// Finding conversation
 		Conversation conversation = conversationServices.getConversation(conversationId);
 		
-		if(	conversation == null || authentication == null ||
+		if(authentication == null)
+			accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "delete/conversation/" + conversationId);
+		
+		if(	conversation == null ||
 			!conversation.getSender().getUsername().equals(authentication.getName()) &&
 			!conversation.getReceiver().getUsername().equals(authentication.getName())){
 			// User not allowed to remove this

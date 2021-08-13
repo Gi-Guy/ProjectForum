@@ -55,6 +55,10 @@ public class PostController {
 	public String editPost(@PathVariable int postId, Model model, Authentication authentication) {
 		Post post = postServices.findPostById(postId);
 		
+		// Only register user allowed to do acitons
+		if(authentication == null)
+				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "edit/" + postId);
+		
 		//	Making sure that user allowed to edit post
 		if(!authentication.getName().equals(post.getUser().getUsername()) 
 				|| !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
@@ -70,6 +74,10 @@ public class PostController {
 	/** This method will edit the original post object and save the new content of the post.*/
 	@PostMapping("editPost")
 	public String editPost(@Valid @ModelAttribute("newEditPost") EditPostForm newEdit, BindingResult bindingResult, Authentication authentication, Model model) {
+		
+		// Only register user allowed to do acitons
+		if(authentication == null)
+				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "edit/" + newEdit.getPostId());
 		
 		// finding original post
 		Post post = postServices.findPostById(newEdit.getPostId());
@@ -105,6 +113,11 @@ public class PostController {
 	@GetMapping("delete/{postId}")
 	public String deletePost(@PathVariable int postId, Authentication authentication,
 								RedirectAttributes model) {
+		
+		// Only register user allowed to do acitons
+		if(authentication == null)
+				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "delete/" + postId);
+		
 		// find post to remove
 		Post post = postServices.findPostById(postId);
 		

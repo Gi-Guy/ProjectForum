@@ -64,6 +64,11 @@ public class UserController {
 	@GetMapping("/user/edit/{username}")
 	public String editUser(@PathVariable String username, Model model, Authentication authentication) {
 		User user = userServices.findUserByUsername(username);
+
+		// Only register user allowed to do acitons
+		if (authentication == null )
+			accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "edit/" + username);
+		
 		// Checking if user allowed editing user information
 		if(!user.getUsername().equals(authentication.getName()))
 			//	User isn't allowed to edit user profile
@@ -77,6 +82,11 @@ public class UserController {
 	@PostMapping("/user/editUser")
 	public String editUser(@Valid @ModelAttribute("updateUser") UpdateUser updateUser, BindingResult bindingResult,
 						   Authentication authentication, Model model) {
+		
+		// Only register user allowed to do acitons
+		if (authentication == null )
+			accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "edit/" + updateUser.getUsername());
+		
 		User user = userServices.findUserByUsername(updateUser.getUsername());
 		
 		//	Checking if user exists

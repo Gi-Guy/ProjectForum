@@ -94,6 +94,9 @@ public class TopicController {
 	@PostMapping("{topicId}")
 	public String addNewPost(@Valid @ModelAttribute Post post, BindingResult bindingResult, @PathVariable int topicId,
 								Authentication authentication, Model model) {
+		// Only register user allowed to do acitons
+		if(authentication == null)
+				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "newPost " + topicId);
 		
 		// If hasErrors == true, then return to topic page, because something went wrong
 		if(bindingResult.hasErrors()) {
@@ -117,7 +120,12 @@ public class TopicController {
 	
 	/** This method will return a model and navigate the user to newTopic page */
 	@GetMapping("newTopic/{forumId}")
-	public String createNewTopicInForum(@PathVariable int forumId, Model model) {
+	public String createNewTopicInForum(@PathVariable int forumId, Model model, Authentication authentication) {
+		
+		// Only register user allowed to create a new topic
+		if(authentication == null)
+				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "newTopic/" + forumId);
+		
 		// Using a newTopicform to keep our forumId.
 		NewTopicPageForm newTopic = new NewTopicPageForm();
 		// Saving forumId value.
@@ -131,11 +139,14 @@ public class TopicController {
 	@PostMapping("newTopic")
 	public String proccesNewTopic(@Valid @ModelAttribute("newTopic") NewTopicPageForm newTopic, BindingResult bindingResult, Authentication authentication, Model model) {
 		
+		// Only register user allowed to create a new topic
+		if(authentication == null)
+				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "newTopic/" + newTopic.getForumId());
+		
 		// If hasErrors == true, then return to topic page, because something went wrong
 		if(bindingResult.hasErrors()) {
 			System.err.println("ERROR :: Topic Controller - proccesNewTopic (POST)");
 			// If there is an error we should go back to topic creation page and try again.
-			// TODO I'm not really sure what should we put into model.
 			return "new_Topic_page";
 		}
 		// Checking if title or content are blanked.
@@ -161,6 +172,11 @@ public class TopicController {
 	@GetMapping("edit/{topicId}")
 	public String editTopic(@PathVariable int topicId, Model model, Authentication authentication) {
 		Topic topic = topicServices.findTopicById(topicId);
+		
+		// Only register user allowed to create a new topic
+		if(authentication == null)
+			accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "edit/" + topicId);
+		
 		//	Checking if user allowed to edit Topic
 		if(!authentication.getName().equals(topic.getUser().getUsername()) 
 				|| !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
@@ -178,6 +194,10 @@ public class TopicController {
 	public String editTopic(@Valid @ModelAttribute("editTopic") NewTopicPageForm editTopic, BindingResult bindingResult, Authentication authentication, Model model) {
 		
 		Topic topic = topicServices.findTopicById(editTopic.getTopicId());
+		
+		// Only register user allowed to do acitons
+		if(authentication == null)
+				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "editTopic/" + editTopic.getTopicId());
 		
 		// Approving admin or allowed user
 		if(authentication.getName().equals(topic.getUser().getUsername()) 
@@ -200,8 +220,11 @@ public class TopicController {
 		// find topic to remove and all it posts
 		Topic topic = topicServices.findTopicById(topicId);
 		
+		if(authentication == null)
+			accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "delete/" + topicId);
+		
 		//	Checking if topic is exists
-		if(topic == null || authentication == null)
+		if(topic == null)
 			throw new EntityRequestException("Something went wrong, could not reload topic for topic :: '" + topicId+"'");
 		//	Making sure that user's allowed to delete topic
 		else if(!authentication.getName().equals(topic.getUser().getUsername())

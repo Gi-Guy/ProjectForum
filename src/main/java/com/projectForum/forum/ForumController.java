@@ -99,6 +99,12 @@ public class ForumController {
 	@PostMapping("/forum/newForum")
 	public String proccesNewForum(@Valid @ModelAttribute Forum forum, BindingResult bindingResult, Authentication authentication, Model model) {
 		
+		if(authentication == null)
+			accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "newForum");
+		
+		if(!userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "newForum");
+		
 		if(bindingResult.hasErrors()) {
 			System.err.println("ERROR :: Forum Controller - proccesNewForum (POST)");
 			return "new_Forum_page";
