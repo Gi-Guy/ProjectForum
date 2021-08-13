@@ -21,11 +21,6 @@
 						<tr>
 							<th colspan="6">
 								<a th:href="@{/a/newForum}">הוסף פורום חדש</a>
-								<!--&nbsp;&nbsp;
-								<a>ייצא פורומים</a>
-								&nbsp;&nbsp;
-								<a>ייבא פורומים</a>
-								-->
 							</th>
 						</tr>
 						<tr>
@@ -66,13 +61,31 @@
 			
 			<form th:action="@{/a/editUser}" >
 				<label>חפש משתמש:</label>
-				<input name="username" type="text" th:value="*{username}" required>
-				&nbsp;&nbsp;&nbsp;&nbsp;
+				<input name="username" type="text" th:value="*{username}">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<input class="button" type="submit" value="חפש וערוך" />
 			</form>
 
 			<a th:href="@{/a/list_users}">רשימת כל המשתמשים</a>
-					
+
+			<!-- Forum control section -->
+			<hr>	
+			<h3>ערוך ונהל את הגדרות הפורום</h3>
+			
+			<form>
+			<!-- Change forums Name & Description -->
+				<label>שם הפורום:</label>		
+				<input name="name" type="text"><br><br>
+				<label>תיאור הפורום:</label><br>
+				<textarea name="content"></textarea><br>
+				
+			<!-- Change delete timer -->
+				<label>מחק הודעות אחרי</label>
+				<input name="name" type="number">
+				<label>ימים</label><br>
+				
+				<input class="button" type="submit" value="שמור שינויים"/>
+			</form>		
 		</div>
 	</body>
 </html>

@@ -67,13 +67,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          .and()
          .formLogin()
          .loginPage("/login")
+         .usernameParameter("email")
+         .passwordParameter("password")	
          .failureUrl("/loginError")
          .usernameParameter("email")
          .defaultSuccessUrl("/")
          .permitAll()
          .and()
+         .rememberMe().tokenValiditySeconds(7 * 24 * 60 * 60) // will remember user for 7 days
+         .key("123456789")
+         .and()
          .logout().logoutSuccessUrl("/").permitAll()
-         //.and().exceptionHandling().accessDeniedPage("405.html")
          .and().exceptionHandling().accessDeniedHandler(accessDeniedHandler())
          .and().csrf().disable();
          

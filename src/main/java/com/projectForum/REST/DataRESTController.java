@@ -66,7 +66,7 @@ public class DataRESTController {
 		User user = restService.addNewUser(addUser);
 		
 		if(user == null)
-			return new ResponseEntity<User>(HttpStatus.METHOD_FAILURE);
+			return new ResponseEntity<User>(HttpStatus.EXPECTATION_FAILED);
 		return new ResponseEntity<User>(user, HttpStatus.CREATED);
 	}
 	@GetMapping("/removeUser/example")
@@ -77,7 +77,7 @@ public class DataRESTController {
 	public ResponseEntity<String> removeUser(@RequestBody DeleteUserForm deleteUser){
 		
 		if(!restService.removeUser(deleteUser))
-			return new ResponseEntity<String>("Could not delete user.", HttpStatus.METHOD_FAILURE);
+			return new ResponseEntity<String>("Could not delete user.", HttpStatus.EXPECTATION_FAILED);
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}	
 	@GetMapping("updateUser/example")
