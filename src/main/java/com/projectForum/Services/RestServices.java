@@ -24,22 +24,29 @@ import com.projectForum.user.User;
 @Service
 public class RestServices {
 
-	@Autowired
 	private RoleRepository	roleRepo;
-	@Autowired
 	private UserServices	userServices;
-	@Autowired
 	private ForumServices	forumServices;
-	@Autowired
 	private TopicServices	topicServices;
-	@Autowired
 	private PostServices	postServices;
-	@Autowired
 	private DeleteService	deleteService;
-	@Autowired
 	private EditServices	editServices;
 	
 	
+	
+	@Autowired
+	public RestServices(RoleRepository roleRepo, UserServices userServices, ForumServices forumServices,
+			TopicServices topicServices, PostServices postServices, DeleteService deleteService,
+			EditServices editServices) {
+		this.roleRepo = roleRepo;
+		this.userServices = userServices;
+		this.forumServices = forumServices;
+		this.topicServices = topicServices;
+		this.postServices = postServices;
+		this.deleteService = deleteService;
+		this.editServices = editServices;
+	}
+
 	/*
 	 * ################################################################
 	 * 							USERS

@@ -29,7 +29,7 @@ public class CustomAccessDeniedHandler extends AccessDeniedHandlerImpl{
 					+request.getRequestURI());
 		}
 		
-		response.sendRedirect(request.getContextPath() + "/405");
+		response.sendRedirect(request.getContextPath() + "/403");
 
 	}
 	

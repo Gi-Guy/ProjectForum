@@ -20,7 +20,7 @@ public class EntityExceptionHandler {
 	@ExceptionHandler(value = {AccessDeniedRequestException.class})
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	public String AccessDenied(AccessDeniedRequestException e){
-		return "405";
+		return "403";
 	}
 	
 }
