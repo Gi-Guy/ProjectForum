@@ -11,9 +11,20 @@ public class AccessDeniedRequestException extends RuntimeException{
 		super(message, cause);
 	}
 
+
 	public AccessDeniedRequestException(String message) {
 		super(message);
 	}
 
+	public AccessDeniedRequestException() {
+		super();
+	}
 	
+	public void throwNewAccessDenied(String username, String location) {
+		String message = "User: '" + username
+		+ "' attempted to access the protected page: "
+		+ location;
+		throw new AccessDeniedRequestException(message);
+	}
+
 }

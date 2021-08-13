@@ -31,8 +31,12 @@ public class ConversationController {
 	@Autowired
 	private ConversationServices conversationServices;
 	
+	private AccessDeniedRequestException accessDeniedRequestException = new AccessDeniedRequestException();
+	private final String localUrl = "/messages/";
+	
 	/**
-	 * 	This method will display all messages of an user.*/
+	 * 	This method will display all messages of an user.
+	 * @throws AccessDeniedException */
 	//@RequestMapping("{username}")
 	/*@GetMapping("{username}")
 	public String displayAllUserMessages(@PathVariable String username, Authentication authentication,
@@ -53,7 +57,7 @@ public class ConversationController {
 		return "messages";
 	}*/
 	@RequestMapping("")
-	ModelAndView displayAllUserMessages(@RequestParam(name = "username") String username,Authentication authentication ) {
+	ModelAndView displayAllUserMessages(@RequestParam(name = "username") String username,Authentication authentication ) throws AccessDeniedException {
 		ModelAndView mav = new ModelAndView("messages");
 		User user = conversationServices.getUserByUsername(username);
 		
@@ -64,8 +68,8 @@ public class ConversationController {
 		}
 		// Checking if user allowed to access page
 		if(!user.getUsername().equals(authentication.getName())) {
-			throw new AccessDeniedRequestException("user '" + authentication.getName() + 
-					"' trying to access '" + username +"' messages page.");
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + username);
+			
 		}
 		
 		List<Conversation> convs = conversationServices.getAllConversationsByUser(user, authentication);

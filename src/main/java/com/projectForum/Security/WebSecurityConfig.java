@@ -12,8 +12,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
+
+import com.projectForum.Exceptions.CustomAccessDeniedHandler;
 
 
 @Configuration
@@ -49,6 +52,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(authenticationProvider());
 	}
+	
+	@Bean
+	public AccessDeniedHandler accessDeniedHandler(){
+	    return new CustomAccessDeniedHandler();
+	}
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -65,7 +73,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          .permitAll()
          .and()
          .logout().logoutSuccessUrl("/").permitAll()
-//         .and().exceptionHandling().accessDeniedPage("405")
+         //.and().exceptionHandling().accessDeniedPage("405.html")
+         .and().exceptionHandling().accessDeniedHandler(accessDeniedHandler())
          .and().csrf().disable();
          
     	 configureEncodingFilter(http);
