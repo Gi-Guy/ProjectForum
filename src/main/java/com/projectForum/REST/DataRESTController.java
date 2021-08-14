@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.projectForum.ControlPanel.Configuration.ForumInformation;
 import com.projectForum.Services.RestServices;
 import com.projectForum.forum.EditForumForm;
 import com.projectForum.forum.Forum;
@@ -28,6 +29,30 @@ public class DataRESTController {
 	@Autowired
 	private RestServices	restService;
 	
+	/*
+	 * ################################################################
+	 * 						Forums Configurations
+	 * ################################################################
+	 * */
+	/**
+	 * This method will return a JSON of the forum's configuration*/
+	@GetMapping("getForumConfigurations")
+	public ResponseEntity<?> getForumConfigurations(){
+		ForumInformation forumInformation = restService.getForumConfigurations();
+		if (forumInformation == null)
+			return new ResponseEntity<ForumInformation>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<ForumInformation>(forumInformation, HttpStatus.OK);
+	}
+	/**
+	 * 	This method will get a new configuration and will update the current configurations
+	 * */
+	@PostMapping("updateForumConfigurations")
+	public ResponseEntity<?> updateForumConfigurations(@RequestBody ForumInformation updatedInformation){
+		ForumInformation forumInformation = restService.updateForumConfigurations(updatedInformation);
+		if(forumInformation == null)
+			return new ResponseEntity<ForumInformation>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<ForumInformation>(forumInformation, HttpStatus.OK);
+	}
 	/*
 	 * ################################################################
 	 * 							USERS

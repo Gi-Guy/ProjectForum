@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projectForum.ControlPanel.Configuration.ForumInformation;
 import com.projectForum.Exceptions.AccessDeniedRequestException;
 import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.Security.Role;
@@ -25,6 +26,7 @@ import com.projectForum.Security.RoleRepository;
 import com.projectForum.Services.ControlPanelServices;
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
+import com.projectForum.Services.ForumInformationServices;
 import com.projectForum.Services.ForumServices;
 import com.projectForum.Services.UserServices;
 import com.projectForum.forum.EditForumForm;
@@ -40,6 +42,7 @@ public class ControlPanelController {
 	private UserServices			userService;
 	private DeleteService			deleteService;
 	private EditServices			editService;
+	private ForumInformationServices forumInformationServices;
 	private RoleRepository			roleRepo;
 	
 	private AccessDeniedRequestException accessDeniedRequestException = new AccessDeniedRequestException();
@@ -48,13 +51,15 @@ public class ControlPanelController {
 	@Autowired
 	public ControlPanelController(ControlPanelServices controlService, ForumServices forumService,
 			DeleteService deleteService, EditServices editService,
-			RoleRepository roleRepo, UserServices userService) {
+			RoleRepository roleRepo, UserServices userService,
+			ForumInformationServices forumInformationServices) {
 		this.controlService	=	controlService;
 		this.forumService 	=	forumService;
 		this.deleteService	=	deleteService;
 		this.editService	=	editService;
 		this.roleRepo		=	roleRepo;
 		this.userService	=	userService;
+		this.forumInformationServices = forumInformationServices;
 	}
 	
 	
@@ -82,7 +87,11 @@ public class ControlPanelController {
 		 * Users section
 		 * */
 		
-		
+		/*
+		 * Forum control section
+		 * */
+		ForumInformation forumInformation = forumInformationServices.getForumInformation();
+		model.addAttribute("forumInformation", forumInformation);
 		
 		return "controlPanel";
 	}
@@ -282,5 +291,17 @@ public class ControlPanelController {
 	/* ######################################################
 	 * Homepage administration section
 	 * ######################################################*/
+	
+	/**
+	 * This method will update the forum's information and configurations.
+	 * This method will not updated an information if there are
+	 * no changes.
+	 * */
+	@PostMapping("updateForumInformation")
+	public String updateForumInformation(@Valid @ModelAttribute("updatedInformation") ForumInformation updatedInformation, BindingResult bindingResult, 
+													Authentication authentication, Model mode) {
+		forumInformationServices.updateForumInformation(updatedInformation);
+		return "redirect:/a/controlPanel";
+	}
 	
 }

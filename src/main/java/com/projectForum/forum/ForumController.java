@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.projectForum.Exceptions.AccessDeniedRequestException;
 import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.Services.ControlPanelServices;
+import com.projectForum.Services.ForumInformationServices;
 import com.projectForum.Services.ForumServices;
 import com.projectForum.Services.TopicServices;
 import com.projectForum.Services.UserServices;
@@ -40,6 +41,7 @@ public class ForumController {
 	private ForumServices	forumServices;
 	private ControlPanelServices controlPanelService;
 	private UserServices	userServices;
+	private ForumInformationServices forumInformationServices;
 	
 	
 	private AccessDeniedRequestException accessDeniedRequestException = new AccessDeniedRequestException();
@@ -48,11 +50,13 @@ public class ForumController {
 	
 	@Autowired
 	public ForumController(TopicServices topicservices, ForumServices forumServices,
-			ControlPanelServices controlPanelService, UserServices userServices) {
+			ControlPanelServices controlPanelService, UserServices userServices,
+			ForumInformationServices forumInformationServices) {
 		this.topicservices = topicservices;
 		this.forumServices = forumServices;
 		this.controlPanelService = controlPanelService;
 		this.userServices = userServices;
+		this.forumInformationServices = forumInformationServices;
 	}
 	
 	/**
@@ -62,6 +66,9 @@ public class ForumController {
 	public String displayForums(Model model) {
 		// returning a List<Forum> order by priority {highest priority = 1}
 		model.addAttribute("forums", controlPanelService.createForumDisplayList(forumServices.findForumsByPriorityAsc()));
+		
+		//	Displaying forum's information
+		model.addAttribute("forumInformation", forumInformationServices.getForumInformation());
 		return "forums";
 	}
 	 

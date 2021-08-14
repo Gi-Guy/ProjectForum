@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.projectForum.ControlPanel.Configuration.ForumInformation;
 import com.projectForum.REST.AddUserForm;
 import com.projectForum.REST.DeleteUserForm;
 import com.projectForum.REST.UpdateUser;
@@ -31,13 +32,14 @@ public class RestServices {
 	private PostServices	postServices;
 	private DeleteService	deleteService;
 	private EditServices	editServices;
+	private ForumInformationServices	forumInformationServices;
 	
 	
 	
 	@Autowired
 	public RestServices(RoleRepository roleRepo, UserServices userServices, ForumServices forumServices,
 			TopicServices topicServices, PostServices postServices, DeleteService deleteService,
-			EditServices editServices) {
+			EditServices editServices, ForumInformationServices forumInformationServices) {
 		this.roleRepo = roleRepo;
 		this.userServices = userServices;
 		this.forumServices = forumServices;
@@ -45,8 +47,29 @@ public class RestServices {
 		this.postServices = postServices;
 		this.deleteService = deleteService;
 		this.editServices = editServices;
+		this.forumInformationServices = forumInformationServices;
 	}
 
+	/*
+	 * ################################################################
+	 * 						Forums Configurations
+	 * ################################################################
+	 * */
+	
+	/**
+	 * 	This method will return the current configurations of the application.
+	 * */
+	public ForumInformation getForumConfigurations() {
+		return forumInformationServices.getForumInformation();
+	}
+	/**
+	 * 	This method will update the current application configurations with new configurations.
+	 * Note: user can not change the id, if user will try to change the id,
+	 * the services will not save the new configurations.*/
+	public ForumInformation updateForumConfigurations(ForumInformation updatedInformation) {
+		return forumInformationServices.updateAndReturn(updatedInformation);
+		
+	}
 	/*
 	 * ################################################################
 	 * 							USERS

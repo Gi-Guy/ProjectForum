@@ -1,21 +1,23 @@
 package com.projectForum;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
-@Configuration
-@PropertySource("classpath:config.properties")
-@ConfigurationProperties(prefix = "settings")
+import javax.validation.Valid;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+
+/**
+ * This class will reload first configuration information from application.properties file
+ * */
+
+@Component
+@ConfigurationProperties(prefix = "config")
+@Valid
 public class ConfigProperties {
-	@Value("${forumName}")
+	
 	private String forumName;
-	
-	@Value("${forumDescription}")
 	private String forumDescription;
-	
-	@Value("${counterForDelete}")
 	private	int counterForDelete;
 	
 	public String getForumName() {
