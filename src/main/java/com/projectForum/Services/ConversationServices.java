@@ -49,6 +49,18 @@ public class ConversationServices {
 			return convs;
 		}
 		/**
+		 * 	This method will return a list of all Conversation by User
+		 * */
+		public List<Conversation> getAllConversationsByUser(User user){
+			List<Conversation> convs = null;
+			if(user != null) {
+				
+					convs = convRepo.findBySenderOrReceiver(user,user);	
+			}
+				
+			return convs;
+		}
+		/**
 		 * 	This method will return an exists Conversation.
 		 * */
 		public Conversation findConversation(int convId) {
@@ -101,6 +113,7 @@ public class ConversationServices {
 		public void deleteConversation(int conversationId) {
 			deleteServices.deleteConversation(conversationId);
 		}
+		
 		/**
 		 * 	This method will return an Answer object find by answerId.
 		 *	@param int answerId
