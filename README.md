@@ -1,7 +1,60 @@
 # ProjectForum
  This is my final project in the university - A Java forum web application.
 
-Last Update:
+Last Update: 14/8/21
+
+**This update will include the following:**
+
+### _**Exceptions and Exploits Handlers**_
+There are a whole new Exceptions Handlers that will handle most of the errors and exploits of the application.
+- All controllers has been updated to use services only and will not access data via Repository's files.
+- All services has been updated to give more services and catch as many errors they can.
+- All controllers and Security files has been updated so they will be able to catch exploiters.
+- Exceptions and Exploits Handlers will print reports in console when they catch an exploits or exceptions.
+
+### _**Errors 404/403**_
+- Exceptions Handlers will take USER to page error 404 when something went wrong.
+- Exploits Handlers will take USER to page error 403 when user is trying to exploit the application.
+- pages 403 and 404 has been updated with new content.
+
+### _**Configurations**_
+User can now set an default configurations via application.properties file including:
+- Forum's official Name
+- Forum's official Description
+- Forum's official Time until delete data.
+
+In first initialize an configurations class will create a new table of _**ForumInformation**_ and will put all values from application.properties file.
+
+After the first initialize this class will not be activated again, However if table will be deleted it will create the table again and update it with default values.
+
+### _**Control Panel**_
+- Admins can now search users with upper and lower letters.
+- Admins can now update the Forum's name. 
+- Admins can now update the Forum's Description.
+- Admins can now update the Forum's Time until delete data.
+**_### CONTROL PANEL IS COMLETED_**
+
+### _**Web Services (REST)**_
+- Admins can now update the Forum's name via web services.
+- Admins can now update the Forum's Description via web services.
+- Admins can now update the Forum's Time until delete data via web services.
+**_### WEB SERVICES IS COMPLETED_**
+
+### _**Login**_
+- There is a new limitation that prevent logged users to access the login page.
+- Users can now click on 'Remember me' option. 
+NOTE: 'Remember me' options isn't working after reseting application, users have to click on it again.
+
+### _**Home Page**_
+- I've updated the homepage so it will display an information from the forum's configurations
+
+### _**Bugs**_
+- i've fixed many major and minor bugs.
+
+### _**Known Bugs**_
+There are some known bugs that will be not fixed.
+- for example Web services exploits.
+
 
 
 -----------------------------
