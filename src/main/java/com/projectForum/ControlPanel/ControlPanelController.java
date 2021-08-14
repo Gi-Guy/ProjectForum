@@ -5,7 +5,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,43 +18,48 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projectForum.ControlPanel.Configuration.ForumInformation;
+import com.projectForum.Exceptions.AccessDeniedRequestException;
+import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.Security.Role;
 import com.projectForum.Security.RoleRepository;
 import com.projectForum.Services.ControlPanelServices;
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
+import com.projectForum.Services.ForumInformationServices;
+import com.projectForum.Services.ForumServices;
+import com.projectForum.Services.UserServices;
 import com.projectForum.forum.EditForumForm;
 import com.projectForum.forum.Forum;
-import com.projectForum.forum.ForumRepository;
 import com.projectForum.user.User;
-import com.projectForum.user.UserRepository;
-import com.projectForum.user.Profile.UserProfileServices;
 
 @Controller
 @RequestMapping("/a/")
-//@RequestMapping("/admin/")
 public class ControlPanelController {
 
 	private ControlPanelServices 	controlService;
-	private ForumRepository 		forumRepo;
-	private UserRepository			userRepo;
-	private UserProfileServices		userService;
+	private ForumServices			forumService;
+	private UserServices			userService;
 	private DeleteService			deleteService;
 	private EditServices			editService;
+	private ForumInformationServices forumInformationServices;
 	private RoleRepository			roleRepo;
 	
-	
+	private AccessDeniedRequestException accessDeniedRequestException = new AccessDeniedRequestException();
+	private final String localUrl = "/a/";
 	
 	@Autowired
-	public ControlPanelController(ControlPanelServices controlService, ForumRepository forumRepo,
-			DeleteService deleteService, EditServices editService, UserRepository userRepo,
-			RoleRepository roleRepo) {
+	public ControlPanelController(ControlPanelServices controlService, ForumServices forumService,
+			DeleteService deleteService, EditServices editService,
+			RoleRepository roleRepo, UserServices userService,
+			ForumInformationServices forumInformationServices) {
 		this.controlService	=	controlService;
-		this.forumRepo		=	forumRepo;
+		this.forumService 	=	forumService;
 		this.deleteService	=	deleteService;
 		this.editService	=	editService;
-		this.userRepo		=	userRepo;
 		this.roleRepo		=	roleRepo;
+		this.userService	=	userService;
+		this.forumInformationServices = forumInformationServices;
 	}
 	
 	
@@ -64,21 +68,30 @@ public class ControlPanelController {
 	 * */
 	
 	@GetMapping("/controlPanel")
-	public String displayControlPanel(Model model) {
-
+	public String displayControlPanel(Model model, Authentication authentication) {
+		User user = userService.findUserByUsername(authentication.getName());
+		final Role adminRole = roleRepo.findRoleByName("Admin");
+		// Checking if user allowed to access control panel
+		if(!user.getRole().equals(adminRole)) {
+			// User isn't allowed to access to control panel
+			accessDeniedRequestException.throwNewAccessDenied(user.getUsername(), localUrl + "controlPanel");
+		}
 		/*
 		 * Forums section
 		 * */
 		
-		List<Forum> forums = forumRepo.findByOrderByPriorityAsc();
+		List<Forum> forums = forumService.findForumsByPriorityAsc();
 		model.addAttribute("forumForms", controlService.createForumDisplayList(forums));
 		
 		/*
 		 * Users section
 		 * */
 		
-		// model.addAttribute("searchUserForm",searchUserForm);
-		
+		/*
+		 * Forum control section
+		 * */
+		ForumInformation forumInformation = forumInformationServices.getForumInformation();
+		model.addAttribute("forumInformation", forumInformation);
 		
 		return "controlPanel";
 	}
@@ -107,14 +120,14 @@ public class ControlPanelController {
 		}
 		
 		//Each forum must have a priority value, 1 is the lowest.
-		List<Forum> forums = forumRepo.findAll();
+		List<Forum> forums = forumService.findAll();
 		if(forums.isEmpty()) {
 			forum.setPriority(1);	
 		}
 		else {
 			forum.setPriority(forums.size() + 1);	
 		}
-		forumRepo.save(forum);
+		forumService.save(forum);
 		// User will be redirected to the place in the control panel where the forum they made is shown.
 		return "redirect:controlPanel" + '#' + forum.getId(); 
 	}
@@ -136,11 +149,13 @@ public class ControlPanelController {
 	public String editForum(@Valid @ModelAttribute("editForum") EditForumForm editForum,
 							BindingResult bindingResult, Authentication authentication,
 							Model model) {
-		Forum forum = forumRepo.findById(editForum.getForumId());
+		Forum forum = forumService.findFourmById(editForum.getForumId());
 		
 		// Making sure that Admin in action
-		if(userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN")) 
+		if(userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			editService.updateForum(forum, editForum);
+		else
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "editForum");
 		
 		return "redirect:controlPanel" + '#' + forum.getId();
 	}
@@ -168,12 +183,14 @@ public class ControlPanelController {
 	@GetMapping("forum/delete/{forumId}")
 	public String deleteForum(@PathVariable int forumId, Authentication authentication,
 								RedirectAttributes model) {
-		Forum forum = forumRepo.findById(forumId);
+		Forum forum = forumService.findFourmById(forumId);
 		// Making sure that Admin in action
-		if(userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN")) {
+		if(userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {
 			deleteService.deleteForum(forum);
 			model.addFlashAttribute("message", "Forum has been removed.");	
 		}
+		else
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "forum/delete/" + forumId);
 		return "redirect:/a/controlPanel";
 	}
 	
@@ -189,7 +206,7 @@ public class ControlPanelController {
 	@GetMapping("/list_users")
 	public String listofUsers(Model model) {
 		// Display all useres by role rank.
-		model.addAttribute("listofUsers", userRepo.findByOrderByRolesAsc());
+		model.addAttribute("listofUsers", userService.findAllUsersByRoleAsc());
 		return "users";
 	}
 	
@@ -201,7 +218,12 @@ public class ControlPanelController {
 		ModelAndView mav = new ModelAndView("edit_User_form");
 		
 		List<Role> roles = roleRepo.findAll();
-		EditUserForm editUser = controlService.editUserForm(username);
+		EditUserForm editUser = null;
+		try {
+			editUser = controlService.editUserForm(username);
+		} catch (NullPointerException e) {
+			throw new EntityRequestException("Could not find user :: " + username);
+		}
 
 		mav.addObject("editUser",editUser);
 		mav.addObject("roles",roles);
@@ -215,12 +237,14 @@ public class ControlPanelController {
 	public String updateUser(@Valid @ModelAttribute("editUser") EditUserForm editUser, BindingResult bindingResult, 
 								Authentication authentication, Model mode) {
 		
-		User user = userRepo.findUserById(editUser.getId());
-		
+		User user = userService.findUserByUserId(editUser.getId());
+
 		// Checking if user is exists
-		if(authentication == null || user == null
-				|| !userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN"))
-			return "redirect:/";
+		if(authentication == null || user == null) {
+			throw new EntityRequestException("Could not update User :: " + editUser.getUsername());
+		}
+		if(!userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "updateUser" + editUser.getUsername());
 		
 		// Checking if need to update role
 		if(!user.getRole().getName().equals(editUser.getRole()) && !editUser.getRole().equals("UNDEFINED_USER")) {
@@ -234,8 +258,11 @@ public class ControlPanelController {
 			deleteService.deleteUser(editUser);
 		}
 		// if user still admin, then return to control panel
-		if(userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN"))
+		if(userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			return "redirect:/a/controlPanel";
+		else
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "controlPanel");
+		
 		return "redirect:/";
 	}
 	
@@ -247,12 +274,14 @@ public class ControlPanelController {
 	@GetMapping("user/delete/{username}")
 	public String deleteUser(@PathVariable String username, Authentication authentication,
 								RedirectAttributes model) {
-		User user = userRepo.findByUsername(username);
+		User user = userService.findUserByUsername(username);
 		
 		// Checking if user exists
-		if(authentication == null || user == null
-				|| !userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN"))
-			return "redirect:/";
+		if(authentication == null || user == null) {
+			throw new EntityRequestException("Could not find User :: " + username);
+		}
+		else if(!userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "user/delete/" + username);
 		
 		deleteService.deleteUser(username);
 		return "/controlPanel/";
@@ -262,5 +291,17 @@ public class ControlPanelController {
 	/* ######################################################
 	 * Homepage administration section
 	 * ######################################################*/
+	
+	/**
+	 * This method will update the forum's information and configurations.
+	 * This method will not updated an information if there are
+	 * no changes.
+	 * */
+	@PostMapping("updateForumInformation")
+	public String updateForumInformation(@Valid @ModelAttribute("updatedInformation") ForumInformation updatedInformation, BindingResult bindingResult, 
+													Authentication authentication, Model mode) {
+		forumInformationServices.updateForumInformation(updatedInformation);
+		return "redirect:/a/controlPanel";
+	}
 	
 }

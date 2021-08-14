@@ -9,15 +9,11 @@ import com.projectForum.Security.Role;
 import com.projectForum.Security.RoleRepository;
 import com.projectForum.forum.EditForumForm;
 import com.projectForum.forum.Forum;
-import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.EditPostForm;
 import com.projectForum.post.Post;
-import com.projectForum.post.PostRepository;
 import com.projectForum.topic.NewTopicPageForm;
 import com.projectForum.topic.Topic;
-import com.projectForum.topic.TopicRepository;
 import com.projectForum.user.User;
-import com.projectForum.user.UserRepository;
 
 
 
@@ -30,23 +26,24 @@ import com.projectForum.user.UserRepository;
 @Service
 public class EditServices {
 
-	private UserRepository	userRepo;
-	private PostRepository	postRepo;
-	private TopicRepository	topicRepo;
-	private ForumRepository	forumRepo;
+	private UserServices	userServices;
+	private PostServices	postServices;
+	private TopicServices	topicServices;
+	private ForumServices	forumServices;
 	private RoleRepository	roleRepo;
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
-	public EditServices(UserRepository userRepo, PostRepository postRepo, TopicRepository topicRepo,
-			ForumRepository forumRepo, RoleRepository	roleRepo, PasswordEncoder passwordEncoder) {
-		this.userRepo = userRepo;
-		this.postRepo = postRepo;
-		this.topicRepo = topicRepo;
-		this.forumRepo = forumRepo;
+	public EditServices(UserServices userServices, PostServices postServices, TopicServices topicServices,
+			ForumServices forumServices, RoleRepository roleRepo, PasswordEncoder passwordEncoder) {
+		this.userServices = userServices;
+		this.postServices = postServices;
+		this.topicServices = topicServices;
+		this.forumServices = forumServices;
 		this.roleRepo = roleRepo;
 		this.passwordEncoder = passwordEncoder;
 	}
+
 	
 	/** This method will update exists post with new Content.
 	 * 	In case that the content is blank, there will be no update.
@@ -58,9 +55,10 @@ public class EditServices {
 		if(!editPostForm.getContent().isBlank()) 
 			post.setContent(editPostForm.getContent());
 		
-		postRepo.save(post);
+		postServices.save(post);
 	}
 	
+
 	/** This method will update exists topic with new Content and new Title.
 	 * 	In case that the Title or Contect are blank, there will be no update.
 	 *  @param Topic to update
@@ -75,7 +73,7 @@ public class EditServices {
 		if (!newTopic.getContent().isBlank())
 			topic.setContent(newTopic.getContent());
 		
-		topicRepo.save(topic);
+		topicServices.save(topic);
 	}
 	
 	/** This method will update exists Forum with new Name and New Description.
@@ -91,7 +89,7 @@ public class EditServices {
 		if(!editForum.getDescription().isBlank())
 			forum.setDescription(editForum.getDescription());
 		
-		forumRepo.save(forum);
+		forumServices.save(forum);
 	}
 	
 	/**	This method will update exists User with new user information.
@@ -100,7 +98,7 @@ public class EditServices {
 	 * 	@param */
 	public void updateUser(User updateUser) {
 		// Checking if user is exists
-		User targetUser = userRepo.findUserById(updateUser.getId());
+		User targetUser = userServices.findUserByUserId(updateUser.getId());
 		
 		if (targetUser == null) {
 			// TODO add exciption
@@ -143,7 +141,7 @@ public class EditServices {
 					
 			
 			// Saving all changes
-			userRepo.save(targetUser);
+			userServices.save(targetUser);
 		}
 		
 		// There are no new changes.
@@ -155,10 +153,10 @@ public class EditServices {
 	 * */
 	public void updateUserRole(EditUserForm editUser) {
 		Role role = roleRepo.findRoleByName(editUser.getRole());
-		User user = userRepo.findUserById(editUser.getId());
+		User user = userServices.findUserByUserId(editUser.getId());
 		
 		user.removeRole();
 		user.setRole(role);
-		userRepo.save(user);
+		userServices.save(user);
 	}
 }

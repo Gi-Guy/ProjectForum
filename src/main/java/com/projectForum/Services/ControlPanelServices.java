@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 import com.projectForum.ControlPanel.EditUserForm;
 import com.projectForum.ControlPanel.ForumForm;
 import com.projectForum.forum.Forum;
-import com.projectForum.forum.ForumRepository;
-import com.projectForum.topic.TopicRepository;
 import com.projectForum.user.User;
-import com.projectForum.user.UserRepository;
 
 //	TODO TEST THIS FILE
 /* ###########################################################
@@ -24,16 +21,15 @@ import com.projectForum.user.UserRepository;
 @Service
 public class ControlPanelServices {
 
-	private UserRepository	userRepo;
-	private TopicRepository	topicRepo;
-	private ForumRepository	forumRepo;
+	private UserServices	userServices;
+	private TopicServices	topicServices;
+	private ForumServices	forumServices;
 	
 	@Autowired
-	public ControlPanelServices(UserRepository userRepo, TopicRepository topicRepo,
-			ForumRepository forumRepo) {
-		this.userRepo = userRepo;
-		this.topicRepo = topicRepo;
-		this.forumRepo = forumRepo;
+	public ControlPanelServices(UserServices userServices, TopicServices topicServices, ForumServices forumServices) {
+		this.userServices = userServices;
+		this.topicServices = topicServices;
+		this.forumServices = forumServices;
 	}
 	
 	/**
@@ -60,7 +56,7 @@ public class ControlPanelServices {
 		newForm.setForum(forum);
 		
 		// update Topics counter
-		int topicsCounter = topicRepo.findTopicsByForum(forum).size();
+		int topicsCounter = topicServices.findTopicsByForum(forum).size();
 		newForm.setNumOfTopics(topicsCounter);
 		
 		// update short Description
@@ -95,9 +91,8 @@ public class ControlPanelServices {
 		targetForum.setPriority(lowerForum.getPriority());
 		lowerForum.setPriority(tempPriority);
 		
-		forumRepo.save(targetForum);
-		forumRepo.save(lowerForum);
-		
+		forumServices.save(targetForum);
+		forumServices.save(lowerForum);
 	}
 	/** This method will update the priority of a two forums, higher priority and lower priority.
 	 *  It will set the traget forum to the higher priority.
@@ -105,8 +100,8 @@ public class ControlPanelServices {
 	 *  @param int forumId
 	 * */
 	public void updatePriorityUp(int forumId) {
-		Forum forum = forumRepo.findById(forumId);
-		this.updatePriorityUp(forum , forumRepo.findByPriority(forum.getPriority() - 1));
+		Forum forum = forumServices.findFourmById(forumId);
+		this.updatePriorityUp(forum , forumServices.findForumByPriority(forum.getPriority() - 1));
 	}
 	/** This method will update the priority of a two forums, higher priority and lower priority.
 	 * 	It will set the traget forum to the higher priority.
@@ -123,9 +118,8 @@ public class ControlPanelServices {
 		targetForum.setPriority(higherForum.getPriority());
 		higherForum.setPriority(tempPriority);
 		
-		forumRepo.save(targetForum);
-		forumRepo.save(higherForum);
-		
+		forumServices.save(targetForum);
+		forumServices.save(higherForum);		
 	}
 	/** This method will update the priority of a two forums, higher priority and lower priority.
 	 *  It will set the traget forum to the lower priority.
@@ -133,17 +127,17 @@ public class ControlPanelServices {
 	 *  @param int forumId
 	 * */
 	public void updatePriorityDown(int forumId) {
-		Forum forum = forumRepo.findById(forumId);
-		this.updatePriorityDown(forum , forumRepo.findByPriority(forum.getPriority() + 1));
+		Forum forum = forumServices.findFourmById(forumId);
+		this.updatePriorityDown(forum , forumServices.findForumByPriority(forum.getPriority() + 1));
 	}
 	
 	public EditUserForm editUserForm(String username) {
-		return this.editUserFormById(userRepo.findByUsername(username).getId());
+		return this.editUserFormById(userServices.findUserByUsername(username).getId());
 	}
 
 	private EditUserForm editUserFormById(int id) {
 		EditUserForm editForm = new EditUserForm();
-		User user = userRepo.findUserById(id);
+		User user = userServices.findUserByUserId(id);
 		
 		// insert all relevent information
 		editForm.setId(user.getId());

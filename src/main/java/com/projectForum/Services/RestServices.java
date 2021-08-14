@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.projectForum.ControlPanel.Configuration.ForumInformation;
 import com.projectForum.REST.AddUserForm;
 import com.projectForum.REST.DeleteUserForm;
 import com.projectForum.REST.UpdateUser;
@@ -12,13 +13,10 @@ import com.projectForum.Security.Role;
 import com.projectForum.Security.RoleRepository;
 import com.projectForum.forum.EditForumForm;
 import com.projectForum.forum.Forum;
-import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
-import com.projectForum.post.PostRepository;
 import com.projectForum.topic.Topic;
-import com.projectForum.topic.TopicRepository;
 import com.projectForum.user.User;
-import com.projectForum.user.UserRepository;
+
 
 /**
  *  This class will gives services to the Rest controller.
@@ -27,24 +25,51 @@ import com.projectForum.user.UserRepository;
 @Service
 public class RestServices {
 
-	@Autowired
-	private UserRepository	userRepo;
-	@Autowired
 	private RoleRepository	roleRepo;
-	@Autowired
 	private UserServices	userServices;
-	@Autowired
-	private ForumRepository	forumRepo;
-	@Autowired
-	private TopicRepository	topicRepo;
-	@Autowired
-	private PostRepository	postRepo;
-	@Autowired
+	private ForumServices	forumServices;
+	private TopicServices	topicServices;
+	private PostServices	postServices;
 	private DeleteService	deleteService;
-	@Autowired
 	private EditServices	editServices;
+	private ForumInformationServices	forumInformationServices;
 	
 	
+	
+	@Autowired
+	public RestServices(RoleRepository roleRepo, UserServices userServices, ForumServices forumServices,
+			TopicServices topicServices, PostServices postServices, DeleteService deleteService,
+			EditServices editServices, ForumInformationServices forumInformationServices) {
+		this.roleRepo = roleRepo;
+		this.userServices = userServices;
+		this.forumServices = forumServices;
+		this.topicServices = topicServices;
+		this.postServices = postServices;
+		this.deleteService = deleteService;
+		this.editServices = editServices;
+		this.forumInformationServices = forumInformationServices;
+	}
+
+	/*
+	 * ################################################################
+	 * 						Forums Configurations
+	 * ################################################################
+	 * */
+	
+	/**
+	 * 	This method will return the current configurations of the application.
+	 * */
+	public ForumInformation getForumConfigurations() {
+		return forumInformationServices.getForumInformation();
+	}
+	/**
+	 * 	This method will update the current application configurations with new configurations.
+	 * Note: user can not change the id, if user will try to change the id,
+	 * the services will not save the new configurations.*/
+	public ForumInformation updateForumConfigurations(ForumInformation updatedInformation) {
+		return forumInformationServices.updateAndReturn(updatedInformation);
+		
+	}
 	/*
 	 * ################################################################
 	 * 							USERS
@@ -54,7 +79,7 @@ public class RestServices {
 	 *  This method will return a list of user, order by roles (Admins first)
 	 *  */
 	public List<User> getAllUsers(){
-		List<User> users = userRepo.findByOrderByRolesAsc();
+		List<User> users = userServices.findAllUsersByRoleAsc();
 		
 		return users;
 	}
@@ -63,7 +88,7 @@ public class RestServices {
 	 *	This method will return a User object by username String.
 	 **/
 	public User getUser(String username) {
-		User user = userRepo.findByUsername(username);
+		User user = userServices.findUserByUsername(username);
 		
 		return user;
 	}
@@ -121,19 +146,19 @@ public class RestServices {
 		// Need to find the user by id/username/email
 		
 		// Looking for user by id 
-		findUser = userRepo.findUserById(updateUser.getId());
+		findUser = userServices.findUserByUserId(updateUser.getId());
 		// is user exist?
 		if(findUser != null) 
 			return findUser;
 		
 		// Looking for user by username
-		findUser = userRepo.findByUsername(updateUser.getUsername());
+		findUser = userServices.findUserByUsername(updateUser.getUsername());
 		// is user exist?
 		if(findUser != null)
 			return findUser;
 			
 		// Looking for user by email 
-		findUser = userRepo.findByEmail(updateUser.getEmail());
+		findUser = userServices.findUserByUserEmail(updateUser.getEmail());
 		// is user exist?
 		if(findUser != null) 
 			return findUser;
@@ -150,14 +175,14 @@ public class RestServices {
 		
 		// Need to find the user by id/username/email and then find out what new.
 		// Looking for user by id 
-		findUser = userRepo.findUserById(updateUser.getId());
+		findUser = userServices.findUserByUserId(updateUser.getId());
 		// is user exist?
 		if(findUser != null) {
 			this.updateUser(findUser, updateUser);
 			return true;
 		}
 		// Looking for user by username
-		findUser = userRepo.findByUsername(updateUser.getUsername());
+		findUser = userServices.findUserByUsername(updateUser.getUsername());
 		// is user exist?
 		if(findUser != null) {
 			this.updateUser(findUser, updateUser);
@@ -165,7 +190,7 @@ public class RestServices {
 		}
 		
 		// Looking for user by email 
-		findUser = userRepo.findByEmail(updateUser.getEmail());
+		findUser = userServices.findUserByUserEmail(updateUser.getEmail());
 		// is user exist?
 		if(findUser != null) {
 			this.updateUser(findUser, updateUser);
@@ -230,7 +255,7 @@ public class RestServices {
 	 *  This method will return a list of forums, order by priority
 	 *  */
 	public List<Forum> getAllForums(){
-		List<Forum> forums = forumRepo.findByOrderByPriorityAsc();
+		List<Forum> forums = forumServices.findForumsByPriorityAsc();
 		
 		return forums;
 	}
@@ -238,14 +263,14 @@ public class RestServices {
 	 *	This method will return a Forum object by forumId
 	 **/
 	public Forum getForumById(int forumId) {
-		Forum forum = forumRepo.findById(forumId);
+		Forum forum = forumServices.findFourmById(forumId);
 		return forum;
 	}
 	/**
 	 *	This method will return a Forum object by forum priority
 	 **/
 	public Forum getForumByPriority(int priority) {
-		Forum forum = forumRepo.findByPriority(priority);
+		Forum forum = forumServices.findForumByPriority(priority);
 		return forum;
 	}
 	/**
@@ -272,15 +297,15 @@ public class RestServices {
 		
 		//Each forum must have a priority value, 1 is the lowest.
 		
-		List<Forum> forums = forumRepo.findAll();
+		List<Forum> forums = forumServices.findAll();
 		if(forums.isEmpty()) {
 			forum.setPriority(1);	
 		}
 		else {
 			forum.setPriority(forums.size() + 1);	
 		}
-		forumRepo.save(forum);
-		return forumRepo.findByPriority(forums.size() + 1);
+		forumServices.save(forum);
+		return forumServices.findForumByPriority(forums.size() + 1);
 	}
 	/**
 	 * 	This method will return to user an example of editforum form.
@@ -303,7 +328,7 @@ public class RestServices {
 			return false;
 		}
 		
-		Forum forum = forumRepo.findById(updateForum.getForumId());
+		Forum forum = forumServices.findFourmById(updateForum.getForumId());
 			
 		if(forum!=null) {
 			editServices.updateForum(forum, updateForum);
@@ -326,7 +351,8 @@ public class RestServices {
 	 *  This method will return a list of topics
 	 *  */
 	public List<Topic> getAllTopics(){
-		List<Topic> topics = topicRepo.findAll();
+		List<Topic> topics = topicServices.findAll();
+		
 		
 		return topics;
 	}
@@ -335,7 +361,7 @@ public class RestServices {
 	 * 	This method will return a topic by topicId
 	 * */
 	public Topic getTopicById(int topicId) {
-		Topic topic = topicRepo.findTopicById(topicId);
+		Topic topic = topicServices.findTopicById(topicId);
 		
 		return topic;
 	}
@@ -346,7 +372,7 @@ public class RestServices {
 	public boolean deleteTopic(int topicId) {
 		
 		// Checking if topic is exists
-		Topic topic = topicRepo.findTopicById(topicId);
+		Topic topic = topicServices.findTopicById(topicId);
 		
 		if(topic != null) {
 			deleteService.deleteTopic(topic);
@@ -363,7 +389,7 @@ public class RestServices {
 	 *  This method will return a list of posts
 	 *  */
 	public List<Post> getAllPosts(){
-		List<Post> posts = postRepo.findAll();
+		List<Post> posts = postServices.findAll();
 		
 		return posts;
 	}
@@ -371,7 +397,7 @@ public class RestServices {
 	 * 	This method will return a post by postId
 	 * */
 	public Post getPostById(int postId) {
-		Post post = postRepo.findById(postId);
+		Post post = postServices.findPostById(postId);
 		
 		return post;
 	}
@@ -382,7 +408,7 @@ public class RestServices {
 	public boolean deletePost(int postId) {
 		
 		// Checking if topic is exists
-		Post post = postRepo.findById(postId);
+		Post post = postServices.findPostById(postId);
 		
 		if(post != null) {
 			deleteService.deletePost(post);

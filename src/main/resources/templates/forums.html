@@ -7,10 +7,9 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 	<body>
 	
 		<div th:replace="fragments.html :: topnav"></div>
-		
-		<h1>ברוכים הבאים לפורום הכי טוב בתבל</h1>
-		<h3 style="text-align: center">אל תמליצו לחברים שלכם לבוא לפה בבקשה</h3>
-		
+		<h1 th:text = "${forumInformation.getName()}"></h1>
+		<h3 style="text-align: center"
+			th:text = "${forumInformation.getDescription()}"></h3>
 		<hr><br>
 		
 		<table class="table-striped stretch" border="1" style="text-align:right">

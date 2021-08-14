@@ -7,42 +7,41 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.projectForum.PrivateMessages.Answer;
-import com.projectForum.PrivateMessages.AnswerRepository;
 import com.projectForum.PrivateMessages.Conversation;
 import com.projectForum.PrivateMessages.ConversationRepository;
 import com.projectForum.user.User;
-import com.projectForum.user.UserRepository;
 
 @Service
 public class ConversationServices {
 	
-		private UserRepository 			userRepo;
-		private AnswerRepository		answerRepo;
+		private UserServices			userServices;
+		private AnswerServices			answerServices;
 		private	ConversationRepository 	convRepo;
 		private DeleteService			deleteServices;
 		
 		@Autowired
-		public ConversationServices(UserRepository userRepo, AnswerRepository answerRepo,
+		public ConversationServices(UserServices userServices, AnswerServices answerServices,
 				ConversationRepository convRepo, DeleteService deleteServices) {
-			this.userRepo = userRepo;
-			this.answerRepo = answerRepo;
+			super();
+			this.userServices = userServices;
+			this.answerServices = answerServices;
 			this.convRepo = convRepo;
 			this.deleteServices = deleteServices;
-		} 
+		}
+
 		
 		/**
 		 * This method will return an User by username*/
-		public User getUuserByUsername(String username) {
-			return userRepo.findByUsername(username);
+		public User getUserByUsername(String username) {
+			return userServices.findUserByUsername(username);
 		}
 		/**
-		 * 	This method will return a list of all Conversation by userId
+		 * 	This method will return a list of all Conversation by User
 		 * */
-		public List<Conversation> getAllConversationsByUserId(int userId, Authentication authentication){
-			User user = userRepo.findUserById(userId);
+		public List<Conversation> getAllConversationsByUser(User user, Authentication authentication){
 			List<Conversation> convs = null;
 			if(user != null && user.getUsername().equals(authentication.getName()) || 
-					userRepo.findByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {
+					userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {
 				
 					convs = convRepo.findBySenderOrReceiver(user,user);	
 			}
@@ -61,8 +60,8 @@ public class ConversationServices {
 			Conversation conv = convRepo.findById(conversationId);
 			
 			answer.setConversation(conv);
-			answer.setUser(userRepo.findByUsername(authentication.getName()));
-			answerRepo.save(answer);
+			answer.setUser(userServices.findUserByUsername(authentication.getName()));
+			answerServices.save(answer);
 			
 		}
 		
@@ -72,7 +71,7 @@ public class ConversationServices {
 		 * @param Int senderId - the sender*/
 		public Conversation createNewConversation(int receiverId, User sender) {
 			Conversation conversation = new Conversation();
-			conversation.setReceiver(userRepo.findUserById(receiverId));
+			conversation.setReceiver(userServices.findUserByUserId(receiverId));
 			conversation.setSender(sender);
 			
 			return conversation;
@@ -81,8 +80,8 @@ public class ConversationServices {
 		 * This method will proccess a new conversation between two users
 		 * */
 		public Conversation proccessNewConversation(Conversation conversation, Authentication authentication) {
-			User receiver = userRepo.findUserById(conversation.getReceiver().getId());
-			User sender = userRepo.findByUsername(authentication.getName());
+			User receiver = userServices.findUserByUserId(conversation.getReceiver().getId());
+			User sender = userServices.findUserByUsername(authentication.getName());
 			
 			conversation.setReceiver(receiver);
 			conversation.setSender(sender);
@@ -107,7 +106,7 @@ public class ConversationServices {
 		 *	@param int answerId
 		 *	@return Answer*/
 		public Answer getAnswer(int answerId) {
-			return answerRepo.findById(answerId);
+			return answerServices.findAnswerById(answerId);
 		}
 		/**
 		 * 	This method will return an Conversation object find by conversationId.
@@ -122,6 +121,10 @@ public class ConversationServices {
 		 * @return List<Answer> answers*/
 		public List<Answer> getAllAnswersInConversation(int conversationId){
 			Conversation conv = convRepo.findById(conversationId);
-			return answerRepo.findByConversation(conv);
+			return answerServices.findAnswersByConversation(conv);
 		}
+		
+		/*
+		 *	 Repository services
+		 * */
 }

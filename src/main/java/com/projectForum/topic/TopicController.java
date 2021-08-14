@@ -2,6 +2,8 @@ package com.projectForum.topic;
 
 
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +18,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projectForum.Exceptions.AccessDeniedRequestException;
+import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
-import com.projectForum.forum.ForumRepository;
+import com.projectForum.Services.ForumServices;
+import com.projectForum.Services.PostServices;
+import com.projectForum.Services.TopicServices;
+import com.projectForum.Services.UserServices;
 import com.projectForum.post.Post;
-import com.projectForum.post.PostRepository;
-import com.projectForum.user.UserRepository;
 
 
 /**
@@ -35,21 +40,23 @@ import com.projectForum.user.UserRepository;
 @RequestMapping("/topic/")
 public class TopicController {
 	
-	private UserRepository 	userRepo;
-	private TopicRepository topicRepo;
-	private PostRepository 	postRepo;
-	private ForumRepository forumRepo;
+	private UserServices	userServices;
+	private PostServices	postServices;
+	private ForumServices	forumServices;
 	private DeleteService	deleteService;
 	private EditServices	editService;
+	private TopicServices	topicServices;
 	
+	private AccessDeniedRequestException accessDeniedRequestException = new AccessDeniedRequestException();
+	private final String localUrl = "/topic/";
 
 	@Autowired
-	public TopicController(UserRepository userRepo, TopicRepository topicRepo, PostRepository postRepo,
-			ForumRepository forumRepo, DeleteService deleteService, EditServices editService) {
-		this.userRepo = userRepo;
-		this.topicRepo = topicRepo;
-		this.postRepo = postRepo;
-		this.forumRepo = forumRepo;
+	public TopicController(UserServices userServices, TopicServices topicServices, PostServices postServices,
+			ForumServices forumServices, DeleteService deleteService, EditServices editService) {
+		this.userServices = userServices;
+		this.topicServices = topicServices;
+		this.postServices = postServices;
+		this.forumServices = forumServices;
 		this.deleteService = deleteService;
 		this.editService = editService;
 	}
@@ -62,14 +69,21 @@ public class TopicController {
 	@GetMapping("{topicId}")
 	public String getTopicById(@PathVariable int topicId, Model model) {
 		
-		Topic topic = topicRepo.findTopicById(topicId);
+		Topic topic = topicServices.findTopicById(topicId);
+		List<Post> posts = postServices.findPostsByTopic(topic);
+		
+		if(topic == null)
+			throw new EntityRequestException("Could not display topic ID :: " + topicId);
+		if(posts == null)
+			throw new EntityRequestException("Could not find posts for topic ID :: " + topicId);
+		
 		// Each view have to update the views counter by 1
 		topic.setViews(topic.getViews() + 1);
-		topicRepo.save(topic);
+		topicServices.save(topic);
 		
 		model.addAttribute("topic", topic);
 		// Each topic can have 0 or more posts in it
-		model.addAttribute("posts", postRepo.findPostsByTopicId(topicId));
+		model.addAttribute("posts", posts);
 		// In each topic there is an option to create a new post
 		model.addAttribute("newPost", new Post());
 		
@@ -80,22 +94,25 @@ public class TopicController {
 	@PostMapping("{topicId}")
 	public String addNewPost(@Valid @ModelAttribute Post post, BindingResult bindingResult, @PathVariable int topicId,
 								Authentication authentication, Model model) {
+		// Only register user allowed to do acitons
+		if(authentication == null)
+				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "newPost " + topicId);
 		
 		// If hasErrors == true, then return to topic page, because something went wrong
 		if(bindingResult.hasErrors()) {
 			System.err.println("ERROR :: Topic Controller - addNewPost (POST)");
 			// If there is an error we should go back to topic page and try again.
-			model.addAttribute("topic", topicRepo.findTopicById(topicId));
-			model.addAttribute("posts", postRepo.findPostsByTopicId(topicId));
+			model.addAttribute("topic", topicServices.findTopicById(topicId));
+			model.addAttribute("posts", postServices.findPostsByTopicId(topicId));
 			model.addAttribute("newPost", new Post());
 			// Keeping user in same page to fix issues
 			return "topic";
 		}
 		
 		// No errors, creating a new post in topic
-		post.setUser(userRepo.findByUsername(authentication.getName()));
-		post.setTopic(topicRepo.findTopicById(topicId));
-		postRepo.save(post);
+		post.setUser(userServices.findUserByUsername(authentication.getName()));
+		post.setTopic(topicServices.findTopicById(topicId));
+		postServices.save(post);
 
 		model.asMap().clear(); // Cleaning the model as it does some weird things if not.
 		return "redirect:" + topicId + '#' + post.getId(); // User will be redirected to the post they wrote.
@@ -103,7 +120,12 @@ public class TopicController {
 	
 	/** This method will return a model and navigate the user to newTopic page */
 	@GetMapping("newTopic/{forumId}")
-	public String createNewTopicInForum(@PathVariable int forumId, Model model) {
+	public String createNewTopicInForum(@PathVariable int forumId, Model model, Authentication authentication) {
+		
+		// Only register user allowed to create a new topic
+		if(authentication == null)
+				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "newTopic/" + forumId);
+		
 		// Using a newTopicform to keep our forumId.
 		NewTopicPageForm newTopic = new NewTopicPageForm();
 		// Saving forumId value.
@@ -117,11 +139,14 @@ public class TopicController {
 	@PostMapping("newTopic")
 	public String proccesNewTopic(@Valid @ModelAttribute("newTopic") NewTopicPageForm newTopic, BindingResult bindingResult, Authentication authentication, Model model) {
 		
+		// Only register user allowed to create a new topic
+		if(authentication == null)
+				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "newTopic/" + newTopic.getForumId());
+		
 		// If hasErrors == true, then return to topic page, because something went wrong
 		if(bindingResult.hasErrors()) {
 			System.err.println("ERROR :: Topic Controller - proccesNewTopic (POST)");
 			// If there is an error we should go back to topic creation page and try again.
-			// TODO I'm not really sure what should we put into model.
 			return "new_Topic_page";
 		}
 		// Checking if title or content are blanked.
@@ -132,37 +157,55 @@ public class TopicController {
 		Topic topic = new Topic();
 		topic.setTitle(newTopic.getTitle());
 		topic.setContent(newTopic.getContent());
-		topic.setForum(forumRepo.findById(newTopic.getForumId()));
-		topic.setUser(userRepo.findByUsername(authentication.getName()));
+		topic.setForum(forumServices.findFourmById(newTopic.getForumId()));
+		topic.setUser(userServices.findUserByUsername(authentication.getName()));
 		topic.setClosed(false);
 		topic.setViews(0);
 		
 		
-		topicRepo.save(topic);
+		topicServices.save(topic);
 		
 		return "redirect:/topic/" + topic.getId();
 	}
 	
 	/**This method will enter user to edit mode for exsits topic*/
 	@GetMapping("edit/{topicId}")
-	public String editTopic(@PathVariable int topicId, Model model) {
+	public String editTopic(@PathVariable int topicId, Model model, Authentication authentication) {
+		Topic topic = topicServices.findTopicById(topicId);
+		
+		// Only register user allowed to create a new topic
+		if(authentication == null)
+			accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "edit/" + topicId);
+		
+		//	Checking if user allowed to edit Topic
+		if(!authentication.getName().equals(topic.getUser().getUsername()) 
+				|| !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+			//	User isn't allowed to edit Topic
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + topicId);
+			
 		// Using newTopicForm to keep the topicId while editing.
 		NewTopicPageForm editTopic = new NewTopicPageForm();
 		editTopic.setTopicId(topicId);
 		model.addAttribute("editTopic", editTopic);
-		// TODO Find out how to open a edit mode section and not using a new page.
 		return "edit_Topic_page";
 	}
 	
 	@PostMapping("editTopic")
 	public String editTopic(@Valid @ModelAttribute("editTopic") NewTopicPageForm editTopic, BindingResult bindingResult, Authentication authentication, Model model) {
 		
-		Topic topic = topicRepo.getById(editTopic.getTopicId());
+		Topic topic = topicServices.findTopicById(editTopic.getTopicId());
+		
+		// Only register user allowed to do acitons
+		if(authentication == null)
+				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "editTopic/" + editTopic.getTopicId());
 		
 		// Approving admin or allowed user
 		if(authentication.getName().equals(topic.getUser().getUsername()) 
-				|| userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN"))
+			|| userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			editService.updateTopic(topic, editTopic);
+		else	
+			//user isn't allowed to edit this topic
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "editTopic" + editTopic.getTopicId());
 
 		return "redirect:/topic/" + topic.getId();
 	}
@@ -175,14 +218,18 @@ public class TopicController {
 	public String deleteTopic(@PathVariable int topicId, Authentication authentication,
 									RedirectAttributes model) {
 		// find topic to remove and all it posts
-		Topic topic = topicRepo.findTopicById(topicId);
+		Topic topic = topicServices.findTopicById(topicId);
 		
-		// making sure that topic is exists and user allowed to remove it or Admin		
-		if (topic == null || authentication == null || !authentication.getName().equals(topic.getUser().getUsername())
-				|| !userRepo.findByUsername(authentication.getName()).getRoles().iterator().next().getName().equals("ADMIN")) {
-			//topic can't be removed
-			return "redirect:/";
-		}
+		if(authentication == null)
+			accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "delete/" + topicId);
+		
+		//	Checking if topic is exists
+		if(topic == null)
+			throw new EntityRequestException("Something went wrong, could not reload topic for topic :: '" + topicId+"'");
+		//	Making sure that user's allowed to delete topic
+		else if(!authentication.getName().equals(topic.getUser().getUsername())
+				|| !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "delete/" + topicId);
 		
 		deleteService.deleteTopic(topic);
 		model.addFlashAttribute("message", "Topic has been removed.");

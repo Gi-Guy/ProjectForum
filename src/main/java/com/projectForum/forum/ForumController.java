@@ -13,14 +13,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.projectForum.Exceptions.AccessDeniedRequestException;
+import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.Services.ControlPanelServices;
-import com.projectForum.Services.DeleteService;
-import com.projectForum.Services.EditServices;
-import com.projectForum.post.PostRepository;
-import com.projectForum.topic.TopicRepository;
-import com.projectForum.user.UserRepository;
+import com.projectForum.Services.ForumInformationServices;
+import com.projectForum.Services.ForumServices;
+import com.projectForum.Services.TopicServices;
+import com.projectForum.Services.UserServices;
+
 
 /**
  * This Controller will handle the next actions:
@@ -32,27 +33,30 @@ import com.projectForum.user.UserRepository;
  * Notice:
  * Topic creation is in TopicController where the topic will also be attached to a forum .*/
 
-	@Controller
+@Controller
 public class ForumController {
 	
-	private UserRepository 	userRepo;
-	private TopicRepository topicRepo;
-	private PostRepository 	postRepo;
-	private ForumRepository forumRepo;
-	private DeleteService	deleteService;
-	private EditServices	editService;
+
+	private TopicServices	topicservices;
+	private ForumServices	forumServices;
 	private ControlPanelServices controlPanelService;
+	private UserServices	userServices;
+	private ForumInformationServices forumInformationServices;
+	
+	
+	private AccessDeniedRequestException accessDeniedRequestException = new AccessDeniedRequestException();
+	private final String localUrl = "/forum/";
+	
 	
 	@Autowired
-	public ForumController(UserRepository userReop, TopicRepository topicRepo, PostRepository postRepo,
-			ForumRepository forumRepo, DeleteService deleteService, EditServices editService, ControlPanelServices controlPanelService) {
-		this.userRepo = userReop;
-		this.topicRepo = topicRepo;
-		this.postRepo = postRepo;
-		this.forumRepo = forumRepo;
-		this.deleteService = deleteService;
-		this.editService = editService;
-		this.controlPanelService = controlPanelService; 
+	public ForumController(TopicServices topicservices, ForumServices forumServices,
+			ControlPanelServices controlPanelService, UserServices userServices,
+			ForumInformationServices forumInformationServices) {
+		this.topicservices = topicservices;
+		this.forumServices = forumServices;
+		this.controlPanelService = controlPanelService;
+		this.userServices = userServices;
+		this.forumInformationServices = forumInformationServices;
 	}
 	
 	/**
@@ -61,15 +65,25 @@ public class ForumController {
 	@GetMapping("")
 	public String displayForums(Model model) {
 		// returning a List<Forum> order by priority {highest priority = 1}
-		model.addAttribute("forums", controlPanelService.createForumDisplayList(forumRepo.findByOrderByPriorityAsc()));
+		model.addAttribute("forums", controlPanelService.createForumDisplayList(forumServices.findForumsByPriorityAsc()));
+		
+		//	Displaying forum's information
+		model.addAttribute("forumInformation", forumInformationServices.getForumInformation());
 		return "forums";
 	}
 	 
+
 	/** This method will display all topics that attached to {forumId}. */
 	@GetMapping("/forum/{forumId}")
 	public String getTopicsById(@PathVariable int forumId, Model model) {
-		model.addAttribute("forum", forumRepo.findById(forumId));
-		model.addAttribute("topics", topicRepo.findTopicsByForumId(forumId));
+		
+		Forum forum = forumServices.findFourmById(forumId);
+		// Checking if Forum is exists
+		if (forum == null)
+			throw new EntityRequestException("could not find Forum id :: " + forumId);
+		
+		model.addAttribute("forum", forum);
+		model.addAttribute("topics", topicservices.findTopicsByForumIs(forumId));
 		return "forum";
 	}
 	
@@ -78,8 +92,12 @@ public class ForumController {
 	 * This should be only in Control panel.
 	 */
 	@GetMapping("/forum/newForum")
-	public String createNewForum(Model model) {
+	public String createNewForum(Model model, Authentication authentication) {
 		
+		if(!userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+			// User not allowed to access this page
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "newForum");
+			
 		model.addAttribute("newForum", new Forum());		
 		return "new_Forum_page";
 	}
@@ -87,6 +105,12 @@ public class ForumController {
 	/** This method will create a new forum according to the request of a user */
 	@PostMapping("/forum/newForum")
 	public String proccesNewForum(@Valid @ModelAttribute Forum forum, BindingResult bindingResult, Authentication authentication, Model model) {
+		
+		if(authentication == null)
+			accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "newForum");
+		
+		if(!userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "newForum");
 		
 		if(bindingResult.hasErrors()) {
 			System.err.println("ERROR :: Forum Controller - proccesNewForum (POST)");
@@ -98,39 +122,14 @@ public class ForumController {
 			return "new_Forum_page";
 		
 		//Each forum must have a priority value, 1 is the lowest.
-		List<Forum> forums = forumRepo.findAll();
+		List<Forum> forums = forumServices.findAll();
 		if(forums.isEmpty()) {
 			forum.setPriority(1);	
 		}
 		else {
 			forum.setPriority(forums.size() + 1);	
 		}
-		forumRepo.save(forum);
+		forumServices.save(forum);
 		return "redirect:/forum/" + forum.getId();
 	}
-	
-	/**
-	 * This method will lead a user to edit a forum
-	 */
-	@GetMapping("/forum/edit/{forumId}")
-	public String editForum(@PathVariable int forumId, Model model) {
-		Forum forum = new Forum();
-		
-		forum.setId(forumId);
-		model.addAttribute("editForum", forum);
-		// TODO update this after you create the control panel
-		return "";
-	}
-	
-	/**
-	 * This method will update the changes a user made to a forum 
-	 */
-	@PostMapping("/forum/editForum")
-	public String editForum(@Valid @ModelAttribute("editForum") Forum editForum, BindingResult bindingResult, Authentication authentication, Model model) {
-		Forum forum = forumRepo.findById(editForum.getId());
-		
-		// TODO solve how to check authentication == ADMIN
-		return "";
-	}
-	
 }	
