@@ -1,5 +1,6 @@
 package com.projectForum.Services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,6 +103,24 @@ public class TopicServices {
 		
 		return topics;
 	}
+	
+	/**
+	 * This method will return a List<Topic> of topics that lastActivity < date.now - offset.
+	 * For Example to get all topics that had lastActivity before 30 days, set offset = 30.
+	 * @param offset
+	 * @return topics*/
+	public List<Topic> findTopicBeforeDate(int offset){
+		// if offset = 0, no topics to delete
+		if(offset == 0)
+			return null;
+		try {
+			List<Topic> topics = topicRepo.findByLastActivityBefore(LocalDateTime.now().minusDays(offset));
+			return topics;
+		} catch (Exception e) {
+			throw new EntityRequestException("Could not find all topics by Date");
+		}
+	}
+	
 	public void save(Topic topic) throws EntityRequestException{
 		try {
 			topicRepo.save(topic);

@@ -18,10 +18,10 @@ public class ForumInformation {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@Column(nullable = false, unique = true, length = 25)
+	@Column(nullable = false, unique = true, length = 50)
 	private String name;
 	
-	@Column(nullable = false, length = 100)
+	@Column(nullable = false, length = 200)
 	private String description;
 	
 	@Column(nullable = false)

@@ -2,10 +2,14 @@ package com.projectForum.Services;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.projectForum.ControlPanel.EditUserForm;
+import com.projectForum.ControlPanel.Configuration.ForumInformation;
 import com.projectForum.PrivateMessages.Answer;
 import com.projectForum.PrivateMessages.AnswerRepository;
 import com.projectForum.PrivateMessages.Conversation;
@@ -33,16 +37,78 @@ public class DeleteService {
 	private PostServices	postServices;
 	private TopicServices	topicServices;
 	private ForumServices	forumServices;
-	
+	private ForumInformationServices forumInformationServices;
 	@Autowired
 	public DeleteService(AnswerRepository answerRepo, ConversationRepository convRepo, UserServices userServices,
-			PostServices postServices, TopicServices topicServices, ForumServices forumServices) {
+			PostServices postServices, TopicServices topicServices, ForumServices forumServices,
+			ForumInformationServices forumInformationServices) {
 		this.answerRepo = answerRepo;
 		this.convRepo = convRepo;
 		this.userServices = userServices;
 		this.postServices = postServices;
 		this.topicServices = topicServices;
 		this.forumServices = forumServices;
+		this.forumInformationServices = forumInformationServices;
+	}
+	
+	/*
+	 * ################################################################
+	 * 						SCHEDULED
+	 * ################################################################
+	 * This section will define all scheduled methods that will delete
+	 * old data.
+	 * <minute> <hour> <day-of-month> <month> <day-of-week> <command>
+	 * ################################################################
+	 * */
+	
+	public static final Logger LOG
+    = LoggerFactory.getLogger(DeleteService.class);
+	
+	/**
+	 * This Scheduled method will delete topics that didn't had any activity for more than X-value time.
+	 * This method will run daily in midnight.
+	 * @param X-value = ForumInformation timeToDelete*/
+	//@Scheduled(cron="*/5 * * * * ?") // Delete every 5 seconds
+	@Scheduled(cron = "0 0 * * * ?") // Delete daily at 00:00
+	public void deleteOldTopics() {
+		ForumInformation forumInformation = forumInformationServices.getForumInformation();
+		int size = 0;
+		// Notify action
+		LOG.warn("[Scheduled method :: deleteOldTopics] "
+				+ "Starting to delete topics that had Last activity "
+				+ forumInformation.getTimeToDelete() + " days ago");
+		
+		List<Topic> topics = topicServices.findTopicBeforeDate(forumInformation.getTimeToDelete());
+		//	Checking if there are any topics to delete
+		if (topics == null || topics.isEmpty()) {
+			
+			// Notify no action needed
+			LOG.info("[Scheduled method :: deleteOldTopics] "
+					+ "No topics needed to be deleted.");
+			return;
+		}
+		
+		//	There are topics to delete (also delete posts if exists)
+		this.deleteTopics(topics);
+		//	Notify job completed
+		LOG.info("[Scheduled method :: deleteOldTopics] "
+				+ "Job completed! \t"
+				+size + " topics has been removed.");
+	}
+	
+	/**
+	 * This Scheduled method will delete private conversations that didn't had any activity for more than X-value time.
+	 * This method will run daily in midnight.
+	 * @param X-value = ForumInformation timeToDelete*/
+	//@Scheduled(cron="*/5 * * * * ?") // Delete every 5 seconds
+	@Scheduled()
+	public void deleteOldConversations() {
+		ForumInformation forumInformation = forumInformationServices.getForumInformation();
+		int size = 0;
+		// Notify action
+		LOG.warn("[Scheduled method :: deleteOldConversations] "
+				+ "Starting to delete private conversations that had Last activity "
+				+ forumInformation.getTimeToDelete() + " days ago");
 	}
 	
 	/*

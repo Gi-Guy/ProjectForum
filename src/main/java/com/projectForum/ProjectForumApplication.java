@@ -8,12 +8,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.projectForum.ControlPanel.Configuration.ForumInformation;
 import com.projectForum.Services.ForumInformationServices;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
+@EnableScheduling
 public class ProjectForumApplication extends SpringBootServletInitializer{
 
 	@Autowired

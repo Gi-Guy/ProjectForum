@@ -207,6 +207,13 @@ public class Topic {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Topic [id=" + id + ", title=" + title + ", content=" + content 
+				+ ", views=" + views + ", createdDate=" + createdDate + ", lastActivity=" + lastActivity + ", closed="
+				+ closed + "]";
+	}
 	
 	
 }

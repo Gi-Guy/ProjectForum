@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.hamcrest.core.IsEqual;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -39,8 +39,17 @@ public class TopicTest {
 	private UserRepository userRepo;
 	@Autowired
 	private ForumRepository forumRepo;
-
+	
 	@Test
+	public void testFindByDate() {
+		List<Topic> topics = topicRepo.findByLastActivityBefore(LocalDateTime.now().minusDays(1));
+		
+		for(int i=0; i<topics.size() ; i++) {
+			System.err.println(topics.get(i).getId());
+		}
+	}
+
+	/*@Test
 	public void testCreateTopic() {
 		User user = userRepo.findByEmail("Err@err.err");
 		Post post = postRepo.findById(1);
@@ -98,5 +107,5 @@ public class TopicTest {
 			postRepo.delete(posts.get(i));
 		}
 		topicRepo.delete(topicRepo.findTopicById(18));
-	}
+	}*/
 }
