@@ -34,8 +34,10 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 					<td th:text = "${forum.getNumOfTopics()}"></td>
 					<td>
 						<span th:if ="${forum.getLastUserActivity() == null}">אין תגובות</span>
-						<span th:unless ="${forum.getLastUserActivity() == null}" 
-					  		th:text = "${forum.getLastUserActivity().username}"></span>
+						<span th:unless ="${forum.getLastUserActivity() == null}">
+							<a	th:href="@{/user/} + ${forum.getLastUserActivity().username}"
+								th:text = "${forum.getLastUserActivity().username}"></a>
+						</span>
 					</td>			
 					<td>
 						<span th:if ="${forum.getNumOfTopics() == 0}">אין תגובות</span>

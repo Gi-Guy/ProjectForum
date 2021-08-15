@@ -38,8 +38,10 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 					<td th:text = "${topic.numberOfPosts}"></td>
 					  <td>
 					  	<span th:if ="${topic.lastPost == null}">אין תגובות</span>
-					  	<span th:unless ="${topic.lastPost == null}" 
-					  		th:text = "${topic.lastPost.user.username}"></span>
+					  	<span th:unless ="${topic.lastPost == null}">
+					  		<a th:href="@{/user/} + ${topic.lastPost.user.username}"
+					  			th:text = "${topic.lastPost.user.username}"></a>
+					  	</span>
 					  </td> 
 					  <td>
 					  	<span  th:text = "${topic.getLastActivity()}"></span>
