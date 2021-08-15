@@ -71,10 +71,10 @@ public class Topic {
 		 this.lastActivity = LocalDateTime.now();
 	 }
 	
-	 @PreUpdate
+	/* @PreUpdate
 	protected void onUpdate() {
 		this.lastActivity = LocalDateTime.now();
-	}
+	}*/
 	 
 	public int getId() {
 		return id;

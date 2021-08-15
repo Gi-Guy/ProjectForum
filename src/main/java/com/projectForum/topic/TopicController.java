@@ -2,6 +2,7 @@ package com.projectForum.topic;
 
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -112,6 +113,8 @@ public class TopicController {
 		// No errors, creating a new post in topic
 		post.setUser(userServices.findUserByUsername(authentication.getName()));
 		post.setTopic(topicServices.findTopicById(topicId));
+		topicServices.findTopicById(topicId).setLastActivity(LocalDateTime.now());
+		
 		postServices.save(post);
 
 		model.asMap().clear(); // Cleaning the model as it does some weird things if not.

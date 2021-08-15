@@ -1,5 +1,8 @@
 package com.projectForum.forum;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;
 
@@ -12,7 +15,11 @@ public class DisplayTopicForm {
 	private int numberOfPosts = 0;
 	private Post lastPost;
 	private String summary = "";
+	private LocalDateTime lastActivity;
 	
+	
+	// Defining Date format
+	DateTimeFormatter  formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 	
 	public DisplayTopicForm() {
 		
@@ -24,6 +31,13 @@ public class DisplayTopicForm {
 		this.lastPost = lastPost;
 	}
 	
+	public DisplayTopicForm(Topic topic, int numberOfPosts, Post lastPost, LocalDateTime lastActivity) {
+		this.topic = topic;
+		this.numberOfPosts = numberOfPosts;
+		this.lastPost = lastPost;
+		this.lastActivity = lastActivity;
+	}
+
 	public DisplayTopicForm(Topic topic, int numberOfPosts, Post lastPost, String summary) {
 		this.topic = topic;
 		this.numberOfPosts = numberOfPosts;
@@ -56,6 +70,14 @@ public class DisplayTopicForm {
 
 	public void setSummary(String summary) {
 		this.summary = summary;
+	}
+
+	public String getLastActivity() {
+		return lastActivity.format(formatter);
+	}
+
+	public void setLastActivity(LocalDateTime lastActivity) {
+		this.lastActivity = lastActivity;
 	}
 	
 	

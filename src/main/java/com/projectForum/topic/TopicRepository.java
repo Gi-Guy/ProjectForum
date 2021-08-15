@@ -18,5 +18,6 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
 	List<Topic> findTopicsByForumId(int forumId);
 	List<Topic> findTopicsByForum(Forum forum);
 	List<Topic> findByLastActivityBefore(LocalDateTime localDateTime);
+	List<Topic>	findByForumOrderByLastActivityDesc(Forum forum);
 	Topic findTopicById(int id);
 }

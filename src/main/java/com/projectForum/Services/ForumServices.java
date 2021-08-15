@@ -1,5 +1,6 @@
 package com.projectForum.Services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,7 +122,8 @@ public class ForumServices {
 	 * */
 	public List<DisplayTopicForm> displayTopics(int forumId){
 		Forum forum = this.findFourmById(forumId);
-		List<Topic> topics = topicServices.findTopicsByForum(forum);
+		//List<Topic> topics = topicServices.findTopicsByForum(forum);
+		List<Topic> topics = topicServices.findTopicsOrderByLastActivity(forum);
 		List<DisplayTopicForm> displayTopics = new ArrayList<DisplayTopicForm>();
 		List<Post> posts;
 		
@@ -137,7 +139,10 @@ public class ForumServices {
 			
 			displayTopics.add(new DisplayTopicForm(topics.get(i),
 								posts.size()
-									, lastPost));
+									, lastPost,
+									topics.get(i).getLastActivity()));
+			
+			// updating summary
 			if(topics.get(i).getContent().length() > 100) {
 				summary = topics.get(i).getContent().substring(0,100) + "...";
 				displayTopics.get(i).setSummary(summary);
@@ -149,7 +154,6 @@ public class ForumServices {
 			summary = "";
 			lastPost = null;	
 		}
-		
 		return displayTopics;
 	}
 }

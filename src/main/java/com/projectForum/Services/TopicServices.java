@@ -135,4 +135,20 @@ public class TopicServices {
 			throw new EntityRequestException("Could not delete topic");
 		}
 	}
+	/**
+	 * This method will return List<Topic> of topics order by lastActivity*/
+	public List<Topic> findTopicsOrderByLastActivity(Forum forum){
+		try {
+			return topicRepo.findByForumOrderByLastActivityDesc(forum);
+		} catch (Exception e) {
+			throw new EntityRequestException("Could not reload topics by date");
+		}
+	}
+	/**
+	 * This method will return the last active topic of a forum
+	 * */
+	public Topic lastActiveTopicInForum(Forum forum) {
+		List<Topic> topics = this.findTopicsOrderByLastActivity(forum);
+		return topics.get(0);
+	}
 }
