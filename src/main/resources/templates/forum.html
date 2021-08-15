@@ -15,7 +15,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 		<table class="table-striped stretch" border="1" style="text-align:right">
 			<thead>
 					<tr>
-						<th colspan="6">
+						<th colspan="7">
 							<h2>רשימת כל השרשורים</h2>
 						</th>	
 					</tr>
@@ -24,14 +24,24 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 						<th>תקציר</th>
 						<th>נוצר על ידי</th>
 						<th>מספר צפיות</th>
+						<th>מספר הודעות</th>
+						<th>הודעה אחרונה על ידי</th>
 					</tr>
 			</thead>
 			<tbody>
 				<tr th:each="topic : ${topics}">
-					<td><a th:href="@{/topic/} + ${topic.id}" th:text="${topic.title}"></a></td>
-					<td th:text = "${topic.content}"></td>
-					<td><a th:href="@{/user/} + ${topic.user.username}" th:text = "${topic.user.username}"></a></td>
-					<td th:text = "${topic.views}"></td>
+					<td><a th:href="@{/topic/} + ${topic.topic.id}" th:text="${topic.topic.title}"></a></td>
+					<td th:text = "${topic.summary}" style="width:50%;"></td>
+					<td><a th:href="@{/user/} + ${topic.topic.user.username}" th:text = "${topic.topic.user.username}"></a></td>
+					<td th:text = "${topic.topic.views}"></td>
+					<td th:text = "${topic.numberOfPosts}"></td>
+					  <td>
+					  	<span th:if ="${topic.lastPost == null}">אין תגובות</span>
+					  	<span th:unless ="${topic.lastPost == null}" 
+					  		th:text = "${topic.lastPost.user.username}"></span>
+					  	
+					  
+					  </td> 
 				</tr>
 			</tbody>
 		</table>

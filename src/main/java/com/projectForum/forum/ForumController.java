@@ -83,7 +83,8 @@ public class ForumController {
 			throw new EntityRequestException("could not find Forum id :: " + forumId);
 		
 		model.addAttribute("forum", forum);
-		model.addAttribute("topics", topicservices.findTopicsByForumIs(forumId));
+		//model.addAttribute("topics", topicservices.findTopicsByForumIs(forumId));
+		model.addAttribute("topics", forumServices.displayTopics(forumId));
 		return "forum";
 	}
 	

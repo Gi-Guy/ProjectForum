@@ -1,5 +1,7 @@
 package com.projectForum.Services;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -145,6 +147,14 @@ public class EditServices {
 		}
 		
 		// There are no new changes.
+	}
+	/**
+	 * 	This method will update user's last login date
+	 * @param username*/
+	public void setLastlogin(String username) {
+		User user = userServices.findUserByUsername(username);
+		user.setLastLogin(LocalDateTime.now());
+		userServices.save(user);
 	}
 	
 	
