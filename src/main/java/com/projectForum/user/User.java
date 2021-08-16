@@ -1,6 +1,5 @@
 package com.projectForum.user;
 
-//import java.util.Collection;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;

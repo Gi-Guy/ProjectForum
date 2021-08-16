@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.REST.AddUserForm;
-import com.projectForum.Security.RoleRepository;
 import com.projectForum.user.User;
 import com.projectForum.user.UserRepository;
 
@@ -20,13 +19,13 @@ import com.projectForum.user.UserRepository;
 public class UserServices {
 	
 	private UserRepository	userRepo;
-	private RoleRepository	roleRepo;
+	private RoleServices	roleServices;
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
-	public UserServices(UserRepository userRepo, RoleRepository roleRepo, PasswordEncoder passwordEncoder) {
+	public UserServices(UserRepository userRepo, RoleServices roleServices, PasswordEncoder passwordEncoder) {
 		this.userRepo = userRepo;
-		this.roleRepo = roleRepo;
+		this.roleServices = roleServices;
 		this.passwordEncoder = passwordEncoder;
 	}
 	
@@ -52,7 +51,7 @@ public class UserServices {
 		user.setLastName(addUser.getLastName());
 		user.setEmail(addUser.getEmail());
 		user.setPassword(passwordEncoder.encode(addUser.getPassword()));
-		user.setRole(roleRepo.findRoleByName("USER"));
+		user.setRole(roleServices.findRoleByName("USER"));
 		userRepo.save(user);
 		return userRepo.findByUsername(user.getUsername());
 	}
@@ -66,7 +65,7 @@ public class UserServices {
 	public void createNewUser(User user) {
 		
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		user.setRole(roleRepo.findRoleByName("USER"));
+		user.setRole(roleServices.findRoleByName("USER"));
 		userRepo.save(user);	
 	}
 	/** 
@@ -184,5 +183,11 @@ public class UserServices {
 		} catch (Exception e) {
 			throw new EntityRequestException("Could not delete user");
 		}
+	}
+	public boolean isUserBlocked(User user) {
+		return user.getRole().equals(roleServices.findRoleByName("BLOCKED"));
+	}
+	public boolean isUserBlocked(String username) {
+		return isUserBlocked(this.findUserByUsername(username));
 	}
 }

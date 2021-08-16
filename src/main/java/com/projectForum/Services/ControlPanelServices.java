@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.projectForum.ControlPanel.EditUserForm;
 import com.projectForum.ControlPanel.ForumForm;
-import com.projectForum.forum.DisplayTopicForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;
