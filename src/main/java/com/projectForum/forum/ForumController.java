@@ -81,9 +81,9 @@ public class ForumController {
 		// Checking if Forum is exists
 		if (forum == null)
 			throw new EntityRequestException("could not find Forum id :: " + forumId);
-		
+		List<DisplayTopicForm> topics = forumServices.displayTopics(forumId);
 		model.addAttribute("forum", forum);
-		model.addAttribute("topics", forumServices.displayTopics(forumId));
+		model.addAttribute("topics", topics);
 		return "forum";
 	}
 	

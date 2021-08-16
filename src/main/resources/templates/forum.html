@@ -11,12 +11,16 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 		<h1 th:text="${forum.name}"></h1>
 		<h2 th:text="${forum.description}"></h2>
 		<hr>
-		 
+		<!-- multi checkbocx form -->
 		<table class="table-striped stretch" border="1" style="text-align:right">
 			<thead>
 					<tr>
-						<th colspan="7">
+						<th colspan="8">
 							<h2>רשימת כל השרשורים</h2>
+							<a sec:authorize="isAuthenticated()" th:href="@{/topic/newTopic/} + ${forum.id}">צור שרשור חדש</a>
+							<br>
+							<label>סך כל השרשורים:</label>
+							<label th:text="${topics.size()}"></label>
 						</th>	
 					</tr>
 					<tr>
@@ -27,6 +31,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 						<th>מספר תגובות</th>
 						<th>הודעה אחרונה על ידי</th>
 						<th>פעילות אחרונה</th>
+						<th sec:authorize="hasAuthority('ADMIN')">מחק</th>
 					</tr>
 			</thead>
 			<tbody>
@@ -49,10 +54,13 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 					  <td>
 					  	<span  th:text = "${topic.getLastActivity()}"></span>
 					  </td>
+					  <td style="text-align: center"
+					  sec:authorize="hasAuthority('ADMIN')">
+						<a th:href="@{/topic/delete/} + ${topic.topic.getId()}" class = "button" >מחק</a>
+					  </td>
 				</tr>
 			</tbody>
 		</table>
-		
 		<hr>
 	
         <a sec:authorize="isAuthenticated()" th:href="@{/topic/newTopic/} + ${forum.id}">צור שרשור חדש</a>
