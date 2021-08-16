@@ -21,6 +21,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.projectForum.Security.Role;
+import com.projectForum.general.Formatter;
 
 
 @Entity
@@ -136,14 +137,21 @@ public class User {
 		return joiningDate;
 	}
 	
+	public String getFormattedJoiningDate() {
+		return Formatter.toDate(joiningDate);
+	}
+	
 	public void setJoiningDate(LocalDateTime joiningDate) {
 		this.joiningDate = joiningDate;
 		this.setLastLogin(joiningDate);
 	}
 	
-	
 	public LocalDateTime getLastLogin() {
 		return lastLogin;
+	}
+	
+	public String getFormattedLoginDate() {
+		return Formatter.toTimeDate(lastLogin);
 	}
 	
 	public void setLastLogin(LocalDateTime lastLogin) {

@@ -52,7 +52,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 					  	</span>
 					  </td> 
 					  <td>
-					  	<span  th:text = "${topic.getLastActivity()}"></span>
+					  	<span  th:text = "${topic.getFormattedLastActivity}"></span>
 					  </td>
 					  <td style="text-align: center"
 					  sec:authorize="hasAuthority('ADMIN')">

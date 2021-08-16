@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import com.projectForum.forum.Forum;
+import com.projectForum.general.Formatter;
 import com.projectForum.user.User;
 
 /**
@@ -16,10 +17,7 @@ public class ForumForm {
 	private String shortDescription;
 	private User lastUserActivity;
 	private LocalDateTime lastActivity;
-
 	
-	// Defining Date format
-	DateTimeFormatter  formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 	public Forum getForum() {
 		return forum;
 	}
@@ -52,8 +50,12 @@ public class ForumForm {
 		this.lastUserActivity = lastUserActivity;
 	}
 
-	public String getLastActivity() {
-		return lastActivity.format(formatter);
+	public LocalDateTime getLastActivity() {
+		return lastActivity;
+	}
+	
+	public String getFormattedLastActivity() {
+		return Formatter.toTimeDate(lastActivity);
 	}
 
 	public void setLastActivity(LocalDateTime lastActivity) {

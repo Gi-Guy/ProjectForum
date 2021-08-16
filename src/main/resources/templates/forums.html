@@ -42,7 +42,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 					<td>
 						<span th:if ="${forum.getNumOfTopics() == 0}">אין תגובות</span>
 						<span th:unless ="${forum.getNumOfTopics() == 0}" 
-					  		th:text = "${forum.getLastActivity()}"></span>
+					  		th:text = "${forum.getFormattedLastActivity()}"></span>
 					</td>
 				</tr>
 			</tbody>
