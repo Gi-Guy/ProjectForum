@@ -75,7 +75,7 @@ public class ControlPanelServices {
 				newForm.setLastUserActivity(lastPost.getUser());
 			}
 			else
-				newForm.setLastUserActivity(null);
+				newForm.setLastUserActivity(topics.get(0).getUser());
 		}
 		else {
 			newForm.setLastActivity(null);
