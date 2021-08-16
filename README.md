@@ -1,8 +1,46 @@
 # ProjectForum
  This is my final project in the university - A Java forum web application.
 
-Last Update: 14/8/21
+Last Update: 16/8/21
+This update include the following changes:
 
+### **_Scheduled Methods_**
+There are two new scheduled Methods:
+- Delete Topics - delete topics that didn't had any activity for 'TimeToDelete' value time.
+- Delete Conversations - delete private donversations that didn't had any activity for 'TimeToDelete' value time.
+Both methods will run daily at 00:00.
+
+### **_Services_**
+- Some services files has been modified.
+- There is a new services file for Roles
+
+### **_Initialize forum_**
+- The initialized files has been modified.
+- Forum will automatically restore missing default information of - Default users (Admin & Unknown) and Roles.
+
+### **Roles: Blocked users**
+there is a new role :: BLOCKED
+- Admins can now block users.
+- When user is BLOCKED it can read forums and topics, however it can't create any new topics, new post or private messages.
+
+### **Delete user bug fix**
+When an admin is attempting to delete a user, the user is still able to create a new content in the forum while there is a deletion process.
+when the user is deleted it new content is still exists and will corrupt the whole database.
+
+Now when an admin is attempting to delete a user, first the system will BLOCKED user and then will delete it,
+Now users can't create any new content while there is a deletion process.
+
+### **Login**
+There is a new login success page that will register when user is logged in to the forums.
+- The page should automatically redirect the user to the homepage page, but it's not working yet.
+- 'Remember me' option isn't working anymore, should be fixed ASAP.
+
+### **Pages**
+Pages forums & forum has been modified to display more information.
+
+### **Bugs**
+- fixed major and minors bugs.
+-------------------------------------------------------------------------
 **This update will include the following:**
 
 ### _**Exceptions and Exploits Handlers**_
