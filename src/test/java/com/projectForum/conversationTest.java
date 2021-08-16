@@ -18,7 +18,7 @@ import com.projectForum.user.UserRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE) // Using the real DB
-@Rollback(false) // Committing the changes TODO make sure tests don't commit changes
+@Rollback(true) // Committing the changes TODO make sure tests don't commit changes
 public class conversationTest {
 
 	@Autowired

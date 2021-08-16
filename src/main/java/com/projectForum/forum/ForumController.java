@@ -132,4 +132,5 @@ public class ForumController {
 		forumServices.save(forum);
 		return "redirect:/forum/" + forum.getId();
 	}
+
 }	

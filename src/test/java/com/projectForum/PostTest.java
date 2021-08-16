@@ -19,7 +19,7 @@ import com.projectForum.user.UserRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)//Defining to use the real DB
-@Rollback(false)//We are commit to changes.
+@Rollback(true)//We are commit to changes.
 public class PostTest {
 
 	@Autowired

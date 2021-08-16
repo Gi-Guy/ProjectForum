@@ -34,7 +34,7 @@ public class LoginController {
  @RequestMapping("login_success")
  public String loginSuccess(Model model, Authentication authentication) {
 	 editServices.setLastlogin(authentication.getName());
-	 return "login_success";
+	 return "redirect:/";
  }
   // Login form with error
   @RequestMapping("/loginError")
