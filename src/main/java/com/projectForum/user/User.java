@@ -85,9 +85,6 @@ public class User {
 	private LocalDateTime joiningDate;
 	private LocalDateTime lastLogin;
 	
-
-	//TODO: Add private messages list
-	
 	public boolean isActive() {
 		return isActive;
 	}

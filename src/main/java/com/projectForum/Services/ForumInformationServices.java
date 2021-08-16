@@ -140,17 +140,17 @@ public class ForumInformationServices {
 		/*
 		 * updating information
 		 * */
-		//	Update Forum Name
+		//	Update Forum's Name
 		if(!currentInformation.getName().equals(updatedInformation.getName()) && !updatedInformation.getName().isBlank()) {
 			currentInformation.setName(updatedInformation.getName());
 		}
 		
-		//	Update Forum Description
+		//	Update Forum's Description
 		if(!currentInformation.getDescription().equals(updatedInformation.getDescription()) && !updatedInformation.getDescription().isBlank()) {
 			currentInformation.setDescription(updatedInformation.getDescription());
 		}
 		
-		//	Update Forum time to delete
+		//	Update Forum's time to delete
 		if(currentInformation.getTimeToDelete() != updatedInformation.getTimeToDelete() && !(updatedInformation.getTimeToDelete() < 0)) {
 			currentInformation.setTimeToDelete(updatedInformation.getTimeToDelete());
 		}

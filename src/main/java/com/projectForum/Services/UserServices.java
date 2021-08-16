@@ -169,6 +169,15 @@ public class UserServices {
 			throw new EntityRequestException("Could not save new User");
 		}
 	}
+	
+	public User saveAndreturn(User user) throws EntityRequestException{
+		try {
+			return userRepo.save(user);
+		} catch (Exception e) {
+			throw new EntityRequestException("Could not save new User");
+		}
+	}
+	
 	public void delete(User user) throws EntityRequestException{
 		try {
 			userRepo.delete(user);
