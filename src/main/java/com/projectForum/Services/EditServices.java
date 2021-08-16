@@ -1,12 +1,13 @@
 package com.projectForum.Services;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.projectForum.ControlPanel.EditUserForm;
 import com.projectForum.Security.Role;
-import com.projectForum.Security.RoleRepository;
 import com.projectForum.forum.EditForumForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.post.EditPostForm;
@@ -30,17 +31,17 @@ public class EditServices {
 	private PostServices	postServices;
 	private TopicServices	topicServices;
 	private ForumServices	forumServices;
-	private RoleRepository	roleRepo;
+	private RoleServices	roleServices;
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
 	public EditServices(UserServices userServices, PostServices postServices, TopicServices topicServices,
-			ForumServices forumServices, RoleRepository roleRepo, PasswordEncoder passwordEncoder) {
+			ForumServices forumServices, RoleServices roleServices, PasswordEncoder passwordEncoder) {
 		this.userServices = userServices;
 		this.postServices = postServices;
 		this.topicServices = topicServices;
 		this.forumServices = forumServices;
-		this.roleRepo = roleRepo;
+		this.roleServices = roleServices;
 		this.passwordEncoder = passwordEncoder;
 	}
 
@@ -146,17 +147,35 @@ public class EditServices {
 		
 		// There are no new changes.
 	}
+	/**
+	 * 	This method will update user's last login date
+	 * @param username*/
+	public void setLastlogin(String username) {
+		User user = userServices.findUserByUsername(username);
+		user.setLastLogin(LocalDateTime.now());
+		userServices.save(user);
+	}
 	
 	
 	/** This method will update user's roles to editUser role traget.
 	 * @param EditUserForm
 	 * */
 	public void updateUserRole(EditUserForm editUser) {
-		Role role = roleRepo.findRoleByName(editUser.getRole());
+		Role role = roleServices.findRoleByName(editUser.getRole());
 		User user = userServices.findUserByUserId(editUser.getId());
 		
 		user.removeRole();
 		user.setRole(role);
 		userServices.save(user);
+	}
+	/**
+	 * This method will change user role's to BLOCKED
+	 * */
+	public void setUserBlocked(User user) {
+		Role blocked = roleServices.findRoleByName("BLOCKED");
+		user.removeRole();
+		user.setRole(blocked);
+		userServices.save(user);
+		
 	}
 }

@@ -10,7 +10,6 @@ import com.projectForum.REST.AddUserForm;
 import com.projectForum.REST.DeleteUserForm;
 import com.projectForum.REST.UpdateUser;
 import com.projectForum.Security.Role;
-import com.projectForum.Security.RoleRepository;
 import com.projectForum.forum.EditForumForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.post.Post;
@@ -25,7 +24,7 @@ import com.projectForum.user.User;
 @Service
 public class RestServices {
 
-	private RoleRepository	roleRepo;
+	private RoleServices	roleServices;
 	private UserServices	userServices;
 	private ForumServices	forumServices;
 	private TopicServices	topicServices;
@@ -37,10 +36,10 @@ public class RestServices {
 	
 	
 	@Autowired
-	public RestServices(RoleRepository roleRepo, UserServices userServices, ForumServices forumServices,
+	public RestServices(RoleServices roleServices, UserServices userServices, ForumServices forumServices,
 			TopicServices topicServices, PostServices postServices, DeleteService deleteService,
 			EditServices editServices, ForumInformationServices forumInformationServices) {
-		this.roleRepo = roleRepo;
+		this.roleServices = roleServices;
 		this.userServices = userServices;
 		this.forumServices = forumServices;
 		this.topicServices = topicServices;
@@ -217,11 +216,11 @@ public class RestServices {
 		
 		// Setting Role
 		if(!updateUser.getRole().isBlank()) {
-			Role role = roleRepo.findRoleByName(updateUser.getRole());
+			Role role = roleServices.findRoleByName(updateUser.getRole());
 			user.setRole(role);
 		}
 		else if(target.getRole()==null) {
-			Role role = roleRepo.findRoleByName("USER");
+			Role role = roleServices.findRoleByName("USER");
 			user.setRole(role);
 		}
 		else user.setRole(target.getRole());

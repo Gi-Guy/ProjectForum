@@ -69,9 +69,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          .loginPage("/login")
          .usernameParameter("email")
          .passwordParameter("password")	
+         .defaultSuccessUrl("/login_success", true)
          .failureUrl("/loginError")
          .usernameParameter("email")
-         .defaultSuccessUrl("/")
          .permitAll()
          .and()
          .rememberMe().tokenValiditySeconds(7 * 24 * 60 * 60) // will remember user for 7 days

@@ -2,6 +2,7 @@ package com.projectForum.topic;
 
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -94,9 +95,11 @@ public class TopicController {
 	@PostMapping("{topicId}")
 	public String addNewPost(@Valid @ModelAttribute Post post, BindingResult bindingResult, @PathVariable int topicId,
 								Authentication authentication, Model model) {
-		// Only register user allowed to do acitons
+		// Only register users or unBlocked users allowed to do acitons
 		if(authentication == null)
 				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "newPost " + topicId);
+		else if(userServices.isUserBlocked(authentication.getName()))
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "newPost " + topicId);
 		
 		// If hasErrors == true, then return to topic page, because something went wrong
 		if(bindingResult.hasErrors()) {
@@ -112,6 +115,8 @@ public class TopicController {
 		// No errors, creating a new post in topic
 		post.setUser(userServices.findUserByUsername(authentication.getName()));
 		post.setTopic(topicServices.findTopicById(topicId));
+		topicServices.findTopicById(topicId).setLastActivity(LocalDateTime.now());
+		
 		postServices.save(post);
 
 		model.asMap().clear(); // Cleaning the model as it does some weird things if not.
@@ -122,9 +127,11 @@ public class TopicController {
 	@GetMapping("newTopic/{forumId}")
 	public String createNewTopicInForum(@PathVariable int forumId, Model model, Authentication authentication) {
 		
-		// Only register user allowed to create a new topic
+		// Only register user or unBlocked users allowed to create a new topic
 		if(authentication == null)
 				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "newTopic/" + forumId);
+		else if(userServices.isUserBlocked(authentication.getName()))
+				accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "newTopic/" + forumId);
 		
 		// Using a newTopicform to keep our forumId.
 		NewTopicPageForm newTopic = new NewTopicPageForm();
@@ -139,10 +146,11 @@ public class TopicController {
 	@PostMapping("newTopic")
 	public String proccesNewTopic(@Valid @ModelAttribute("newTopic") NewTopicPageForm newTopic, BindingResult bindingResult, Authentication authentication, Model model) {
 		
-		// Only register user allowed to create a new topic
+		// Only register user or unBlocked users allowed to create a new topic
 		if(authentication == null)
 				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "newTopic/" + newTopic.getForumId());
-		
+		else if(userServices.isUserBlocked(authentication.getName()))
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "newTopic/" + newTopic.getForumId());
 		// If hasErrors == true, then return to topic page, because something went wrong
 		if(bindingResult.hasErrors()) {
 			System.err.println("ERROR :: Topic Controller - proccesNewTopic (POST)");
@@ -176,6 +184,8 @@ public class TopicController {
 		// Only register user allowed to create a new topic
 		if(authentication == null)
 			accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "edit/" + topicId);
+		else if(userServices.isUserBlocked(authentication.getName()))
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + topicId);
 		
 		//	Checking if user allowed to edit Topic
 		if(!authentication.getName().equals(topic.getUser().getUsername()) 
@@ -198,6 +208,8 @@ public class TopicController {
 		// Only register user allowed to do acitons
 		if(authentication == null)
 				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "editTopic/" + editTopic.getTopicId());
+		else if(userServices.isUserBlocked(authentication.getName()))
+				accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "editTopic/" + editTopic.getTopicId());
 		
 		// Approving admin or allowed user
 		if(authentication.getName().equals(topic.getUser().getUsername()) 
@@ -222,6 +234,8 @@ public class TopicController {
 		
 		if(authentication == null)
 			accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "delete/" + topicId);
+		else if(userServices.isUserBlocked(authentication.getName()))
+				accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "delete/" + topicId);
 		
 		//	Checking if topic is exists
 		if(topic == null)

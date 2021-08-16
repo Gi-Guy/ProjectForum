@@ -1,11 +1,17 @@
 package com.projectForum.Services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.projectForum.ControlPanel.EditUserForm;
+import com.projectForum.ControlPanel.Configuration.ForumInformation;
+import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.PrivateMessages.Answer;
 import com.projectForum.PrivateMessages.AnswerRepository;
 import com.projectForum.PrivateMessages.Conversation;
@@ -33,17 +39,104 @@ public class DeleteService {
 	private PostServices	postServices;
 	private TopicServices	topicServices;
 	private ForumServices	forumServices;
-	
+	private ForumInformationServices forumInformationServices;
 	@Autowired
 	public DeleteService(AnswerRepository answerRepo, ConversationRepository convRepo, UserServices userServices,
-			PostServices postServices, TopicServices topicServices, ForumServices forumServices) {
+			PostServices postServices, TopicServices topicServices, ForumServices forumServices,
+			ForumInformationServices forumInformationServices) {
 		this.answerRepo = answerRepo;
 		this.convRepo = convRepo;
 		this.userServices = userServices;
 		this.postServices = postServices;
 		this.topicServices = topicServices;
 		this.forumServices = forumServices;
+		this.forumInformationServices = forumInformationServices;
 	}
+	
+	/*
+	 * ################################################################
+	 * 						SCHEDULED
+	 * ################################################################
+	 * This section will define all scheduled methods that will delete
+	 * old data.
+	 * <minute> <hour> <day-of-month> <month> <day-of-week> <command>
+	 * ################################################################
+	 * */
+	
+	public static final Logger LOG
+    = LoggerFactory.getLogger(DeleteService.class);
+	
+	/**
+	 * This Scheduled method will delete topics that didn't had any activity for more than X-value time.
+	 * This method will run daily in midnight.
+	 * @param X-value = ForumInformation timeToDelete*/
+	//@Scheduled(cron="*/5 * * * * ?") // Delete every 5 seconds
+	@Scheduled(cron = "0 0 * * * ?") // Delete daily at 00:00
+	public void deleteOldTopics() {
+		ForumInformation forumInformation = forumInformationServices.getForumInformation();
+		int size = 0;
+		// Notify action
+		LOG.warn("[Scheduled method :: deleteOldTopics] "
+				+ "Starting to delete topics that had Last activity "
+				+ forumInformation.getTimeToDelete() + " days ago");
+		
+		List<Topic> topics = topicServices.findTopicBeforeDate(forumInformation.getTimeToDelete());
+		//	Checking if there are any topics to delete
+		if (topics == null || topics.isEmpty()) {
+			
+			// Notify no action needed
+			LOG.info("[Scheduled method :: deleteOldTopics] "
+					+ "No topics needed to be deleted.");
+			return;
+		}
+		
+		//	There are topics to delete (also delete posts if exists)
+		size = topics.size();
+		this.deleteTopics(topics);
+		//	Notify job completed
+		LOG.info("[Scheduled method :: deleteOldTopics] "
+				+ "Job completed! \t"
+				+size + " topics has been removed.");
+	}
+	
+	/**
+	 * This Scheduled method will delete private conversations that didn't had any activity for more than X-value time.
+	 * This method will run daily in midnight.
+	 * @param X-value = ForumInformation timeToDelete*/
+	//@Scheduled(cron="*/5 * * * * ?") // Delete every 5 seconds
+	@Scheduled(cron = "1 0 * * * ?") // Delete daily at 00:00
+	public void deleteOldConversations() {
+		ForumInformation forumInformation = forumInformationServices.getForumInformation();
+		int size = 0;
+		// Notify action
+		LOG.warn("[Scheduled method :: deleteOldConversations] "
+				+ "Starting to delete private conversations that had Last activity "
+				+ forumInformation.getTimeToDelete() + " days ago");
+		
+		List<Conversation> conversations = null;
+		try {
+			 conversations = convRepo.findByLastActivityBefore(
+						LocalDateTime.now().minusDays(forumInformation.getTimeToDelete()));
+		} catch (Exception e) {
+			throw new EntityRequestException("Could not reload list of conversations by Date.");
+		}
+		//	Checking if there are any conversations to delete
+		if(conversations == null || conversations.isEmpty()){
+			
+			// Notify no action needed
+			LOG.info("[Scheduled method :: deleteOldConversations] "
+					+ "No conversations needed to be deleted.");
+			return;
+		}
+		
+		//	There are conversations to delete (also delete posts if exists)
+		size = conversations.size();
+		this.deleteConversations(conversations);
+		//	Notify job completed
+		LOG.info("[Scheduled method :: deleteOldTopics] "
+				+ "Job completed! \t"
+				+size + " topics has been removed.");
+		}
 	
 	/*
 	 * ################################################################
@@ -356,7 +449,13 @@ public class DeleteService {
 	 * 	This method will delete a answer by answerId
 	 * @param int*/
 	public void deleteAnswer(int answerId) {
-		Answer answer = answerRepo.findById(answerId);
+		Answer answer = null;
+		
+		try {
+			answer = answerRepo.findById(answerId);
+		} catch (Exception e) {
+			throw new EntityRequestException("Could not reload Answer id: " + answerId);
+		}
 		
 		if (answer!=null)
 			this.deleteAnswer(answer);
@@ -366,7 +465,11 @@ public class DeleteService {
 	 * @param Answer*/
 	public void deleteAnswer(Answer answer) {
 		if (answer!=null)
-			answerRepo.delete(answer);
+			try {
+				answerRepo.delete(answer);
+			} catch (Exception e) {
+				throw new EntityRequestException("Could not delete Answer id: " + answer.getId());
+			}
 		
 	}
 	
@@ -391,19 +494,40 @@ public class DeleteService {
 	 * 	This method will delete an conversation by id
 	 * @param int */
 	public void deleteConversation(int conId) {
-		Conversation conversation = convRepo.findById(conId);
+		Conversation conversation = null;
 		
-		if(conversation!=null) 
-			this.deleteConversation(conversation);
+		try {
+			conversation = convRepo.findById(conId);
+		} catch (Exception e1) {
+			throw new EntityRequestException("Could not reload Conversation id: " + conId);
+		}
+		
+		if(conversation!=null)
+			try {
+				this.deleteConversation(conversation);
+			} catch (Exception e) {
+				throw new EntityRequestException("Could not delete Conversation id: " + conId);
+			}
 	}
 	/**
 	 * 	This method will delete an conversation by Conversation
 	 * @param Conversation*/
 	public void deleteConversation(Conversation conversation) {
 		if (conversation != null) {
-			List<Answer> answers = answerRepo.findByConversation(conversation);
+			List<Answer> answers = null;
+			
+			try {
+				answers = answerRepo.findByConversation(conversation);
+			} catch (Exception e1) {
+				throw new EntityRequestException("Could not find answers for Conversation id:  " + conversation.getId());
+			}
+			
 			this.deleteAnswer(answers);
-			convRepo.delete(conversation);
+			try {
+				convRepo.delete(conversation);
+			} catch (Exception e) {
+				throw new EntityRequestException("Could not delete Conversation id: " + conversation.getId());
+			}
 		}
 	}
 	public void deleteConversations(List<Conversation> conversations) {

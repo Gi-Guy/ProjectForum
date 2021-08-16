@@ -58,6 +58,8 @@ public class PostController {
 		// Only register user allowed to do acitons
 		if(authentication == null)
 				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "edit/" + postId);
+		else if(userServices.isUserBlocked(authentication.getName()))
+				accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + postId);
 		
 		//	Making sure that user allowed to edit post
 		if(!authentication.getName().equals(post.getUser().getUsername()) 
@@ -78,6 +80,8 @@ public class PostController {
 		// Only register user allowed to do acitons
 		if(authentication == null)
 				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "edit/" + newEdit.getPostId());
+		else if(userServices.isUserBlocked(authentication.getName()))
+				accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + newEdit.getPostId());
 		
 		// finding original post
 		Post post = postServices.findPostById(newEdit.getPostId());
@@ -117,12 +121,14 @@ public class PostController {
 		// Only register user allowed to do acitons
 		if(authentication == null)
 				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "delete/" + postId);
+		else if(userServices.isUserBlocked(authentication.getName()))
+				accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "delete/" + postId);
 		
 		// find post to remove
 		Post post = postServices.findPostById(postId);
 		
 		// Making sure that post is exsits and user allowed to remove it or Admin
-		if(post == null || authentication == null)
+		if(post == null)
 			throw new EntityRequestException("Something went wrong, could not reload post :: '" + postId +"'");
 		
 		else if (!authentication.getName().equals(post.getUser().getUsername()) ||

@@ -22,12 +22,12 @@ import com.projectForum.ControlPanel.Configuration.ForumInformation;
 import com.projectForum.Exceptions.AccessDeniedRequestException;
 import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.Security.Role;
-import com.projectForum.Security.RoleRepository;
 import com.projectForum.Services.ControlPanelServices;
 import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
 import com.projectForum.Services.ForumInformationServices;
 import com.projectForum.Services.ForumServices;
+import com.projectForum.Services.RoleServices;
 import com.projectForum.Services.UserServices;
 import com.projectForum.forum.EditForumForm;
 import com.projectForum.forum.Forum;
@@ -43,7 +43,7 @@ public class ControlPanelController {
 	private DeleteService			deleteService;
 	private EditServices			editService;
 	private ForumInformationServices forumInformationServices;
-	private RoleRepository			roleRepo;
+	private RoleServices			roleServices;
 	
 	private AccessDeniedRequestException accessDeniedRequestException = new AccessDeniedRequestException();
 	private final String localUrl = "/a/";
@@ -51,13 +51,13 @@ public class ControlPanelController {
 	@Autowired
 	public ControlPanelController(ControlPanelServices controlService, ForumServices forumService,
 			DeleteService deleteService, EditServices editService,
-			RoleRepository roleRepo, UserServices userService,
+			RoleServices roleServices, UserServices userService,
 			ForumInformationServices forumInformationServices) {
 		this.controlService	=	controlService;
 		this.forumService 	=	forumService;
 		this.deleteService	=	deleteService;
 		this.editService	=	editService;
-		this.roleRepo		=	roleRepo;
+		this.roleServices	=	roleServices;
 		this.userService	=	userService;
 		this.forumInformationServices = forumInformationServices;
 	}
@@ -70,7 +70,7 @@ public class ControlPanelController {
 	@GetMapping("/controlPanel")
 	public String displayControlPanel(Model model, Authentication authentication) {
 		User user = userService.findUserByUsername(authentication.getName());
-		final Role adminRole = roleRepo.findRoleByName("Admin");
+		final Role adminRole = roleServices.findRoleByName("Admin");
 		// Checking if user allowed to access control panel
 		if(!user.getRole().equals(adminRole)) {
 			// User isn't allowed to access to control panel
@@ -217,7 +217,7 @@ public class ControlPanelController {
 	ModelAndView showUserEditForm(@RequestParam(name = "username") String username) {
 		ModelAndView mav = new ModelAndView("edit_User_form");
 		
-		List<Role> roles = roleRepo.findAll();
+		List<Role> roles = roleServices.findAll();
 		EditUserForm editUser = null;
 		try {
 			editUser = controlService.editUserForm(username);
@@ -248,12 +248,17 @@ public class ControlPanelController {
 		
 		// Checking if need to update role
 		if(!user.getRole().getName().equals(editUser.getRole()) && !editUser.getRole().equals("UNDEFINED_USER")) {
+			if(editUser.getRole().equals(roleServices.findRoleByName("BLOCKED").getName()))
+				editService.setUserBlocked(user);
 			// Updating user's role
-			editService.updateUserRole(editUser);
+			else 
+				editService.updateUserRole(editUser);
 		}
 		
 		// Checking if needed to delete user
 		if(editUser.isDelete()) {
+			// first block user
+			editService.setUserBlocked(user);
 			// Deleting user
 			deleteService.deleteUser(editUser);
 		}

@@ -1,6 +1,5 @@
 package com.projectForum.user;
 
-//import java.util.Collection;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -84,9 +83,6 @@ public class User {
 	}
 	private LocalDateTime joiningDate;
 	private LocalDateTime lastLogin;
-	
-
-	//TODO: Add private messages list
 	
 	public boolean isActive() {
 		return isActive;

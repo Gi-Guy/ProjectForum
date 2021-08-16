@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.projectForum.ControlPanel.EditUserForm;
 import com.projectForum.ControlPanel.ForumForm;
 import com.projectForum.forum.Forum;
+import com.projectForum.post.Post;
+import com.projectForum.topic.Topic;
 import com.projectForum.user.User;
 
 //	TODO TEST THIS FILE
@@ -24,12 +26,15 @@ public class ControlPanelServices {
 	private UserServices	userServices;
 	private TopicServices	topicServices;
 	private ForumServices	forumServices;
+	private PostServices	postServices;
 	
 	@Autowired
-	public ControlPanelServices(UserServices userServices, TopicServices topicServices, ForumServices forumServices) {
+	public ControlPanelServices(UserServices userServices, TopicServices topicServices, ForumServices forumServices,
+			PostServices postServices) {
 		this.userServices = userServices;
 		this.topicServices = topicServices;
 		this.forumServices = forumServices;
+		this.postServices = postServices;
 	}
 	
 	/**
@@ -55,9 +60,27 @@ public class ControlPanelServices {
 		// update forum
 		newForm.setForum(forum);
 		
-		// update Topics counter
-		int topicsCounter = topicServices.findTopicsByForum(forum).size();
+		// update Topics counter and last activity
+		List<Topic> topics = topicServices.findTopicsOrderByLastActivity(forum); 
+		int topicsCounter = topics.size();
 		newForm.setNumOfTopics(topicsCounter);
+		if(!topics.isEmpty()) {
+			newForm.setLastActivity(topics.get(0).getLastActivity());
+			
+			// Saving last user activity
+			List<Post> posts = postServices.findPostsByTopic(topics.get(0));
+			if(!posts.isEmpty()) {
+				
+				Post lastPost = posts.get(posts.size()-1);
+				newForm.setLastUserActivity(lastPost.getUser());
+			}
+			else
+				newForm.setLastUserActivity(null);
+		}
+		else {
+			newForm.setLastActivity(null);
+			newForm.setLastUserActivity(null);
+		}
 		
 		// update short Description
 		String description = forum.getDescription();

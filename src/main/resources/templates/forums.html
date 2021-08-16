@@ -16,13 +16,15 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 			<thead>
 					<tr>
 						<th colspan="6">
-							<h2>רשימת כל הפורומים</h2>
+							<h2 style="text-align: center">רשימת כל הפורומים</h2>
 						</th>	
 					</tr>
 					<tr>
-						<th>שם הפורום</th>
-						<th>תקציר</th>
+						<th style="width:13%;">שם הפורום</th>
+						<th style="width:55%;">תקציר</th>
 						<th>מספר שרשורים</th>
+						<th>הודעה אחרונה ע"י</th>
+						<th>פעילות אחרונה</th>
 					</tr>
 			</thead>
 			<tbody>
@@ -30,6 +32,18 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 					<td><a th:href="@{/forum/} + ${forum.forum.id}" th:text="${forum.forum.name}"></a></td>
 					<td th:text = "${forum.forum.description}"></td>
 					<td th:text = "${forum.getNumOfTopics()}"></td>
+					<td>
+						<span th:if ="${forum.getLastUserActivity() == null}">אין תגובות</span>
+						<span th:unless ="${forum.getLastUserActivity() == null}">
+							<a	th:href="@{/user/} + ${forum.getLastUserActivity().username}"
+								th:text = "${forum.getLastUserActivity().username}"></a>
+						</span>
+					</td>			
+					<td>
+						<span th:if ="${forum.getNumOfTopics() == 0}">אין תגובות</span>
+						<span th:unless ="${forum.getNumOfTopics() == 0}" 
+					  		th:text = "${forum.getLastActivity()}"></span>
+					</td>
 				</tr>
 			</tbody>
 		</table>

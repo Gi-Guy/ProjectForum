@@ -71,10 +71,10 @@ public class Topic {
 		 this.lastActivity = LocalDateTime.now();
 	 }
 	
-	 @PreUpdate
+	/* @PreUpdate
 	protected void onUpdate() {
 		this.lastActivity = LocalDateTime.now();
-	}
+	}*/
 	 
 	public int getId() {
 		return id;
@@ -206,6 +206,13 @@ public class Topic {
 		if (views != other.views)
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Topic [id=" + id + ", title=" + title + ", content=" + content 
+				+ ", views=" + views + ", createdDate=" + createdDate + ", lastActivity=" + lastActivity + ", closed="
+				+ closed + "]";
 	}
 	
 	
