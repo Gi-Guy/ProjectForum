@@ -68,7 +68,7 @@ public class TopicController {
 	 * @return Model:	Post - new Post object for replay option
 	 * */
 	@GetMapping("{topicId}")
-	public String getTopicById(@PathVariable int topicId, Model model) {
+	public String getTopicById(@PathVariable int topicId, Model model, Authentication authentication) {
 		
 		Topic topic = topicServices.findTopicById(topicId);
 		List<Post> posts = postServices.findPostsByTopic(topic);
@@ -87,6 +87,8 @@ public class TopicController {
 		model.addAttribute("posts", posts);
 		// In each topic there is an option to create a new post
 		model.addAttribute("newPost", new Post());
+		// Add a flag to state whether the user is an admin or not:
+		model.addAttribute("isAdmin", (authentication==null)?false:userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"));
 		
 		return "topic";
 	}

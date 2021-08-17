@@ -39,10 +39,6 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 									<td><a th:href="'mailto: '+ ${userProfile.getUser().getEmail()}" th:text ="${userProfile.getUser().getEmail()}">כתובת אימייל</a></td>
 								</tr>
 								<tr>
-									<td>כרגע באתר</td>
-									<td th:text="${userProfile.getUser().isActive()}"></td>
-								</tr>
-								<tr>
 									<td>סוג משתמש</td>
 									<td th:text="${userProfile.getUser().getRole().getName()}"></td>
 								</tr>
