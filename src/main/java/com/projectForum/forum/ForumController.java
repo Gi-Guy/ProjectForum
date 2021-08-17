@@ -2,6 +2,7 @@ package com.projectForum.forum;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,12 +64,12 @@ public class ForumController {
 	 * This method will display all forums in a List<Forum>.
 	 */
 	@GetMapping("")
-	public String displayForums(Model model) {
+	public String displayForums(HttpSession session, Model model) {
 		// returning a List<Forum> order by priority {highest priority = 1}
 		model.addAttribute("forums", controlPanelService.createForumDisplayList(forumServices.findForumsByPriorityAsc()));
 		
 		//	Displaying forum's information
-		model.addAttribute("forumInformation", forumInformationServices.getForumInformation());
+		session.setAttribute("forumInformation", forumInformationServices.getForumInformation());
 		return "forums";
 	}
 	 
