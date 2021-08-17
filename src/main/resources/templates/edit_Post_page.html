@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"> <!-- Declaring  XML using-->
+
+	<head th:replace="fragments.html :: headerfiles('Edit post')"></head>
+	
+	<body>
+	
+		<div th:replace="fragments.html :: topnav"></div>
+
+		<h1>עדכן תגובה</h1>
+			
+		<form th:action = "@{/post/editPost}" method = "post"
+		style ="max-width:600px; margin: 0 auto;"
+		th:object = "${editPost}">
+
+			<table>
+				<tr>
+					<td>
+						<label>תוכן</label>
+					</td>
+					<td>
+						<textarea name='content' th:field="*{content}" ></textarea>
+						<p th:if="${#fields.hasErrors('content')}" th:errors="content">תוכן לא תקין!</p>
+					</td>
+				</tr>
+			</table>
+			
+			<!-- Submit button -->
+			<div>
+			<input type="hidden" name = "id" th:field="*{id}" th:value="${editPost.id}"/>
+				<input class="button" type="submit" value="עדכן" />
+			</div>
+			
+		</form>
+	</body>
+</html>

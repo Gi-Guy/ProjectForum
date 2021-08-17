@@ -191,7 +191,7 @@ public class TopicController {
 		
 		//	Checking if user allowed to edit Topic
 		if(!authentication.getName().equals(topic.getUser().getUsername()) 
-				|| !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+				&& !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			//	User isn't allowed to edit Topic
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + topicId);
 			

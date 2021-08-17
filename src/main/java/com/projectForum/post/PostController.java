@@ -63,43 +63,44 @@ public class PostController {
 		
 		//	Making sure that user allowed to edit post
 		if(!authentication.getName().equals(post.getUser().getUsername()) 
-				|| !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+				&& !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			// User isn't allowed to edit Post
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + postId);
 		
-		EditPostForm newEditPost = new EditPostForm();
-		newEditPost.setPostId(postId);
-		model.addAttribute("editPost", newEditPost);
-		return "editPost";
+		//EditPostForm newEditPost = new EditPostForm();
+		//newEditPost.setPostId(postId);
+		//model.addAttribute("editPost", newEditPost);
+		model.addAttribute("editPost", post);
+		return "edit_Post_Page";
 	}
 	
 	/** This method will edit the original post object and save the new content of the post.*/
 	@PostMapping("editPost")
-	public String editPost(@Valid @ModelAttribute("newEditPost") EditPostForm newEdit, BindingResult bindingResult, Authentication authentication, Model model) {
+	public String editPost(@Valid @ModelAttribute("editPost") Post post, BindingResult bindingResult, Authentication authentication, Model model) {
 		
 		// Only register user allowed to do acitons
 		if(authentication == null)
-				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "edit/" + newEdit.getPostId());
+				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "edit/" + post.getId());
 		else if(userServices.isUserBlocked(authentication.getName()))
-				accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + newEdit.getPostId());
+				accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + post.getId());
 		
 		// finding original post
-		Post post = postServices.findPostById(newEdit.getPostId());
+		Post targetPost = postServices.findPostById(post.getId());
 		
-		if(post == null)
-			throw new EntityRequestException("Could not edit post :: " + newEdit.getPostId());
+		if(targetPost == null)
+			throw new EntityRequestException("Could not edit post :: " + post.getId());
 		// making sure user is allowed to edit post or Admin
-		if(authentication.getName().equals(post.getUser().getUsername())
-				|| userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {
+		if(authentication.getName().equals(targetPost.getUser().getUsername())
+				&& userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {
 			
 			// User or Admin allowed to update post
-			editServices.updatePost(post, newEdit);
+			editServices.updatePost(targetPost, post);
 		}
 		else
 			// User isn't allowed to edit
-			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "editPost/" + newEdit.getPostId());
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "editPost/" + post.getId());
 		// taking user back to the original topic.
-		return "redirect:/topic/" + post.getTopic().getId();
+		return "redirect:/topic/" + targetPost.getTopic().getId();
 	}
 	
 	/**
