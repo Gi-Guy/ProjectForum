@@ -15,6 +15,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.projectForum.general.Formatter;
 import com.projectForum.topic.Topic;
 import com.projectForum.user.User;
 
@@ -87,6 +88,10 @@ public class Post {
 	public LocalDateTime getCreatedDate() {
 		return createdDate;
 	}
+	
+	public String getFormattedCreatedDate() {
+		return Formatter.toTimeDate(createdDate);
+	}
 
 	public void setCreatedDate(LocalDateTime createDate) {
 		this.createdDate = createDate;
@@ -95,6 +100,10 @@ public class Post {
 
 	public LocalDateTime getLastActivity() {
 		return lastActivity;
+	}
+	
+	public String getFormattedLastActivity() {
+		return Formatter.toTimeDate(lastActivity);
 	}
 
 	public User getUser() {
@@ -105,10 +114,6 @@ public class Post {
 		this.user = user;
 	}
 	
-    public String displayParsedCreatedDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm - dd.MM.yyyy");
-        return this.createdDate.format(formatter);
-    }
     //Auto generated 
 	@Override
 	public int hashCode() {

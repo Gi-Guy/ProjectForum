@@ -7,9 +7,9 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 	<body>
 	
 		<div th:replace="fragments.html :: topnav"></div>
-		<h1 th:text = "${forumInformation.getName()}"></h1>
+		<h1 th:text = "${session.forumInformation.getName()}"></h1>
 		<h3 style="text-align: center"
-			th:text = "${forumInformation.getDescription()}"></h3>
+			th:text = "${session.forumInformation.getDescription()}"></h3>
 		<hr><br>
 		
 		<table class="table-striped stretch" border="1" style="text-align:right">
@@ -42,7 +42,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 					<td>
 						<span th:if ="${forum.getNumOfTopics() == 0}">אין תגובות</span>
 						<span th:unless ="${forum.getNumOfTopics() == 0}" 
-					  		th:text = "${forum.getLastActivity()}"></span>
+					  		th:text = "${forum.getFormattedLastActivity()}"></span>
 					</td>
 				</tr>
 			</tbody>

@@ -48,12 +48,11 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 								</tr>
 								<tr>
 									<td>נרשם בתאריך</td>
-									<td th:text="${userProfile.getUser().getJoiningDate().toLocalDate()}"></td>
+									<td th:text="${userProfile.getUser().getFormattedJoiningDate()}"></td>
 								</tr>
 								<tr>
-									<td>נכנס פעם אחרונה</td>
-									<td th:text="${userProfile.getUser().getLastLogin().toLocalTime()} 
-										+ ', ' + ${userProfile.getUser().getLastLogin().toLocalDate()}"></td>
+									<td>התחבר פעם אחרונה</td>
+									<td th:text="${userProfile.getUser().getFormattedLoginDate()}"></td>
 								</tr>
 							</tbody>
 						</table>

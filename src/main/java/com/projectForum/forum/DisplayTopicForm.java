@@ -3,6 +3,7 @@ package com.projectForum.forum;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.projectForum.general.Formatter;
 import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;
 
@@ -17,10 +18,6 @@ public class DisplayTopicForm {
 	private String summary = "";
 	private LocalDateTime lastActivity;
 	private boolean toDelete = false;
-	
-	
-	// Defining Date format
-	DateTimeFormatter  formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 	
 	public DisplayTopicForm() {
 		
@@ -73,8 +70,12 @@ public class DisplayTopicForm {
 		this.summary = summary;
 	}
 
-	public String getLastActivity() {
-		return lastActivity.format(formatter);
+	public LocalDateTime getLastActivity() {
+		return lastActivity;
+	}
+	
+	public String getFormattedLastActivity() {
+		return Formatter.toTimeDate(lastActivity);
 	}
 
 	public void setLastActivity(LocalDateTime lastActivity) {

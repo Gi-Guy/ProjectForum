@@ -34,7 +34,7 @@
 			
 			<a sec:authorize="isAnonymous()" th:href="@{/login}">התחבר</a>
 		
-			<p style = "background-color:purple">הפורום הטוב בתבל</p>
+			<p style = "background-color:purple" th:text=${#session.getAttribute('forumInformation').getName()}>שם הפורום</p>
 		</nav>
 	    
 	</body>
