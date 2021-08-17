@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.projectForum.forum.Forum;
+import com.projectForum.general.Formatter;
 import com.projectForum.user.User;
 
 /** Topic is a collection of posts,
@@ -134,6 +135,10 @@ public class Topic {
 	
 	public LocalDateTime getCreatedDate() {
 		return createdDate;
+	}
+	
+	public String getFormattedCreatedDate() {
+		return Formatter.toTimeDate(createdDate);
 	}
 
 	public Forum getForum() {
