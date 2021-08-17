@@ -17,7 +17,8 @@ public class ForumInformationServices {
 	
 	/**
 	 * This method will return an ForumInformation entity 
-	 * that represents the forum web application itself and some configurations*/
+	 * that represents the forum web application itself and some configurations
+	 */
 	public ForumInformation getForumInformation() {
 		List<ForumInformation> forumInfo;
 		try {
@@ -29,9 +30,11 @@ public class ForumInformationServices {
 			return null;
 		return forumInfo.get(0);
 	}
+	
 	/**
 	 * This method will save the new information of the forum.
-	 * NOTE: If there is an exists entity, method will not save new entity.*/
+	 * NOTE: If there is an existing entity, method will not save new entity.
+	 */
 	public void save(ForumInformation forumInformation) {
 		ForumInformation info = this.getForumInformation();
 		if(info == null || info.getId() == forumInformation.getId()) {
@@ -44,7 +47,8 @@ public class ForumInformationServices {
 	}
 	
 	/**
-	 * This method will update the forum Name*/
+	 * This method will update the forum Name
+	 */
 	public void updateForumName(String forumName) {
 		ForumInformation forumInformation = this.getForumInformation();
 		
@@ -55,8 +59,10 @@ public class ForumInformationServices {
 		else
 			throw new EntityRequestException("Could not update forum name");
 	}
+	
 	/**
-	 * This method will update the forum description*/
+	 * This method will update the forum description
+	 */
 	public void updateForumDescription(String description) {
 		ForumInformation forumInformation = this.getForumInformation();
 		
@@ -67,8 +73,10 @@ public class ForumInformationServices {
 		else
 			throw new EntityRequestException("Could not update forum description");
 	}
+	
 	/**
-	 * This method will update the forum timeToDelete counter*/
+	 * This method will update the forum timeToDelete counter
+	 */
 	public void updateTimeToDelete(int timeToDelete) {
 		ForumInformation forumInformation = this.getForumInformation();
 		
@@ -79,41 +87,44 @@ public class ForumInformationServices {
 		else
 			throw new EntityRequestException("Could not update forum timeToDelete");
 	}
+	
 	public void updateForumInformation(ForumInformation updatedInformation) {
 		ForumInformation currentInformation = this.getForumInformation();
 
-		//	Making sure that there is any information to edit
+		// Making sure that there is any information to edit
 		if(currentInformation == null || updatedInformation == null)
 			throw new EntityRequestException("Something went wrong, could not update forum information");
 		
 		/*
 		 * updating information
-		 * */
-		//	Update Forum Name
+		 */
+		
+		// Update Forum Name
 		if(!currentInformation.getName().equals(updatedInformation.getName()) && !updatedInformation.getName().isBlank()) {
 			this.updateForumName(updatedInformation.getName());
 		}
 		
-		//	Update Forum Description
+		// Update Forum Description
 		if(!currentInformation.getDescription().equals(updatedInformation.getDescription()) && !updatedInformation.getDescription().isBlank()) {
 			this.updateForumDescription(updatedInformation.getDescription());
 		}
 		
-		//	Update Forum time to delete
+		// Update Forum time to delete
 		if(currentInformation.getTimeToDelete() != updatedInformation.getTimeToDelete() && !(updatedInformation.getTimeToDelete() < 0)) {
 			this.updateTimeToDelete(updatedInformation.getTimeToDelete());
 		}
-		
 	}
 	
-	/*
+	/**
 	 * Services for REST
-	 * */
+	 */
+	
 	/**
 	 * This method will save and return ForumInformation object
 	 * NOTE:  - user can not change the id, if user will try to change the id,
 	 * 		    the services will not save the new id.
-	 * 		  - This is for REST services only.*/
+	 * 		  - This is for REST services only.
+	 */
 	public ForumInformation saveAndreturn(ForumInformation forumInformation) {
 		ForumInformation info = this.getForumInformation();
 		if(info == null || info.getId() == forumInformation.getId()) {
@@ -125,36 +136,38 @@ public class ForumInformationServices {
 		}
 		return null;
 	}
+	
 	/**
 	 * This method will update and return ForumInformation object
 	 * NOTE:  - user can not change the id, if user will try to change the id,
 	 * 		    the services will not save the new id.
-	 * 		  - This is for REST services only.*/
+	 * 		  - This is for REST services only.
+	 */
 	public ForumInformation updateAndReturn(ForumInformation updatedInformation) {
 		ForumInformation currentInformation = this.getForumInformation();
 
-		//	Making sure that there is any information to edit
+		// Making sure that there is any information to edit
 		if(currentInformation == null || updatedInformation == null)
 			throw new EntityRequestException("Something went wrong, could not update forum information (REST)");
 		
-		/*
+		/**
 		 * updating information
-		 * */
-		//	Update Forum's Name
+		 */
+		// Update Forum's Name
 		if(!currentInformation.getName().equals(updatedInformation.getName()) && !updatedInformation.getName().isBlank()) {
 			currentInformation.setName(updatedInformation.getName());
 		}
 		
-		//	Update Forum's Description
+		// Update Forum's Description
 		if(!currentInformation.getDescription().equals(updatedInformation.getDescription()) && !updatedInformation.getDescription().isBlank()) {
 			currentInformation.setDescription(updatedInformation.getDescription());
 		}
 		
-		//	Update Forum's time to delete
+		// Update Forum's time to delete
 		if(currentInformation.getTimeToDelete() != updatedInformation.getTimeToDelete() && !(updatedInformation.getTimeToDelete() < 0)) {
 			currentInformation.setTimeToDelete(updatedInformation.getTimeToDelete());
 		}
-		return this.saveAndreturn(currentInformation);
 		
+		return this.saveAndreturn(currentInformation);
 	}
 }

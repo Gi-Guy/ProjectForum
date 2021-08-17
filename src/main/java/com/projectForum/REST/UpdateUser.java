@@ -2,7 +2,7 @@ package com.projectForum.REST;
 
 /**
  * 	This class used only for updating user via REST services.
- * */
+ */
 public class UpdateUser {
 	private int 	id = 0;
 	private String 	username = "";
@@ -81,8 +81,4 @@ public class UpdateUser {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	
-	
-	
 }

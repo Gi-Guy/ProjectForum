@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -20,12 +19,14 @@ import com.projectForum.forum.Forum;
 import com.projectForum.general.Formatter;
 import com.projectForum.user.User;
 
-/** Topic is a collection of posts,
+/** 
+ * Topic is a collection of posts,
  * However it has a main content just like a regular post, but it won't be count as a Post but as a topic content.
  * 
  * Each Topic has a user who created it.
  * Each Post has to be attached to a topic, A post can't be a ghost Post.
- * Each Topic has to be attached to a topics page (Forum), A topic can't be a ghost Topic */
+ * Each Topic has to be attached to a topics page (Forum), A topic can't be a ghost Topic 
+ */
 @Entity
 @Table(name = "topic")
 @JsonIdentityInfo(
@@ -72,7 +73,7 @@ public class Topic {
 		 this.lastActivity = LocalDateTime.now();
 	 }
 	
-	/* @PreUpdate
+	/* TODO @PreUpdate
 	protected void onUpdate() {
 		this.lastActivity = LocalDateTime.now();
 	}*/
@@ -148,6 +149,7 @@ public class Topic {
 	public void setForum(Forum forum) {
 		this.forum = forum;
 	}
+	
     //Auto generated 
 	@Override
 	public int hashCode() {
@@ -164,6 +166,7 @@ public class Topic {
 		result = prime * result + views;
 		return result;
 	}
+	
     //Auto generated 
 	@Override
 	public boolean equals(Object obj) {
@@ -219,6 +222,4 @@ public class Topic {
 				+ ", views=" + views + ", createdDate=" + createdDate + ", lastActivity=" + lastActivity + ", closed="
 				+ closed + "]";
 	}
-	
-	
 }

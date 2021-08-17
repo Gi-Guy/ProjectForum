@@ -15,7 +15,7 @@ import com.projectForum.user.User;
 
 /**
  * 	This class will gives services for most topic's actions
- * */
+ */
 
 @Service
 public class TopicServices {
@@ -26,7 +26,7 @@ public class TopicServices {
 	private ForumServices	forumServices;
 	
 	/**
-	 * 	This method will return a Topic by topicId
+	 * This method will return a Topic by topicId
 	 * @param topicId
 	 * @return
 	 * @throws EntityRequestException
@@ -39,8 +39,6 @@ public class TopicServices {
 		} catch (Exception e) {
 			throw new EntityRequestException("Could not find a topic by id");
 		}
-		/*if (topic == null)
-			throw new EntityRequestException("Could not find a topic by id");*/
 		return topic;
 	}
 	
@@ -58,8 +56,6 @@ public class TopicServices {
 		} catch (Exception e) {
 			throw new EntityRequestException("Could not find all topics by User");
 		}
-		/*if(topics == null)
-			throw new EntityRequestException("Could not find all topics by User");*/
 		
 		return topics;
 	}
@@ -71,8 +67,8 @@ public class TopicServices {
 	 */
 	public List<Topic> findTopicsByForumIs(int forumId){
 		return this.findTopicsByForum(forumServices.findFourmById(forumId));
-		
 	}
+	
 	/**
 	 * This method will return List<Topic> by Forum
 	 * @param forum
@@ -87,11 +83,10 @@ public class TopicServices {
 		} catch (Exception e) {
 			throw new EntityRequestException("Could not find all topics by forum");
 		}	
-	/*	if(topics == null)
-			throw new EntityRequestException("Could not find all topics by forum");*/
 		
 		return topics;
 	}
+	
 	public List<Topic> findAll() throws EntityRequestException{
 		List<Topic> topics = null;
 		
@@ -108,7 +103,8 @@ public class TopicServices {
 	 * This method will return a List<Topic> of topics that lastActivity < date.now - offset.
 	 * For Example to get all topics that had lastActivity before 30 days, set offset = 30.
 	 * @param offset
-	 * @return topics*/
+	 * @return topics
+	 */
 	public List<Topic> findTopicBeforeDate(int offset){
 		// if offset = 0, no topics to delete
 		if(offset == 0)
@@ -128,6 +124,7 @@ public class TopicServices {
 			throw new EntityRequestException("Could not save new topic");
 		}
 	}
+	
 	public void delete(Topic topic) throws EntityRequestException{
 		try {
 			topicRepo.delete(topic);
@@ -135,8 +132,10 @@ public class TopicServices {
 			throw new EntityRequestException("Could not delete topic");
 		}
 	}
+	
 	/**
-	 * This method will return List<Topic> of topics order by lastActivity*/
+	 * This method will return List<Topic> of topics order by lastActivity
+	 */
 	public List<Topic> findTopicsOrderByLastActivity(Forum forum){
 		try {
 			return topicRepo.findByForumOrderByLastActivityDesc(forum);
@@ -144,9 +143,10 @@ public class TopicServices {
 			throw new EntityRequestException("Could not reload topics by date");
 		}
 	}
+	
 	/**
 	 * This method will return the last active topic of a forum
-	 * */
+	 */
 	public Topic lastActiveTopicInForum(Forum forum) {
 		List<Topic> topics = this.findTopicsOrderByLastActivity(forum);
 		return topics.get(0);

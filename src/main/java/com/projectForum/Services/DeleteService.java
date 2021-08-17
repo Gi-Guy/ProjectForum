@@ -22,16 +22,12 @@ import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;
 import com.projectForum.user.User;
 
-
-
-
 /**
- *  This Class will use as a service to all deletion option in the application */
-
+ * This Class will use as a service to all deletion option in the application 
+ */
 @Service
 public class DeleteService {
 	
-
 	private AnswerRepository	answerRepo;
 	private ConversationRepository	convRepo;
 	
@@ -61,17 +57,17 @@ public class DeleteService {
 	 * old data.
 	 * <minute> <hour> <day-of-month> <month> <day-of-week> <command>
 	 * ################################################################
-	 * */
+	 */
 	
 	public static final Logger LOG
     = LoggerFactory.getLogger(DeleteService.class);
 	
 	/**
-	 * This Scheduled method will delete topics that didn't had any activity for more than X-value time.
-	 * This method will run daily in midnight.
-	 * @param X-value = ForumInformation timeToDelete*/
-	//@Scheduled(cron="*/5 * * * * ?") // Delete every 5 seconds
-	@Scheduled(cron = "0 0 * * * ?") // Delete daily at 00:00
+	 * This Scheduled method will delete topics that didn't have any activity
+	 * for more than ForumInformation.timeToDelete amount of time.
+	 * This method will run daily at midnight.
+	 */
+	@Scheduled(cron = "0 0 * * * ?")
 	public void deleteOldTopics() {
 		ForumInformation forumInformation = forumInformationServices.getForumInformation();
 		int size = 0;
@@ -81,7 +77,7 @@ public class DeleteService {
 				+ forumInformation.getTimeToDelete() + " days ago");
 		
 		List<Topic> topics = topicServices.findTopicBeforeDate(forumInformation.getTimeToDelete());
-		//	Checking if there are any topics to delete
+		// Checking if there are any topics to delete
 		if (topics == null || topics.isEmpty()) {
 			
 			// Notify no action needed
@@ -90,20 +86,20 @@ public class DeleteService {
 			return;
 		}
 		
-		//	There are topics to delete (also delete posts if exists)
+		// There are topics to delete (also delete posts if they exist)
 		size = topics.size();
 		this.deleteTopics(topics);
-		//	Notify job completed
+		// Notify job completed
 		LOG.info("[Scheduled method :: deleteOldTopics] "
 				+ "Job completed! \t"
 				+size + " topics has been removed.");
 	}
 	
 	/**
-	 * This Scheduled method will delete private conversations that didn't had any activity for more than X-value time.
-	 * This method will run daily in midnight.
-	 * @param X-value = ForumInformation timeToDelete*/
-	//@Scheduled(cron="*/5 * * * * ?") // Delete every 5 seconds
+	 * This Scheduled method will delete private conversations that didn't have
+	 * any activity for more than ForumInformation.timeToDelete amount of time.
+	 * This method will run daily at midnight.
+	 */
 	@Scheduled(cron = "1 0 * * * ?") // Delete daily at 00:00
 	public void deleteOldConversations() {
 		ForumInformation forumInformation = forumInformationServices.getForumInformation();
@@ -120,7 +116,7 @@ public class DeleteService {
 		} catch (Exception e) {
 			throw new EntityRequestException("Could not reload list of conversations by Date.");
 		}
-		//	Checking if there are any conversations to delete
+		// Checking if there are any conversations to delete
 		if(conversations == null || conversations.isEmpty()){
 			
 			// Notify no action needed
@@ -129,10 +125,10 @@ public class DeleteService {
 			return;
 		}
 		
-		//	There are conversations to delete (also delete posts if exists)
+		// There are conversations to delete (also delete posts if they exist)
 		size = conversations.size();
 		this.deleteConversations(conversations);
-		//	Notify job completed
+		// Notify job completed
 		LOG.info("[Scheduled method :: deleteOldTopics] "
 				+ "Job completed! \t"
 				+size + " topics has been removed.");
@@ -145,11 +141,12 @@ public class DeleteService {
 	 * */
 	/** 
 	 * 			#####REST ONLY#####
-	 * This method will delete an exists user.
-	 *  It will remove user's data dependent on Keep activity boolean.
+	 * This method will delete an existing user.
+	 * It will remove the user's data depending on the Keep activity flag.
 	 *  
 	 *  @see REST ONLY 
-	 *  @return boolean true if deleted user.*/
+	 *  @return boolean true if deleted user.
+	 */
 	public boolean deleteUser(DeleteUserForm deleteUser) {
 		User userByID = null;
 		User userByUsername = null;
@@ -167,7 +164,7 @@ public class DeleteService {
 		
 		// Checking if both are null
 		if(userByID == null && userByUsername == null) {
-			// User isn't exists!
+			// User doesn't exist!
 			return false;
 		}
 		// At this point one of the users isn't null
@@ -201,8 +198,10 @@ public class DeleteService {
 	}
 	
 
-	/** This method will delete an exists user.
-	 *  It will remove user's data dependent on Keep activity boolean.*/
+	/** 
+	 * This method will delete an existing user.
+	 * It will remove the user's data dependent on the Keep activity flag.
+	 */
 	public void deleteUser(EditUserForm editUser) {
 		User user = userServices.findUserByUserId(editUser.getId());
 		
@@ -214,21 +213,31 @@ public class DeleteService {
 		List<Conversation> conversations = convRepo.findBySenderOrReceiver(user, user);
 		this.deleteConversations(conversations);
 		
-		
 		if(editUser.isKeepActivity())
 			this.deleteUserKeepActivity(user);
 		else
 			this.deleteUserDontKeepActivity(user);
-
-
 	}
 	
-	/** This method will delete an exists user.
-	 * 	However it won't delete it posts and topics, but will attached user's posts and topics
-	 * 	to an Dummy User.
-	 * 
-	 * @param User
-	 * */
+	/** 
+	 * This method will delete an existing user based on their username. However it won't delete 
+	 * it posts and topics, but will attached user's posts and topics to an Dummy User.
+	 */
+	public void deleteUser(String username) {
+		this.deleteUserKeepActivity(userServices.findUserByUsername(username));
+	}
+
+	/** 
+	 * This method will delete an existing user based on their userID. However it won't delete 
+	 * it posts and topics, but will attached user's posts and topics to an Dummy User.
+	 */
+	public void deleteUser(int userId) {
+		this.deleteUserKeepActivity(userServices.findUserByUserId(userId));
+	}
+
+	/** 
+	 * Private method that transfers the user's activity to a dummy user.
+	 */
 	private void deleteUserKeepActivity(User user) {
 		
 		User dummyUser = userServices.findUserByUsername("Unknown");
@@ -258,12 +267,9 @@ public class DeleteService {
 		
 	}
 	
-	/** This method will delete an exists user.
-	 * 	it will also delete it posts and topics.
-	 * 	to an Dummy User.
-	 * 
-	 * @param User
-	 * */
+	/** 
+	 * Private method that deletes all the user's activity
+	 */
 	private void deleteUserDontKeepActivity(User user) {
 		List<Post>	userPosts	=	postServices.findPostsByUser(user);
 		List<Topic>	userTopics	=	topicServices.findTopicsByUser(user);
@@ -290,83 +296,72 @@ public class DeleteService {
 		userServices.delete(user);
 	}
 
-	/** This method will delete an exists user.
-	 * 	However it won't delete it posts and topics, but will attached user's posts and topics
-	 * 	to an Dummy User.
-	 * 
-	 * @param String
-	 * */
-	public void deleteUser(String username) {
-		this.deleteUserKeepActivity(userServices.findUserByUsername(username));
-	}
-	
-	/** This method will delete an exists user.
-	 * 	However it won't delete it posts and topics, but will attached user's posts and topics
-	 * 	to an Dummy User.
-	 * 
-	 * @param int
-	 * */
-	public void deleteUser(int userId) {
-		this.deleteUserKeepActivity(userServices.findUserByUserId(userId));
-	}
 	/*
 	 * ################################################################
 	 * 						DELETE POSTS
 	 * ################################################################
-	 * */
-	/** This method will delete a post by postId
-	 * @param int postId*/
+	 */
+	
+	/** 
+	 * This method will delete a post by postId
+	 * @param int postId
+	 */
 	public void deletePost (int postId) {
 		Post post = postServices.findPostById(postId);
 		postServices.delete(post);
 	}
 	
-	/** This method will delete a post by Post object.
-	 * @param Post - post to delete*/
+	/** 
+	 * This method will delete a given post.
+	 * @param Post - post to delete
+	 */
 	public void deletePost(Post post) {
 		postServices.delete(post);
 	}
 	
-	/** This method will delete a list of posts by List<Post>.
-	 * @param List<Post>*/
-	
+	/** 
+	 * This method will delete a given list of posts.
+	 * @param List<Post>
+	 */
 	public void deletePosts(List<Post> posts) {
 
 		if(posts.isEmpty())
 			return;
 		for(int i=0; i<posts.size(); i++)
 			this.deletePost(posts.get(i));
-			
 	}
+	
 	/*
 	 * ################################################################
 	 * 						DELETE TOPICS
 	 * ################################################################
-	 * */
-	/** This method will delete a topic and it posts by topicId.
-	 * @param int topicId*/
+	 */
+	
+	/** 
+	 * This method will delete a topic and it posts by topicId.
+	 * @param int topicId
+	 */
 	public void deleteTopic(int topidId) {
 		Topic topic = topicServices.findTopicById(topidId);
 		
 		this.deleteTopic(topic);
 	}
-	/** This method will delete a topic and it posts by topic object.
-	 * @param Topic*/
+	
+	/** 
+	 * This method will delete a topic and it posts by topic object.
+	 * Deleting a topic requires deleting all posts attached to it. 
+	 */
 	public void deleteTopic(Topic topic) {
 
-		// Get all topic's posts
+		// If the topic has posts then delete them too
 		List<Post> posts = postServices.findPostsByTopic(topic);
-		
-		// If post != null then send it to deletion procces
 		if(!posts.isEmpty())
 			this.deletePosts(posts);
 		
-		// Topic has no posts, removing posts
 		topicServices.delete(topic);
 	}
 	
-	/** This method will delete list of topics by List<Topic>
-	 *  @param List<Topic>*/
+	/** This method will delete a list of topics */
 	public void deleteTopics(List<Topic> topics) {
 
 		if(topics.isEmpty())
@@ -380,31 +375,33 @@ public class DeleteService {
 	 * ################################################################
 	 * 						DELETE FORUMS
 	 * ################################################################
-	 * */
-	/** This method will delete a forum by forumId
-	 *  @param int forumId*/
+	 */
+	/** 
+	 * This method will delete a forum given its forumId
+	 */
 	public void deleteForum(int forumId) {
 		Forum forum = forumServices.findFourmById(forumId);
 		this.deleteForum(forum);
-		
 	}
-	/** This method will delete a forum by forum object
-	 *  @param Forum*/
+	
+	/** 
+	 * This method will delete a forum represented by the Forum object.
+	 * Deleting a forum requires deleting all topics attached to it. 
+	 */
 	public void deleteForum(Forum forum) {
 		if(forum == null)
 			return;
-		this.updateAllLowerPriority(forum);
-		// Get all topics in Forum
-		List<Topic> topics = topicServices.findTopicsByForum(forum);
 		
-		// Delete all topics in forum
+		this.updateAllLowerPriority(forum);
+		
+		// Delete all topics in the forum
+		List<Topic> topics = topicServices.findTopicsByForum(forum);
 		this.deleteTopics(topics);
 		
-		// Forum has no topics, removing forum
 		forumServices.delete(forum);
 	}
 	
-	/** This method will delete a list of forums by List<forum>*/
+	/** This method will delete a list of forums */
 	public void deleteForums(List<Forum> forums) {
 
 		if(forums.isEmpty())
@@ -413,41 +410,46 @@ public class DeleteService {
 			this.deleteForum(forums.get(i));
 	}
 	
-	/** This method will delete all the forums + Topics + Posts in database.
+	/** 
+	 * This method will delete all the forums + Topics + Posts in database.
 	 * @warning THIS CAN'T BE UNDONE
 	 * 
-	 * There is a bug in this method, it isn't working.*/
+	 * TODO There is a bug in this method, it isn't working.
+	 */
 	public void deleteAllForums() {
 		
 		List<Forum> forums = forumServices.findAll();
 		this.deleteForums(forums);
-		
 	}
 	
 	/**
-	 * When deleting a forum there is need to update all lower priority */
+	 * When deleting a forum there is need to update all lower priority 
+	 */
 	private void updateAllLowerPriority(Forum forum) {
 		final int forumsSize = forumServices.findForumsByPriorityAsc().size();
 		
 		// if true then no need to update any other forum's priority
 		if (forum.getPriority() == forumsSize)
 			return;
-		// forum isn't in last priority, need to update all lower priority forums
 		
+		// forum isn't in last priority, need to update all lower priority forums
 		for (int i = forum.getPriority() + 1; i <= forumsSize; i++) {
 			Forum updateForum = forumServices.findForumByPriority(i);
 			updateForum.setPriority(i - 1);
 			forumServices.save(updateForum);
 		}
 	}
+	
 	/*
 	 * ################################################################
 	 * 						DELETE ANSWERS
 	 * ################################################################
-	 * */
+	 */
+	
 	/**
-	 * 	This method will delete a answer by answerId
-	 * @param int*/
+	 * This method will delete an answer by answerId
+	 * @param int
+	 */
 	public void deleteAnswer(int answerId) {
 		Answer answer = null;
 		
@@ -460,9 +462,11 @@ public class DeleteService {
 		if (answer!=null)
 			this.deleteAnswer(answer);
 	}
+	
 	/**
-	 * 	This method will delete a answer in a conversation by Answer object
-	 * @param Answer*/
+	 * This method will delete a given answer in a conversation
+	 * @param Answer
+	 */
 	public void deleteAnswer(Answer answer) {
 		if (answer!=null)
 			try {
@@ -470,13 +474,12 @@ public class DeleteService {
 			} catch (Exception e) {
 				throw new EntityRequestException("Could not delete Answer id: " + answer.getId());
 			}
-		
 	}
 	
 	/**
 	 * This method will delete a list of answers 
 	 * @param List<Answer>
-	 * */
+	 */
 	public void deleteAnswer(List<Answer> answers) {
 		
 		if(answers.isEmpty())
@@ -485,14 +488,17 @@ public class DeleteService {
 		for (int i=0; i<answers.size(); i++)
 			this.deleteAnswer(answers.get(i));
 	}
+	
 	/*
 	 * ################################################################
 	 * 						DELETE CONVERSATION
 	 * ################################################################
-	 * */
+	 */
+	
 	/**
-	 * 	This method will delete an conversation by id
-	 * @param int */
+	 * This method will delete a conversation by id
+	 * @param int 
+	 */
 	public void deleteConversation(int conId) {
 		Conversation conversation = null;
 		
@@ -509,9 +515,11 @@ public class DeleteService {
 				throw new EntityRequestException("Could not delete Conversation id: " + conId);
 			}
 	}
+	
 	/**
-	 * 	This method will delete an conversation by Conversation
-	 * @param Conversation*/
+	 * This method will delete a given conversation
+	 * @param Conversation
+	 */
 	public void deleteConversation(Conversation conversation) {
 		if (conversation != null) {
 			List<Answer> answers = null;
@@ -530,6 +538,7 @@ public class DeleteService {
 			}
 		}
 	}
+	
 	public void deleteConversations(List<Conversation> conversations) {
 		if(conversations.isEmpty())
 			return;

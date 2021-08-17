@@ -1,15 +1,14 @@
 package com.projectForum.forum;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import com.projectForum.general.Formatter;
 import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;
 
 /**
- * This class is used to display a topic in forum page
- * */
+ * This class is used to display a topic in a forum page
+ */
 public class DisplayTopicForm {
 	
 	private Topic topic;
@@ -46,18 +45,23 @@ public class DisplayTopicForm {
 	public Topic getTopic() {
 		return topic;
 	}
+	
 	public void setTopic(Topic topic) {
 		this.topic = topic;
 	}
+	
 	public int getNumberOfPosts() {
 		return numberOfPosts;
 	}
+	
 	public void setNumberOfPosts(int numberOfPosts) {
 		this.numberOfPosts = numberOfPosts;
 	}
+	
 	public Post getLastPost() {
 		return lastPost;
 	}
+	
 	public void setLastPost(Post lastPost) {
 		this.lastPost = lastPost;
 	}
@@ -81,12 +85,12 @@ public class DisplayTopicForm {
 	public void setLastActivity(LocalDateTime lastActivity) {
 		this.lastActivity = lastActivity;
 	}
+	
 	public boolean isToDelete() {
 		return this.toDelete;
 	}
+	
 	public void setDelete() {
 		this.toDelete = true;
 	}
-	
-	
 }

@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 
 /**
- * A fourm is a collection of topics
+ * A forum is a collection of topics.
  * A forum has a title and a description only.
  * 
  * Each Topic had to be attached to a forum.
@@ -23,8 +23,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
  * 
  * A forums will keep a creation date in case admin will want to delete old forums.
  * 
- * The table will be called 'forums'*/
-
+ * The table will be called 'forums'
+ */
 @Entity
 @Table(name = "forums")
 @JsonIdentityInfo(
@@ -52,6 +52,7 @@ public class Forum {
 	public Forum() {
 		
 	}
+	
 	public Forum(String name, String description) {
 		this.name = name;
 		this.description = description;
@@ -92,12 +93,15 @@ public class Forum {
 	public Forum getForum() {
 		return this;
 	}
+	
 	public int getPriority() {
 		return priority;
 	}
+	
 	public void setPriority(int priority) {
 		this.priority = priority;
 	}
+	
     //Auto generated 
 	@Override
 	public int hashCode() {
@@ -110,6 +114,7 @@ public class Forum {
 		result = prime * result + priority;
 		return result;
 	}
+	
     //Auto generated 
 	@Override
 	public boolean equals(Object obj) {
@@ -141,11 +146,10 @@ public class Forum {
 			return false;
 		return true;
 	}
+	
 	@Override
 	public String toString() {
 		return "Forum [id=" + id + ", name=" + name + ", description=" + description + ", createdDate=" + createdDate
 				+ ", priority=" + priority + "]";
 	}
-	
-	
 }

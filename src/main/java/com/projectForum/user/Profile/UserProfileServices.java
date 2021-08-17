@@ -14,7 +14,8 @@ import com.projectForum.user.User;
 
 /**
  * This class will gives services to all userProfile actions,
- * Since there is no Repository to userProfile.class*/
+ * Since there is no Repository to userProfile.class
+ */
 @Service
 public class UserProfileServices {
 
@@ -31,13 +32,14 @@ public class UserProfileServices {
 		this.topicServices = topicServices;
 		this.restServices = restServices;
 		this.userService = userService;
-
 	}
 	
-	/**This method will return an userProfile object, including User object.
+	/**
+	 * This method will return an userProfile object, including User object.
 	 * @param  Int - userId
 	 * @return UserProfile object
-	 * @include User object*/
+	 * @include User object
+	 */
 	public UserProfile findUserProfileById(int userId) {
 		UserProfile userProfile = new UserProfile();
 		User user = userService.findUserByUserId(userId);
@@ -48,17 +50,21 @@ public class UserProfileServices {
 		return userProfile;
 	}
 	
-	/**This method will return a UserProfile object by calling to 'findUserProfileById' method,
+	/**
+	 * This method will return a UserProfile object by calling to 'findUserProfileById' method,
 	 * @param String username
-	 * @return UserProfile object*/
+	 * @return UserProfile object
+	 */
 	public UserProfile findUserByUsername(String username) {
 		UserProfile userProfile = this.findUserProfileById(userService.findUserByUsername(username).getId());
 		return userProfile;
 	}
+	
 	/**
-	 * 	This method will return an edit form of user.
+	 * This method will return an edit form of user.
 	 * @param User user to give edit form
-	 * @return UpdateUser form*/
+	 * @return UpdateUser form
+	 */
 	public UpdateUser getUpdateForm(User user) {
 		UpdateUser updateUser = new UpdateUser();
 
@@ -71,11 +77,12 @@ public class UserProfileServices {
 		updateUser.setPassword(user.getPassword());
 		return updateUser;
 	}
+	
 	/**
-	 * 	This method will update an exists user by UpdateUser object.
-	 * @param UpdateUser*/
+	 * This method will update an existing user by UpdateUser object.
+	 * @param UpdateUser
+	 */
 	public void updateUser(UpdateUser updateUser) {
 		restServices.updateUser(updateUser);
 	}
-	
 }

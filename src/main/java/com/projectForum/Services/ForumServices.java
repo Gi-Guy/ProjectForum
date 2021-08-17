@@ -1,6 +1,5 @@
 package com.projectForum.Services;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +13,9 @@ import com.projectForum.forum.ForumRepository;
 import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;
 
-
 /**
  * 	This class will gives services for most forum's actions
- * */
+ */
 
 @Service
 public class ForumServices {
@@ -30,9 +28,8 @@ public class ForumServices {
 	private PostServices	postServices;
 	
 	/**
-	 * 	This method will return an Forum by forumId
+	 * This method will return a Forum by forumId
 	 * @param forumId
-	 * @return
 	 * @throws EntityRequestException
 	 */
 	public Forum findFourmById(int forumId) throws EntityRequestException{
@@ -48,9 +45,8 @@ public class ForumServices {
 	}
 	
 	/**
-	 * 	This method will return an Forum by priority
+	 * This method will return a Forum by priority
 	 * @param priority
-	 * @return
 	 * @throws EntityRequestException
 	 */
 	public Forum findForumByPriority(int priority) throws EntityRequestException{
@@ -64,9 +60,9 @@ public class ForumServices {
 		
 		return forum;
 	}
+	
 	/**
-	 * 	This method will return List<Forum> Order By Priority Asc
-	 * @return
+	 * This method will return List<Forum> Order By Priority ascending
 	 * @throws EntityRequestException
 	 */
 	public List<Forum> findForumsByPriorityAsc() throws EntityRequestException{
@@ -80,9 +76,9 @@ public class ForumServices {
 		
 		return forums;
 	}
+	
 	/**
-	 * 	This method will return List<Forum> 
-	 * @return
+	 * This method will return List<Forum> 
 	 * @throws EntityRequestException
 	 */
 	public List<Forum> findAll() throws EntityRequestException{
@@ -96,8 +92,9 @@ public class ForumServices {
 		
 		return forums;
 	}
+	
 	/**
-	 * 	This method will save new Forum in database
+	 * This method will save a new Forum in database
 	 * @param forum
 	 * @throws EntityRequestException
 	 */
@@ -108,6 +105,7 @@ public class ForumServices {
 			throw new EntityRequestException("Could not save new Forum");
 		}
 	}
+	
 	public void delete(Forum forum) throws EntityRequestException{
 		try {
 			forumRepo.delete(forum);
@@ -116,10 +114,11 @@ public class ForumServices {
 		}
 	}
 	
-	/*	Controller actions*/
+	/* Controller actions */
+	
 	/**
-	 * 	This method will convert topics to DisplayTopicForm
-	 * */
+	 * This method will convert topics to DisplayTopicForm
+	 */
 	public List<DisplayTopicForm> displayTopics(int forumId){
 		Forum forum = this.findFourmById(forumId);
 		//List<Topic> topics = topicServices.findTopicsByForum(forum);

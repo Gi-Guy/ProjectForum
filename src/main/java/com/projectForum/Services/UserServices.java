@@ -12,8 +12,8 @@ import com.projectForum.user.User;
 import com.projectForum.user.UserRepository;
 
 /**
- *  This class will provide services to all users activity
- *  */
+ * This class will provide services to all users activity
+ */
 
 @Service
 public class UserServices {
@@ -30,8 +30,8 @@ public class UserServices {
 	}
 	
 	/**
-	 * 	This method will add a new user from JSON to database and return a new user.
-	 * */
+	 * This method will add a new user from JSON to database and return a new user.
+	 */
 	public User addNewUser(AddUserForm addUser) {
 		User user = userRepo.findByUsername(addUser.getUsername());
 		
@@ -43,7 +43,7 @@ public class UserServices {
 		if(user != null)
 			return null;	
 		
-		// user isn't exists by username or email.
+		// User doesn't exist by username or email.
 		// Creating new User
 		user = new User();
 		user.setUsername(addUser.getUsername());
@@ -57,35 +57,40 @@ public class UserServices {
 	}
 	
 	/**
-	 * 	This method will create a new user and return true if succses,
-	 * 	If user already exists by username or email, it will return false.
+	 * This method will create a new user and return true if successful,
+	 * If user already exists by username or email, it will return false.
 	 * 
-	 * 	This method is used only in register page, so then most information should be in it.
-	 * */
+	 * This method is used only in register page, so then most information should be in it.
+	 */
 	public void createNewUser(User user) {
 		
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setRole(roleServices.findRoleByName("USER"));
 		userRepo.save(user);	
 	}
+	
 	/** 
-	 * 	This method will return true if user is exists in database via Email,
-	 * 	else will return false.*/
+	 * This method will return true if user exists in the database via Email,
+	 * else will return false.
+	 */
 	public boolean isUserExistsByEmail(String email) {
 		if(userRepo.findByEmail(email) == null)
 			return false;
 		return true;
 	}
+	
 	/** 
-	 * 	This method will return true if user is exists in database via username,
-	 * 	else will return false.*/
+	 * This method will return true if user exists in the database via username,
+	 * else will return false.
+	 */
 	public boolean isUserExistsByUsername(String username) {
 		if(userRepo.findByUsername(username) == null)
 			return false;
 		return true;
 	}
+	
 	/**
-	 * 	This method will return a User entity by username
+	 * This method will return a User entity by username
 	 * @param username
 	 * @return user
 	 * @throws EntityRequestException
@@ -99,8 +104,9 @@ public class UserServices {
 		}
 		return user;
 	}
+	
 	/**
-	 * 	This method will return a User entity by userId
+	 * This method will return a User entity by userId
 	 * @param UserId
 	 * @return user
 	 * @throws EntityRequestException
@@ -114,8 +120,9 @@ public class UserServices {
 		}
 		return user;
 	}
+	
 	/**
-	 * 	This method will return a User entity by Email
+	 * This method will return a User entity by Email
 	 * 
 	 * @param Email
 	 * @return user
@@ -130,8 +137,9 @@ public class UserServices {
 		}
 		return user;
 	}
+	
 	/**
-	 * 	This method will return a List<User> of all users in the database, order by Roles ASC
+	 * This method will return a List<User> of all users in the database, order by Roles ASC
 	 * 
 	 * @return users
 	 * @throws EntityRequestException
@@ -144,10 +152,9 @@ public class UserServices {
 		} catch (Exception e) {
 			throw new EntityRequestException("Could not find all users");
 		}
-	//	if (users == null)
-		//	throw new EntityRequestException("Could not find all users");
 		return users;
 	}
+	
 	public List<User> findAll() throws EntityRequestException{
 		List<User> users = null;
 		
@@ -157,10 +164,9 @@ public class UserServices {
 			throw new EntityRequestException("Could not find all users");
 		}
 		
-	//	if (users == null)
-	//		throw new EntityRequestException("Could not find all users");
 		return users;
 	}
+	
 	public void save(User user) throws EntityRequestException{
 		try {
 			userRepo.save(user);
@@ -184,9 +190,11 @@ public class UserServices {
 			throw new EntityRequestException("Could not delete user");
 		}
 	}
+	
 	public boolean isUserBlocked(User user) {
 		return user.getRole().equals(roleServices.findRoleByName("BLOCKED"));
 	}
+	
 	public boolean isUserBlocked(String username) {
 		return isUserBlocked(this.findUserByUsername(username));
 	}

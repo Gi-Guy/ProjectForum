@@ -117,7 +117,6 @@ public class Conversation {
 	public void setLastActivity(LocalDateTime lastActivity) {
 		this.lastActivity = lastActivity;
 	}
-	
 
 	@Override
 	public int hashCode() {

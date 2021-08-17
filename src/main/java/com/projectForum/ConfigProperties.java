@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * This class will reload first configuration information from application.properties file
- * */
+ */
 
 @Component
 @ConfigurationProperties(prefix = "config")

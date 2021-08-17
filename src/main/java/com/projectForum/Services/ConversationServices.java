@@ -31,13 +31,15 @@ public class ConversationServices {
 
 		
 		/**
-		 * This method will return an User by username*/
+		 * This method will return a User by username
+		 */
 		public User getUserByUsername(String username) {
 			return userServices.findUserByUsername(username);
 		}
+		
 		/**
-		 * 	This method will return a list of all Conversation by User
-		 * */
+		 * 	This method will return a list of all Conversations of a User
+		 */
 		public List<Conversation> getAllConversationsByUser(User user, Authentication authentication){
 			List<Conversation> convs = null;
 			if(user != null && user.getUsername().equals(authentication.getName()) || 
@@ -48,39 +50,30 @@ public class ConversationServices {
 				
 			return convs;
 		}
+		
 		/**
-		 * 	This method will return a list of all Conversation by User
-		 * */
-		public List<Conversation> getAllConversationsByUser(User user){
-			List<Conversation> convs = null;
-			if(user != null) {
-				
-					convs = convRepo.findBySenderOrReceiver(user,user);	
-			}
-				
-			return convs;
-		}
-		/**
-		 * 	This method will return an exists Conversation.
-		 * */
+		 * 	This method will return an existing Conversation.
+		 */
 		public Conversation findConversation(int convId) {
 			return convRepo.findById(convId);
 		}
+		
 		/**
-		 * 	This method will add an answer to an exists conversatio*/
+		 * 	This method will add an answer to an existing conversation
+		 */
 		public void addNewAnswer(int conversationId, Answer answer, Authentication authentication) {
 			Conversation conv = convRepo.findById(conversationId);
 			
 			answer.setConversation(conv);
 			answer.setUser(userServices.findUserByUsername(authentication.getName()));
 			answerServices.save(answer);
-			
 		}
 		
 		/**
-		 * 	This method will create an conversatio between two users.
+		 * This method will create a conversation between two users.
 		 * @param Int receiverId - the target user
-		 * @param Int senderId - the sender*/
+		 * @param Int senderId - the sender
+		 */
 		public Conversation createNewConversation(int receiverId, User sender) {
 			Conversation conversation = new Conversation();
 			conversation.setReceiver(userServices.findUserByUserId(receiverId));
@@ -88,9 +81,10 @@ public class ConversationServices {
 			
 			return conversation;
 		}
+		
 		/**
-		 * This method will proccess a new conversation between two users
-		 * */
+		 * This method will process a new conversation between two users
+		 */
 		public Conversation proccessNewConversation(Conversation conversation, Authentication authentication) {
 			User receiver = userServices.findUserByUserId(conversation.getReceiver().getId());
 			User sender = userServices.findUserByUsername(authentication.getName());
@@ -101,43 +95,50 @@ public class ConversationServices {
 		}
 		
 		/**
-		 * 	This method will delete an Answer by id
-		 * @param answerId*/
+		 * This method will delete an Answer by id
+		 * @param answerId
+		 */
 		public void deleteAnswer(int answerId) {
 			deleteServices.deleteAnswer(answerId);
 		}
 		
 		/**
-		 * 	This method will delete an conversation by id.
-		 * @param conversationId*/
+		 * This method will delete an conversation by id.
+		 * @param conversationId
+		 */
 		public void deleteConversation(int conversationId) {
 			deleteServices.deleteConversation(conversationId);
 		}
 		
 		/**
-		 * 	This method will return an Answer object find by answerId.
+		 * 	This method will return an Answer object with an answerId.
 		 *	@param int answerId
-		 *	@return Answer*/
+		 *	@return Answer
+		 */
 		public Answer getAnswer(int answerId) {
 			return answerServices.findAnswerById(answerId);
 		}
+		
 		/**
-		 * 	This method will return an Conversation object find by conversationId.
+		 * 	This method will return a Conversation object with a conversationId.
 		 *	@param int conversationId
-		 *	@return Conversation*/
+		 *	@return Conversation
+		 */
 		public Conversation getConversation(int conversationId) {
 			return convRepo.findById(conversationId);
 		}
+		
 		/**
-		 * This Method will return a list of answers by conversationId.
+		 * This Method will return a list of answers through their conversationId.
 		 * @param Int conversationId
-		 * @return List<Answer> answers*/
+		 * @return List<Answer> answers
+		 */
 		public List<Answer> getAllAnswersInConversation(int conversationId){
 			Conversation conv = convRepo.findById(conversationId);
 			return answerServices.findAnswersByConversation(conv);
 		}
 		
 		/*
-		 *	 Repository services
-		 * */
+		 *	 TODO Repository services
+		 */
 }

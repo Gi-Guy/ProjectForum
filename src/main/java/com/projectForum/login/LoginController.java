@@ -1,7 +1,5 @@
 package com.projectForum.login;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,8 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.projectForum.Services.EditServices;
-
-
 
 @Controller
 public class LoginController {
@@ -36,11 +32,11 @@ public class LoginController {
 	 editServices.setLastlogin(authentication.getName());
 	 return "redirect:/";
  }
+ 
   // Login form with error
   @RequestMapping("/loginError")
   public String loginError(Model model) {
     model.addAttribute("loginError", true);
     return "login";
   }
-
 }

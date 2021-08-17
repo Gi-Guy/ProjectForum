@@ -83,6 +83,4 @@ public class EditUserForm {
 	public void setDelete(boolean delete) {
 		this.delete = delete;
 	}
-	
-	
 }

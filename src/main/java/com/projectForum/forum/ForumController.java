@@ -27,18 +27,17 @@ import com.projectForum.Services.UserServices;
 /**
  * This Controller will handle the next actions:
  * Displaying a list of all forums
- * Creation of a new forum
- * Find all topics of a forum and display a forum page
- * Delete a forum
+ * Finding all topics of a forum and displaying a forum page
+ * Creating a new forum
+ * Deleting a forum
  * 
  * Notice:
- * Topic creation is in TopicController where the topic will also be attached to a forum .*/
+ * Topic creation is in TopicController where the topic will also be attached to a forum. 
+ */
 
 @Controller
 public class ForumController {
 	
-
-	private TopicServices	topicservices;
 	private ForumServices	forumServices;
 	private ControlPanelServices controlPanelService;
 	private UserServices	userServices;
@@ -53,7 +52,6 @@ public class ForumController {
 	public ForumController(TopicServices topicservices, ForumServices forumServices,
 			ControlPanelServices controlPanelService, UserServices userServices,
 			ForumInformationServices forumInformationServices) {
-		this.topicservices = topicservices;
 		this.forumServices = forumServices;
 		this.controlPanelService = controlPanelService;
 		this.userServices = userServices;
@@ -79,7 +77,7 @@ public class ForumController {
 	public String getTopicsById(@PathVariable int forumId, Model model) {
 		
 		Forum forum = forumServices.findFourmById(forumId);
-		// Checking if Forum is exists
+		// Checking if the Forum exists
 		if (forum == null)
 			throw new EntityRequestException("could not find Forum id :: " + forumId);
 		List<DisplayTopicForm> topics = forumServices.displayTopics(forumId);

@@ -20,7 +20,7 @@ import com.projectForum.user.User;
 
 @Component
 public class SetupDataLoader implements
-				ApplicationListener<ContextRefreshedEvent>{
+				ApplicationListener<ContextRefreshedEvent> {
 
 	
 	public static final Logger LOG
@@ -34,7 +34,7 @@ public class SetupDataLoader implements
 	private PasswordEncoder passwordEncoder;
 	
 	/*This enum use to represent the data condition*/
-	private enum dataCondition{
+	private enum dataCondition {
 			COMPLETED,
 			MISSING_ROLES,
 			MISSING_USERS,
@@ -43,15 +43,15 @@ public class SetupDataLoader implements
 	}
 	
 	/**
-	 * defining final information*/
-	//private final List<String> roles = Arrays.asList("ADMIN", "USER", "UNDEFINED_USER");
+	 * defining final information
+	 */
 	private final List<String> roles = Arrays.asList("ADMIN", "USER", "BLOCKED");
 	
 	
 	@Override
 	@Transactional
 	public void onApplicationEvent(final ContextRefreshedEvent event) {
-		// Checking if roles are already sets up , and if Admin user is exists.
+		// Checking if roles are already set up, and if Admin user exists.
 		List<dataCondition> conditions = this.isDataExists();
 		
 		if(conditions.get(0).equals(dataCondition.COMPLETED))
@@ -90,7 +90,8 @@ public class SetupDataLoader implements
 	}
 	
 	/**
-	 * Set new roles in database*/
+	 * Set new roles in database
+	 */
 	@Transactional
 	void setRoles() {
 		roleServices.setNewRoles(roles);
@@ -114,30 +115,30 @@ public class SetupDataLoader implements
 	
 	/**
 	 * 	This method will check if all data that needed is exists.
-	 *  -Roles are exists?
-	 *  -Users are exists?
-	 *  -Any User is missing?
+	 *  - Roles exist?
+	 *  - Users exist?
+	 *  - Any User is missing?
 	 *  
-	 *  @return dataCondition.COMPLETED - no data is missing
-	 *  @return dataCondition.MISSING_ROLES - Table Roles is empty
-	 *  @return dataCondition.MISSING_USERS - Admin & Unknown are missing.
-	 *  @return dataCondition.MISSING_ADMIN - Admin is missing.
-	 *  @return dataCondition.MISSING_UNKNOWN - Unknown is missing.
+	 *  @return dataCondition.COMPLETED - no data is missing.
+	 *  dataCondition.MISSING_ROLES - Table Roles is empty.
+	 *  dataCondition.MISSING_USERS - Admin & Unknown are missing.
+	 *  dataCondition.MISSING_ADMIN - Admin is missing.
+	 *  dataCondition.MISSING_UNKNOWN - Unknown is missing.
 	 *  */
 	@Transactional
-	private List<dataCondition> isDataExists(){
+	private List<dataCondition> isDataExists() {
 		List<dataCondition> conditions = new ArrayList<dataCondition>();
 		List<Role> rolesData = roleServices.findAll();
 		User admin = userServices.findUserByUsername("Admin");
 		User unknown = userServices.findUserByUsername("Unknown");
 		
-		// are roles missing?
+		// Are any roles missing?
 		if(rolesData.isEmpty() || rolesData == null) {
 			conditions.add(dataCondition.MISSING_ROLES);
 			LOG.warn("Roles data are missing.");
 		}
 		
-		// are any users are missing?
+		// Are any users missing?
 		if(admin == null && unknown == null) {
 			conditions.add(dataCondition.MISSING_USERS);
 			LOG.warn("Users 'Admin' & 'Unknown' are missing.");
@@ -156,7 +157,6 @@ public class SetupDataLoader implements
 			conditions.add(dataCondition.COMPLETED);
 			LOG.info("No data is missing.");
 		}
-		
 		
 		return conditions;
 	}

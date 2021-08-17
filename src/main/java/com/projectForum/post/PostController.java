@@ -27,7 +27,7 @@ import com.projectForum.Services.UserServices;
  * This controller will handle the next actions:
  * Find all Posts by id 
  * Delete a post by id
- * */
+ */
 
 @Controller
 @RequestMapping(value = "/post/")
@@ -50,62 +50,56 @@ public class PostController {
 		this.editServices = editServices;
 	}
 
-	/** This method will give the user the option to edit the post content*/
+	/** This method will give the user the option to edit the post content */
 	@GetMapping("edit/{postId}")
 	public String editPost(@PathVariable int postId, Model model, Authentication authentication) {
 		Post post = postServices.findPostById(postId);
 		
-		// Only register user allowed to do acitons
+		// Unregistered and blocked users can not edit post content.
 		if(authentication == null)
 				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "edit/" + postId);
 		else if(userServices.isUserBlocked(authentication.getName()))
 				accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + postId);
 		
-		//	Making sure that user allowed to edit post
+		// Making sure that user is allowed to edit the post
 		if(!authentication.getName().equals(post.getUser().getUsername()) 
 				&& !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
-			// User isn't allowed to edit Post
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + postId);
 		
-		//EditPostForm newEditPost = new EditPostForm();
-		//newEditPost.setPostId(postId);
-		//model.addAttribute("editPost", newEditPost);
 		model.addAttribute("editPost", post);
 		return "edit_Post_page";
 	}
 	
-	/** This method will edit the original post object and save the new content of the post.*/
+	/** This method will edit the original post object and save the new content of the post. */
 	@PostMapping("editPost")
 	public String editPost(@Valid @ModelAttribute("editPost") Post post, BindingResult bindingResult, Authentication authentication, Model model) {
 		
-		// Only register user allowed to do acitons
+		// Unregistered and blocked users can not edit post content.
 		if(authentication == null)
 				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "edit/" + post.getId());
 		else if(userServices.isUserBlocked(authentication.getName()))
 				accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + post.getId());
 		
-		// finding original post
+		// Finding the original post
 		Post targetPost = postServices.findPostById(post.getId());
 		
 		if(targetPost == null)
 			throw new EntityRequestException("Could not edit post :: " + post.getId());
-		// making sure user is allowed to edit post or Admin
-		if(authentication.getName().equals(targetPost.getUser().getUsername())
-				|| userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {
-			
-			// User or Admin allowed to update post
-			editServices.updatePost(targetPost, post);
-		}
-		else
-			// User isn't allowed to edit
+		
+		// Making sure that user is allowed to edit post or is an Admin
+		if(!authentication.getName().equals(targetPost.getUser().getUsername())
+				&& !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "editPost/" + post.getId());
-		// taking user back to the original topic.
+		
+		// User or Admin allowed to update post
+		editServices.updatePost(targetPost, post);
 		return "redirect:/topic/" + targetPost.getTopic().getId();
 	}
 	
 	/**
-	 * This method will return all Users posts*/
-	@GetMapping("{username}")
+	 * This method will return all the posts of a user
+	 */
+	 @GetMapping("{username}")
 	public String getAllPostsByUsername(@PathVariable String username, Model model) {
 		
 		List<Post> posts = postServices.findPostsByUser(userServices.findUserByUsername(username));
@@ -114,30 +108,28 @@ public class PostController {
 		return "posts";
 	}
 	
-	
 	@GetMapping("delete/{postId}")
 	public String deletePost(@PathVariable int postId, Authentication authentication,
 								RedirectAttributes model) {
 		
-		// Only register user allowed to do acitons
+		// Unregistered and blocked users can not delete posts.
 		if(authentication == null)
 				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "delete/" + postId);
 		else if(userServices.isUserBlocked(authentication.getName()))
 				accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "delete/" + postId);
 		
-		// find post to remove
+		// Find post to remove
 		Post post = postServices.findPostById(postId);
 		
-		// Making sure that post is exsits and user allowed to remove it or Admin
+		// Making sure that the post exists
 		if(post == null)
 			throw new EntityRequestException("Something went wrong, could not reload post :: '" + postId +"'");
 		
+		// Making sure that the user is allowed to remove it
 		else if (!authentication.getName().equals(post.getUser().getUsername()) &&
 				!userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
-			// User isn't allowed to delete Post
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "delete/" + post.getId());
 		
-		//	At this point user allowed to delete post
 		deleteService.deletePost(post);
 		
 		model.addFlashAttribute("message", "post has been removed.");

@@ -1,7 +1,5 @@
 package com.projectForum.topic;
 
-
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,14 +27,14 @@ import com.projectForum.Services.TopicServices;
 import com.projectForum.Services.UserServices;
 import com.projectForum.post.Post;
 
-
 /**
  * This controller will handle the next actions:
  * Find Topic by id
  * find Topic by Username
- * Add new post to an exists Topic
+ * Add new post to an existing Topic
  * Create new Topic
- * Delete topic - If this method isn't here, Check controlPanel Controller.*/
+ * Delete topic - If this method isn't here, Check controlPanel Controller.
+ */
 @Controller
 @RequestMapping("/topic/")
 public class TopicController {
@@ -62,11 +60,12 @@ public class TopicController {
 		this.editService = editService;
 	}
 
-	/**This method will display a full topic page including:
+	/**
+	 * This method will display a full topic page including:
 	 * @return Model:	Topic object with all information
 	 * @return Model:	List<Post> - list of all posts that in Topic object
 	 * @return Model:	Post - new Post object for replay option
-	 * */
+	 */
 	@GetMapping("{topicId}")
 	public String getTopicById(@PathVariable int topicId, Model model, Authentication authentication) {
 		
@@ -83,21 +82,24 @@ public class TopicController {
 		topicServices.save(topic);
 		
 		model.addAttribute("topic", topic);
+		
 		// Each topic can have 0 or more posts in it
 		model.addAttribute("posts", posts);
+		
 		// In each topic there is an option to create a new post
 		model.addAttribute("newPost", new Post());
+		
 		// Add a flag to state whether the user is an admin or not:
 		model.addAttribute("isAdmin", (authentication==null)?false:userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"));
 		
 		return "topic";
 	}
 	
-	/**This method will add a new post to an exists topic*/
+	/** This method will add a new post to an existing topic */
 	@PostMapping("{topicId}")
 	public String addNewPost(@Valid @ModelAttribute Post post, BindingResult bindingResult, @PathVariable int topicId,
 								Authentication authentication, Model model) {
-		// Only register users or unBlocked users allowed to do acitons
+		// Only register users or unBlocked users allowed to do actions
 		if(authentication == null)
 				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "newPost " + topicId);
 		else if(userServices.isUserBlocked(authentication.getName()))
@@ -153,12 +155,14 @@ public class TopicController {
 				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "newTopic/" + newTopic.getForumId());
 		else if(userServices.isUserBlocked(authentication.getName()))
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "newTopic/" + newTopic.getForumId());
+		
 		// If hasErrors == true, then return to topic page, because something went wrong
 		if(bindingResult.hasErrors()) {
 			System.err.println("ERROR :: Topic Controller - proccesNewTopic (POST)");
 			// If there is an error we should go back to topic creation page and try again.
 			return "new_Topic_page";
 		}
+		
 		// Checking if title or content are blanked.
 		if(newTopic.getContent().isBlank() || newTopic.getTitle().isBlank())
 			return "new_Topic_page";
@@ -172,13 +176,12 @@ public class TopicController {
 		topic.setClosed(false);
 		topic.setViews(0);
 		
-		
 		topicServices.save(topic);
 		
 		return "redirect:/topic/" + topic.getId();
 	}
 	
-	/**This method will enter user to edit mode for exsits topic*/
+	/** This method will enter user to edit mode for existing topic */
 	@GetMapping("edit/{topicId}")
 	public String editTopic(@PathVariable int topicId, Model model, Authentication authentication) {
 		Topic topic = topicServices.findTopicById(topicId);
@@ -189,7 +192,7 @@ public class TopicController {
 		else if(userServices.isUserBlocked(authentication.getName()))
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + topicId);
 		
-		//	Checking if user allowed to edit Topic
+		// Checking if user allowed to edit Topic
 		if(!authentication.getName().equals(topic.getUser().getUsername()) 
 				&& !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			//	User isn't allowed to edit Topic
@@ -207,7 +210,7 @@ public class TopicController {
 		
 		Topic topic = topicServices.findTopicById(editTopic.getTopicId());
 		
-		// Only register user allowed to do acitons
+		// Only register user allowed to do actions
 		if(authentication == null)
 				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "editTopic/" + editTopic.getTopicId());
 		else if(userServices.isUserBlocked(authentication.getName()))
@@ -218,16 +221,16 @@ public class TopicController {
 			|| userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			editService.updateTopic(topic, editTopic);
 		else	
-			//user isn't allowed to edit this topic
+			// User isn't allowed to edit this topic
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "editTopic" + editTopic.getTopicId());
 
 		return "redirect:/topic/" + topic.getId();
 	}
 	
-	
-	/** This method will delete an exists method.
-	 * 	A Topic can't be deleted as long List<Post> is not empty */
-	
+	/** 
+	 * This method will delete an existing method.
+	 * A Topic can't be deleted as long List<Post> is not empty 
+	 */
 	@GetMapping("delete/{topicId}")
 	public String deleteTopic(@PathVariable int topicId, Authentication authentication,
 									RedirectAttributes model) {
@@ -239,7 +242,7 @@ public class TopicController {
 		else if(userServices.isUserBlocked(authentication.getName()))
 				accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "delete/" + topicId);
 		
-		//	Checking if topic is exists
+		//	Checking if topic exists
 		if(topic == null)
 			throw new EntityRequestException("Something went wrong, could not reload topic for topic :: '" + topicId+"'");
 		//	Making sure that user's allowed to delete topic
@@ -251,5 +254,4 @@ public class TopicController {
 		model.addFlashAttribute("message", "Topic has been removed.");
 		return "redirect:/forum/" + topic.getForum().getId();
 	}
-	
 }
