@@ -13,17 +13,36 @@
 		<a th:href="@{/forum/} + ${topic.getForum().getId()}">חזרה לפורום</a>
 
 		<!-- TOPIC -->
-		<section>
-			<h1 th:text = "${topic.getTitle()}"> Title:>Topic name</h1>
-			<hr>
-			
-			<h2><a th:href="@{/user/} + ${topic.getUser().getUsername()}" th:text = "${topic.getUser().getUsername()} + ':'">Topic Author</a></h2>
-			<p class="indented" th:text = "${topic.getContent()}">Content</p>
-			
-			<div th:if="${#authentication.name} eq ${topic.user.username}">
-				<a class="button" th:href="@{/topic/edit/} + ${topic.id}">ערוך שרשור</a>
-			</div>
-		</section>
+		<table class="stretch" border="3" style="text-align:right; border-color: red">
+			<colgroup>
+		        <col width="20%">
+		        <col width="20%">
+		        <col width="20%">
+		        <col width="20%">
+		        <col width="20%">
+	        </colgroup>
+	        <tr>
+	        	<td colspan="5">
+					<h1 th:text = "${topic.getTitle()}"> Title:>Topic name</h1>
+	        	</td>
+	        </tr>
+	        <tr>
+				<td colspan="1">
+					<h2><a th:href="@{/user/} + ${topic.getUser().getUsername()}" th:text = "${topic.getUser().getUsername()} + ':'">Topic author</a></h2>
+				</td>
+				<td colspan="4">
+					<p style="text-align: center" th:text = "'נוצר ב-:' + ${topic.getFormattedCreatedDate()}">Date</p>
+					<pre class="indented postContent" th:text = "${topic.getContent()}">Content</pre>
+				</td>
+			</tr>
+	        <tr th:if="${#authentication.name} eq ${topic.user.username} or ${isAdmin}">
+				<td colspan="5" style="text-align: left;">
+					<a th:if="${#authentication.name} eq ${topic.user.username}" 
+						th:href="@{/topic/edit/} + ${topic.getId()}" class = "button" >ערוך</a>
+					<a th:href="@{/topic/delete/} + ${topic.getId()}" class = "button" >מחק</a>
+				</td>
+			</tr>
+		</table>
 			
 		<hr>
 		
@@ -49,7 +68,7 @@
 					</td>
 					<td colspan="4">
 						<p style="text-align: center" th:text = "'נכתב ב-:' + ${post.getFormattedLastActivity()}">Date</p>
-						<p class="indented" th:text = "${post.getContent()}" style="font-size: 200%">Content</p>
+						<pre class="indented postContent" th:text = "${post.getContent()}">Content</pre>
 					</td>
 				</tr>
 				<tr th:if="${#authentication.name} eq ${post.getUser().getUsername()} or ${isAdmin}">

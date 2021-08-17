@@ -46,6 +46,10 @@ p {
 	font-size: 100%;
 }
 
+pre {
+	white-space: pre-wrap;
+}
+
 a, a:focus, a:active {
       text-decoration: none;
       color: #007bff;
@@ -82,11 +86,6 @@ textarea {
     width: 40em;
 }
 
-
-
-/* ------- */
-/* General */
-/* ------- */
 .indented {
 	margin-right: 40px;
 }
@@ -98,6 +97,16 @@ textarea {
 
 .stretch {
 	width: 100%;
+}
+
+/* ----- */
+/* Posts */
+/* ----- */
+
+.postContent{
+	font-size: 200%;
+	border:1px black solid;
+	padding: 25px;
 }
 
 /* -------- */
