@@ -1,8 +1,5 @@
 package com.projectForum.Security;
 
-import javax.sql.DataSource;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -23,10 +20,6 @@ import com.projectForum.Exceptions.CustomAccessDeniedHandler;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private DataSource dataSource;
-	
-	
 	// Creating the bean - spring framework automatically inject instance for autowired view
 	@Bean
     public UserDetailsService userDetailsService() {
@@ -85,7 +78,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     	 
     }
     
-    //Trying to encode the web
+    // Trying to encode the web
     private void configureEncodingFilter(HttpSecurity http) {
         CharacterEncodingFilter filter = new CharacterEncodingFilter();
         filter.setEncoding("UTF-8");

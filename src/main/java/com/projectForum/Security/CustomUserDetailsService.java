@@ -11,13 +11,14 @@ import com.projectForum.user.UserRepository;
 
 
 @Service
-public class CustomUserDetailsService  implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepo;
 	
 	/**
-	 * Find User by username */
+	 * Find User by username
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userRepo.findByEmail(username);
@@ -27,7 +28,8 @@ public class CustomUserDetailsService  implements UserDetailsService {
 	}
 	
 	/**
-	 * Find User by Email */
+	 * Find User by Email 
+	 */
 	public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
 		User user = userRepo.findByEmail(email);
 		if(user == null) {

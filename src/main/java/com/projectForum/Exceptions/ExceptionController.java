@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * 	This controller will redirect users to errors pages
- * */
+ */
 @Controller
 public class ExceptionController implements ErrorController{
 	

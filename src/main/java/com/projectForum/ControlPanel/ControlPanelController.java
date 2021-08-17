@@ -62,11 +62,9 @@ public class ControlPanelController {
 		this.forumInformationServices = forumInformationServices;
 	}
 	
-	
-	/*
+	/**
 	 * Displaying page area
-	 * */
-	
+	 */
 	@GetMapping("/controlPanel")
 	public String displayControlPanel(Model model, Authentication authentication) {
 		User user = userService.findUserByUsername(authentication.getName());
@@ -76,20 +74,12 @@ public class ControlPanelController {
 			// User isn't allowed to access to control panel
 			accessDeniedRequestException.throwNewAccessDenied(user.getUsername(), localUrl + "controlPanel");
 		}
-		/*
-		 * Forums section
-		 * */
 		
+		// List of forums to display
 		List<Forum> forums = forumService.findForumsByPriorityAsc();
 		model.addAttribute("forumForms", controlService.createForumDisplayList(forums));
 		
-		/*
-		 * Users section
-		 * */
-		
-		/*
-		 * Forum control section
-		 * */
+		// Forum control section
 		ForumInformation forumInformation = forumInformationServices.getForumInformation();
 		model.addAttribute("forumInformation", forumInformation);
 		
@@ -101,8 +91,7 @@ public class ControlPanelController {
 	 * Forum administration section
 	 * ###################################################### */
 	
-	/**This method will lead user to create new forum page
-	 * This should be only in Control panel*/
+	/** This method will lead an admin to create a new forum page */
 	@GetMapping("newForum")
 	public String createNewForum(Model model) {
 		
@@ -110,7 +99,7 @@ public class ControlPanelController {
 		return "new_Forum_page";
 	}
 	
-	/**This method will create a new forum*/
+	/** This method will create a new forum */
 	@PostMapping("newForum")
 	public String proccesNewForum(@Valid @ModelAttribute Forum forum, BindingResult bindingResult, Authentication authentication, Model model) {
 		
@@ -119,7 +108,7 @@ public class ControlPanelController {
 			return "new_Forum_page";
 		}
 		
-		//Each forum must have a priority value, 1 is the lowest.
+		// Each forum must have a priority value, 1 is the lowest.
 		List<Forum> forums = forumService.findAll();
 		if(forums.isEmpty()) {
 			forum.setPriority(1);	
@@ -128,12 +117,12 @@ public class ControlPanelController {
 			forum.setPriority(forums.size() + 1);	
 		}
 		forumService.save(forum);
+		
 		// User will be redirected to the place in the control panel where the forum they made is shown.
 		return "redirect:controlPanel" + '#' + forum.getId(); 
 	}
 	
-	/**
-	 * This mehod will lead Admin into forum's editing page.*/
+	/** This method will lead an Admin into the forum's editing page. */
 	@GetMapping("forum/edit/{forumId}")
 	public String editForum(@PathVariable int forumId, Model model) {
 		EditForumForm editForum = new EditForumForm();
@@ -142,16 +131,17 @@ public class ControlPanelController {
 		model.addAttribute("editForum", editForum);
 		return "edit_Forum_page";
 	}
+	
 	/**
 	 * This method will process the actions in the forum's editing page.
-	 * */
+	 */
 	@PostMapping("editForum")
 	public String editForum(@Valid @ModelAttribute("editForum") EditForumForm editForum,
 							BindingResult bindingResult, Authentication authentication,
 							Model model) {
 		Forum forum = forumService.findFourmById(editForum.getForumId());
 		
-		// Making sure that Admin in action
+		// Ensuring that the user trying to make the changes is an admin.
 		if(userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			editService.updateForum(forum, editForum);
 		else
@@ -162,29 +152,33 @@ public class ControlPanelController {
 	
 	/**
 	 *  This method will set forumId to a higher priority level.
-	 *  */
+	 */
 	@GetMapping("addPriority/{forumId}")
 	public String addForumPriority(@PathVariable int forumId) {
 		controlService.updatePriorityUp(forumId);
 		
 		return "redirect:/a/controlPanel" + '#' + forumId;
 	}
+	
 	/**
 	 *  This method will set forumId to a lower priority level.
-	 *  */
+	 */
 	@GetMapping("downPriority/{forumId}")
 	public String downForumPriority(@PathVariable int forumId) {
 		controlService.updatePriorityDown(forumId);
 		
 		return "redirect:/a/controlPanel" + '#' + forumId;
 	}
-	/**This method will delete a forum
-	 * A forum can't be deleted until all topics attached to it are exists*/
+	
+	/** 
+	 * This method will delete a forum.
+	 */
 	@GetMapping("forum/delete/{forumId}")
 	public String deleteForum(@PathVariable int forumId, Authentication authentication,
 								RedirectAttributes model) {
 		Forum forum = forumService.findFourmById(forumId);
-		// Making sure that Admin in action
+		
+		// Ensuring that the user trying to make the changes is an admin.
 		if(userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {
 			deleteService.deleteForum(forum);
 			model.addFlashAttribute("message", "Forum has been removed.");	
@@ -198,21 +192,20 @@ public class ControlPanelController {
 	 * User administration section
 	 * ######################################################*/
 	
-	/** This method will return List<User> of all users in database and display it. */
 	/**
-	 * @param model
-	 * @return
+	 * This method will return List<User> of all users in database and display it.
+	 * The users will be displayed by their role rank (highest first) 
 	 */
 	@GetMapping("/list_users")
 	public String listofUsers(Model model) {
-		// Display all useres by role rank.
 		model.addAttribute("listofUsers", userService.findAllUsersByRoleAsc());
 		return "users";
 	}
 	
 	/**
-	 *  This method will display to Admin an User editing page.
-	 *  Admin can edit user's role rank or delete User.*/
+	 *  This method will display to Admin a User editing page.
+	 *  Admin can edit user's role rank or delete the User.
+	 */
 	@RequestMapping("/editUser")
 	ModelAndView showUserEditForm(@RequestParam(name = "username") String username) {
 		ModelAndView mav = new ModelAndView("edit_User_form");
@@ -230,23 +223,24 @@ public class ControlPanelController {
 		
 		return mav;
 	}
+	
 	/**
-	 *  This method will process all admin actions in user editing page.
-	 *  */
+	 *  This method will process all admin actions in a user editing page.
+	 */
 	@RequestMapping("/updateUser")
 	public String updateUser(@Valid @ModelAttribute("editUser") EditUserForm editUser, BindingResult bindingResult, 
 								Authentication authentication, Model mode) {
 		
 		User user = userService.findUserByUserId(editUser.getId());
 
-		// Checking if user is exists
+		// Checking if the user exists
 		if(authentication == null || user == null) {
 			throw new EntityRequestException("Could not update User :: " + editUser.getUsername());
 		}
 		if(!userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "updateUser" + editUser.getUsername());
 		
-		// Checking if need to update role
+		// Checking if the role needs to be updated
 		if(!user.getRole().getName().equals(editUser.getRole()) && !editUser.getRole().equals("UNDEFINED_USER")) {
 			if(editUser.getRole().equals(roleServices.findRoleByName("BLOCKED").getName()))
 				editService.setUserBlocked(user);
@@ -255,14 +249,14 @@ public class ControlPanelController {
 				editService.updateUserRole(editUser);
 		}
 		
-		// Checking if needed to delete user
+		// Checking if the user needs to be deleted
 		if(editUser.isDelete()) {
-			// first block user
+			// first block and then delete the user
 			editService.setUserBlocked(user);
-			// Deleting user
 			deleteService.deleteUser(editUser);
 		}
-		// if user still admin, then return to control panel
+		
+		// if the user making the changes is still an admin then return to control panel
 		if(userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			return "redirect:/a/controlPanel";
 		
@@ -271,11 +265,12 @@ public class ControlPanelController {
 			return "redirect:/logout";
 	}
 	
-	/** This method will remove a User entity from database.
-	 * 	This method will not delete an Admin user or dummy User.
-	 * 	In default all user's posts and topics will not removed, but will be attched to an dummy user.
-	 * 	to delete all user's activity put SearchUserForm.keepActivity=false.
-	 * */
+	/** 
+	 * This method will remove a User entity from database.
+	 * This method will not delete an Admin user or dummy User.
+	 * In default all user's posts and topics will not removed, but will be attached to a dummy user.
+	 * to delete all user's activity put SearchUserForm.keepActivity=false.
+	 */
 	@GetMapping("user/delete/{username}")
 	public String deleteUser(@PathVariable String username, Authentication authentication,
 								RedirectAttributes model) {
@@ -299,14 +294,12 @@ public class ControlPanelController {
 	
 	/**
 	 * This method will update the forum's information and configurations.
-	 * This method will not updated an information if there are
-	 * no changes.
-	 * */
+	 * This method will not updated the information if there are no changes.
+	 */
 	@PostMapping("updateForumInformation")
 	public String updateForumInformation(@Valid @ModelAttribute("updatedInformation") ForumInformation updatedInformation, BindingResult bindingResult, 
 													Authentication authentication, Model mode) {
 		forumInformationServices.updateForumInformation(updatedInformation);
 		return "redirect:/a/controlPanel";
 	}
-	
 }

@@ -2,7 +2,7 @@ package com.projectForum.forum;
 
 import javax.validation.constraints.Min;
 
-/** This method will use to edit an exists Forum.*/
+/** Object containing the updated information of a forum. */
 public class EditForumForm {
 	
 	private String name;
@@ -12,21 +12,24 @@ public class EditForumForm {
 	public String getName() {
 		return name;
 	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 	public String getDescription() {
 		return description;
 	}
+	
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
 	public int getForumId() {
 		return forumId;
 	}
+	
 	public void setForumId(int forumId) {
 		this.forumId = forumId;
 	}
-	
-	
 }

@@ -16,7 +16,7 @@ import com.projectForum.Services.ForumInformationServices;
 @SpringBootApplication
 @ConfigurationPropertiesScan
 @EnableScheduling
-public class ProjectForumApplication extends SpringBootServletInitializer{
+public class ProjectForumApplication extends SpringBootServletInitializer {
 
 	@Autowired
 	private ConfigProperties configProperties;
@@ -32,12 +32,12 @@ public class ProjectForumApplication extends SpringBootServletInitializer{
 		return builder.sources(ProjectForumApplication.class);
 	}
 	
+
+	/**
+	 * Saving forum's first configuration from the application.properties file
+	 */
 	@PostConstruct
 	private void postInit(){
-		
-		/*
-		 * Saving forum first configurations from application.properties file
-		 * */
 		ForumInformation forumInformation = infoServices.getForumInformation();
 		if(forumInformation == null) {
 			ForumInformation newForumInformation = 

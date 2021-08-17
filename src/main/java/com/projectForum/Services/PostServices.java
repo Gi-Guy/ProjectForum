@@ -14,7 +14,7 @@ import com.projectForum.user.User;
 
 /**
  * 	This class will gives services for most post's actions
- * */
+ */
 
 @Service
 public class PostServices {
@@ -33,9 +33,6 @@ public class PostServices {
 			throw new EntityRequestException("Could not find a post by id");
 		}
 		
-		//if (post == null)
-			//throw new EntityRequestException("Could not find a post by id");
-		
 		return post;
 	}
 	
@@ -52,9 +49,6 @@ public class PostServices {
 			throw new EntityRequestException("Could not find posts by topic");
 		}
 		
-	//	if (posts == null)
-		//	throw new EntityRequestException("Could not find posts by topic");
-		
 		return posts;
 	}
 	
@@ -66,11 +60,10 @@ public class PostServices {
 		} catch (Exception e) {
 			throw new EntityRequestException("Could not find posts by user");
 		}
-		//if(posts == null)
-		//	throw new EntityRequestException("Could not find posts by user");
 		
 		return posts;
 	}
+	
 	public List<Post> findAll() throws EntityRequestException{
 		List<Post> posts = null;
 		
@@ -82,6 +75,7 @@ public class PostServices {
 		
 		return posts;
 	}
+	
 	public void save(Post post) throws EntityRequestException{
 		try {
 			postRepo.save(post);
@@ -89,6 +83,7 @@ public class PostServices {
 			throw new EntityRequestException("Could not save new post");
 		}
 	}
+	
 	public void delete(Post post) throws EntityRequestException{
 		try {
 			postRepo.delete(post);

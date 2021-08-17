@@ -1,14 +1,14 @@
 package com.projectForum.ControlPanel;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import com.projectForum.forum.Forum;
 import com.projectForum.general.Formatter;
 import com.projectForum.user.User;
 
 /**
- * This class used for displaying a forum in control panel.*/
+ * This class used for displaying a forum in control panel.
+ */
 public class ForumForm {
 	
 	
@@ -61,9 +61,4 @@ public class ForumForm {
 	public void setLastActivity(LocalDateTime lastActivity) {
 		this.lastActivity = lastActivity;
 	}
-
-
-	
-	
-
 }

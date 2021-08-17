@@ -8,8 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * 	This Entity represents the forum web application itself and some configurations*/
-
+ * 	This Entity represents the forum web application itself and some configurations
+ */
 @Entity
 @Table(name = "ForumInformation")
 public class ForumInformation {
@@ -28,10 +28,10 @@ public class ForumInformation {
 	private int timeToDelete;
 	
 	
-
 	public ForumInformation() {
 		
 	}
+	
 	public ForumInformation(String name, String description, int timeToDelete) {
 		this.name = name;
 		this.description = description;
@@ -65,6 +65,7 @@ public class ForumInformation {
 	public int getId() {
 		return id;
 	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -75,6 +76,7 @@ public class ForumInformation {
 		result = prime * result + timeToDelete;
 		return result;
 	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -100,11 +102,10 @@ public class ForumInformation {
 			return false;
 		return true;
 	}
+	
 	@Override
 	public String toString() {
 		return "ForumInformation [id=" + id + ", name=" + name + ", description=" + description + ", timeToDelete="
 				+ timeToDelete + "]";
 	}
-	
-	
 }

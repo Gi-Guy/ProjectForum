@@ -23,7 +23,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.projectForum.Security.Role;
 import com.projectForum.general.Formatter;
 
-
 @Entity
 @Table(name =  "user")
 public class User {
@@ -268,5 +267,4 @@ public class User {
 			return false;
 		return true;
 	}
-
 }

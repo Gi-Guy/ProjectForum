@@ -24,7 +24,6 @@ import javax.validation.Valid;
  * Create user profile page.
  */
 @Controller
-//@RequestMapping(value ="/user")
 public class UserController {
 
 	private UserServices	userServices;
@@ -40,20 +39,17 @@ public class UserController {
 		this.userProfileService = userProfileService;
 	}
 	
-	// TODO figure out how to:
-	// change login/logout pages
-	
-	/** This method will find a userProfile entity (including User object) by a username and display it profile page.
+	/** This method will find a userProfile entity (including User object) by a username and display their profile page.
 	 * @param username
 	 * @param model
 	 */
 	@GetMapping("/user/{username}")
 	public String findUserByUsernameAndDisplay(@PathVariable String username, Model model) {
 		
-		//	Checking if user exists
+		// Checking if user exists
 		User user = userServices.findUserByUsername(username);
 		if(user == null)
-			//	 user isn't exists or something went wrong
+			// user doesn't exist or something went wrong
 			throw new EntityRequestException("could not reload user :: " + username);
 		
 		UserProfile userProfile = userProfileService.findUserByUsername(username);
@@ -61,11 +57,12 @@ public class UserController {
 		
 		return "profile";
 	}
+	
 	@GetMapping("/user/edit/{username}")
 	public String editUser(@PathVariable String username, Model model, Authentication authentication) {
 		User user = userServices.findUserByUsername(username);
 
-		// Only register user allowed to do acitons
+		// Only register user allowed to do actions
 		if (authentication == null )
 			accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "edit/" + username);
 		
@@ -74,7 +71,7 @@ public class UserController {
 			//	User isn't allowed to edit user profile
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + username);
 
-		//User allowed to edit
+		// User allowed to edit
 		model.addAttribute("user",userProfileService.getUpdateForm(user));
 		return "edit_UserProfile_form";
 	}
@@ -83,17 +80,17 @@ public class UserController {
 	public String editUser(@Valid @ModelAttribute("updateUser") UpdateUser updateUser, BindingResult bindingResult,
 						   Authentication authentication, Model model) {
 		
-		// Only register user allowed to do acitons
+		// Only register user allowed to do actions
 		if (authentication == null )
 			accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "edit/" + updateUser.getUsername());
 		
 		User user = userServices.findUserByUsername(updateUser.getUsername());
 		
-		//	Checking if user exists
+		// Checking if user exists
 		if (user == null)
 			throw new EntityRequestException("could not reload user :: " + updateUser.getUsername());
 		
-		//	setting user id
+		// setting user id
 		updateUser.setId(user.getId());
 		
 		// Checking if there are any errors
@@ -102,6 +99,7 @@ public class UserController {
 			model.addAttribute("user",userProfileService.getUpdateForm(user));
 			return "edit_UserProfile_form";
 		}
+		
 		// Checking if user allowed to edit
 		if(!updateUser.getUsername().equals(authentication.getName())) {
 			// User not allowed to edit user information

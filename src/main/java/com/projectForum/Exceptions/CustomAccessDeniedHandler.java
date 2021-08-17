@@ -1,6 +1,5 @@
 package com.projectForum.Exceptions;
 
-
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -32,7 +31,4 @@ public class CustomAccessDeniedHandler extends AccessDeniedHandlerImpl{
 		response.sendRedirect(request.getContextPath() + "/403");
 
 	}
-	
-	
-	
 }

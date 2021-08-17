@@ -1,7 +1,6 @@
 package com.projectForum.post;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +26,6 @@ public class Post {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	
 	@Column(updatable = false, nullable = false)
 	private LocalDateTime createdDate;
 	
@@ -49,7 +47,7 @@ public class Post {
 	@JsonManagedReference
 	 private Topic topic;
 	
-	
+
 	@PrePersist
 	 protected void onCreate() {
 		 this.createdDate = LocalDateTime.now();
@@ -127,6 +125,7 @@ public class Post {
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		return result;
 	}
+	
     //Auto generated 
 	@Override
 	public boolean equals(Object obj) {
@@ -166,8 +165,4 @@ public class Post {
 			return false;
 		return true;
 	}
-    
-    
-    
-    //TODO add quick display for content
 }

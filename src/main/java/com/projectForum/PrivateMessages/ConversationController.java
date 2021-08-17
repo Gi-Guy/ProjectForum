@@ -35,8 +35,9 @@ public class ConversationController {
 	private final String localUrl = "/messages/";
 	
 	/**
-	 * 	This method will display all messages of an user.
-	 * @throws AccessDeniedException */
+	 * This method will display all messages of a user.
+	 * @throws AccessDeniedException 
+	 */
 	@RequestMapping("")
 	ModelAndView displayAllUserMessages(@RequestParam(name = "username") String username,Authentication authentication ) throws AccessDeniedException {
 		ModelAndView mav = new ModelAndView("messages");
@@ -47,11 +48,9 @@ public class ConversationController {
 			throw new EntityRequestException("Something went wrong, could not reload messages for :: '" + username+"'");
 
 		}
-		// Checking if user allowed to access page
-		if(!user.getUsername().equals(authentication.getName())) {
+		// Checking if user is allowed to access the page
+		if(!user.getUsername().equals(authentication.getName()))
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + username);
-			
-		}
 		
 		List<Conversation> convs = conversationServices.getAllConversationsByUser(user, authentication);
 		if(convs.isEmpty() || convs == null)
@@ -61,9 +60,10 @@ public class ConversationController {
 		
 		return mav;
 	}
+	
 	/**
-	 * 	This method will display a Conversation by conversationId
-	 * */
+	 * 	This method will display a Conversation by its conversationId
+	 */
 	@GetMapping("id/{conversationId}")
 	public String getConversationbyId(@PathVariable int conversationId, Model model, 
 										Authentication authentication) {
@@ -88,7 +88,8 @@ public class ConversationController {
 	}
 	
 	/**
-	 * 	This method will update an exists conversation with new answer.*/
+	 * 	This method will update an existing conversation with a new answer.
+	 */
 	@PostMapping("{conversationId}")
 	public String addNewAnswer(@Valid @ModelAttribute Answer answer, @PathVariable int conversationId,
 								Authentication authentication, Model model, BindingResult bindingResult) {
@@ -106,8 +107,10 @@ public class ConversationController {
 		model.asMap().clear();
 		return "redirect:/messages/id/" + conversationId;
 	}
+	
 	/**
-	 * 	This method will create an Conversation between two users*/
+	 * 	This method will create a new Conversation between two users
+	 */
 	@GetMapping("newMessage/{receiverId}")
 	public String createNewConversation(@PathVariable int receiverId,Authentication authentication,
 												Model model) {
@@ -122,8 +125,10 @@ public class ConversationController {
 		model.addAttribute("newConv",newConv);
 		return "new_Conversation_page";
 	}
+	
 	/**
-	 * 	This method will proccess a new Conversation between two users*/
+	 * 	This method will process a new Conversation between two users
+	 */
 	@PostMapping("NewConversation")
 	public String proccesNewConversation(@Valid @ModelAttribute Conversation conversation, 
 					BindingResult bindingResult, Authentication authentication, Model model) {
@@ -136,7 +141,7 @@ public class ConversationController {
 			model.addAttribute("newConv",newConv);
 			return "new_Conversation_page";
 		}
-		// Checking if message isn't blanked
+		// Checking if message isn't blank
 		if(conversation.getTitle().isEmpty() || conversation.getContent().isBlank()) {
 			Conversation newConv = conversationServices.createNewConversation(conversation.getReceiver().getId()
 					,conversationServices.getUserByUsername(authentication.getName()));
@@ -144,15 +149,17 @@ public class ConversationController {
 			return "new_Conversation_page";
 		}
 		
-		// Message is legit
+		// Message is valid
 		return "redirect:/messages/id/" + conversationServices.proccessNewConversation(conversation, authentication).getId();
 	}
+	
 	/**
-	 * This method will delete an Answer*/
+	 * This method will delete an Answer
+	 */
 	@GetMapping("delete/answer/{answerId}")
 	public String deleteAnswer(@PathVariable int answerId,Authentication authentication,
 								RedirectAttributes model) {
-		// find if answer is exists and user allowed to delete it
+		// find if answer exists and whether the user is allowed to delete it
 		Answer answer = conversationServices.getAnswer(answerId);
 		Conversation conversation = answer.getConversation();
 		
@@ -170,8 +177,10 @@ public class ConversationController {
 		model.addFlashAttribute("message", "Answer has been removed.");
 		return "redirect:/messages/id/" + conversation.getId();
 	}
+	
 	/**
-	 * This method will delete an conversation*/
+	 * This method will delete a conversation
+	 */
 	@GetMapping("delete/conversation/{conversationId}")
 	public String deleteConversation(@PathVariable int conversationId,Authentication authentication,
 										RedirectAttributes model) {

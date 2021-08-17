@@ -16,14 +16,12 @@ import com.projectForum.topic.NewTopicPageForm;
 import com.projectForum.topic.Topic;
 import com.projectForum.user.User;
 
-
-
 //TODO TEST THIS FILE
 /* ###########################################################
 * 		WARNING: THIS SERVICE FILE ISN'T TESTED YET!
 * ###########################################################*/
 
-/** This class will use as a service to all edit actions in the application*/
+/** This class will use as a service to all edit actions in the application */
 @Service
 public class EditServices {
 
@@ -46,10 +44,12 @@ public class EditServices {
 	}
 
 	
-	/** This method will update exists post with new Content.
-	 * 	In case that the content is blank, there will be no update.
+	/** 
+	 * This method will update an existing post with new Content.
+	 * In case that the content is blank, there will be no update.
 	 * @param Post to update
-	 * @param EditPostForm new Content*/
+	 * @param EditPostForm new Content
+	 */
 	public void updatePost(Post post, EditPostForm editPostForm) {
 		
 		// Checking if there is a new content to update
@@ -58,10 +58,13 @@ public class EditServices {
 		
 		postServices.save(post);
 	}
-	/** This method will update exists target post with new Content.
-	 * 	In case that the content is blank, there will be no update.
+	
+	/** 
+	 * This method will update an existing post with new Content.
+	 * In case that the content is blank, there will be no update.
 	 * @param target to update
-	 * @param post new Content*/
+	 * @param post new Content
+	 */
 	public void updatePost(Post target, Post post) {
 		
 		// Checking if there is a new content to update
@@ -70,29 +73,31 @@ public class EditServices {
 		
 		postServices.save(target);
 	}
-	
 
-	/** This method will update exists topic with new Content and new Title.
-	 * 	In case that the Title or Contect are blank, there will be no update.
-	 *  @param Topic to update
-	 *  @param NewTopicPageForm*/
+	/**
+	 * This method will update an existing topic with new Content and a new Title.
+	 * In case that the Title or Content are blank, there will be no update.
+	 * @param Topic to update
+	 * @param NewTopicPageForm
+	 */
 	public void updateTopic(Topic topic, NewTopicPageForm newTopic) {
 		
 		// Checking id there is a new title to update
 		if(!newTopic.getTitle().isBlank())
 			topic.setTitle(newTopic.getTitle());
 		
-		// Checking if there is a new content to update
+		// Checking if there is new content to update
 		if (!newTopic.getContent().isBlank())
 			topic.setContent(newTopic.getContent());
 		
 		topicServices.save(topic);
 	}
 	
-	/** This method will update exists Forum with new Name and New Description.
-	 * 	In case that the Name or Description are blank, there will be no update.
-	 * 	@param Forum to update
-	 * 	@param */
+	/** 
+	 * This method will update an existing Forum with a new Name and New Description.
+	 * In case that the Name or Description are blank, there will be no update.
+	 * @param Forum to update
+	 */
 	public void updateForum(Forum forum, EditForumForm editForum) {
 		
 		// Checking if there is a new name or description to update
@@ -105,24 +110,25 @@ public class EditServices {
 		forumServices.save(forum);
 	}
 	
-	/**	This method will update exists User with new user information.
-	 * 	In case that there is any blank information, there will be no update.
-	 * 	@param User to update.
-	 * 	@param */
+	/**	
+	 * This method will update an existing User with new user information.
+	 * In case that there is any blank information, there will be no update.
+	 * @param User to update.
+	 */
 	public void updateUser(User updateUser) {
-		// Checking if user is exists
+		// Checking if user exists
 		User targetUser = userServices.findUserByUserId(updateUser.getId());
 		
 		if (targetUser == null) {
-			// TODO add exciption
-			System.err.println("ERROR: USER ISN'T EXISTS!");
+			// TODO add exception
+			System.err.println("ERROR: USER DOESN'T EXIST!");
 		}
 		
-		// User is exists:
+		// User exists:
 		// Checking if users has different information
 		if(!targetUser.equals(updateUser)) {
 			
-			// ###Nor user or admin can change user's username.###
+			// ### Nor user nor admin can change user's username. ###
 			
 			// updating email
 			if(!targetUser.getEmail().equals(updateUser.getEmail())) {
@@ -152,16 +158,17 @@ public class EditServices {
 				targetUser.setRole(updateUser.getRole());
 			}
 					
-			
 			// Saving all changes
 			userServices.save(targetUser);
 		}
 		
 		// There are no new changes.
 	}
+	
 	/**
-	 * 	This method will update user's last login date
-	 * @param username*/
+	 * This method will update a user's last login date
+	 * @param username
+	 */
 	public void setLastlogin(String username) {
 		User user = userServices.findUserByUsername(username);
 		user.setLastLogin(LocalDateTime.now());
@@ -169,9 +176,10 @@ public class EditServices {
 	}
 	
 	
-	/** This method will update user's roles to editUser role traget.
+	/** 
+	 * This method will update the user's role.
 	 * @param EditUserForm
-	 * */
+	 */
 	public void updateUserRole(EditUserForm editUser) {
 		Role role = roleServices.findRoleByName(editUser.getRole());
 		User user = userServices.findUserByUserId(editUser.getId());
@@ -180,14 +188,14 @@ public class EditServices {
 		user.setRole(role);
 		userServices.save(user);
 	}
+	
 	/**
-	 * This method will change user role's to BLOCKED
-	 * */
+	 * This method will block a user
+	 */
 	public void setUserBlocked(User user) {
 		Role blocked = roleServices.findRoleByName("BLOCKED");
 		user.removeRole();
 		user.setRole(blocked);
 		userServices.save(user);
-		
 	}
 }

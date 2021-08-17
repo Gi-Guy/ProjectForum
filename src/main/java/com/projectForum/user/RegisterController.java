@@ -1,6 +1,5 @@
 package com.projectForum.user;
 
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.projectForum.Services.UserServices;
 
-
 /**
- * This Class manages all User registration process to the database and the web application */
+ * This Class manages all User registration process to the database and the web application 
+ */
 @Controller
 public class RegisterController {
-	
 
 	private UserServices	userServices;
 	
@@ -29,8 +27,10 @@ public class RegisterController {
 		this.userServices = userServices;
 	}
 	
-	/**Mapping to register page
-	 * @provides Model of user object*/
+	/**
+	 * Mapping to register page
+	 * @provides Model of user object
+	 */
 	@GetMapping("/register")
 	public String displayRegisterPage(@ModelAttribute User user, Model model) {
 		model.addAttribute("user", new User());
@@ -38,8 +38,9 @@ public class RegisterController {
 	}
 	
 	/**
-	 * Creating new user in database. If success then moving to completed page*/
-	//TODO: Solve the issue with exists users. YOU HAVE TO NOTIFY THE USER IF ACCOUNT ALREADY EXIST.
+	 * Creating new user in database. If success then moving to completed page
+	 */
+	// TODO: Solve the issue with existing users. YOU HAVE TO NOTIFY THE USER IF ACCOUNT ALREADY EXIST.
 	// TODO fix this method.
 	@PostMapping("/register")
 	public String processRegistration(@Valid User user, BindingResult bindingResult) {
@@ -51,7 +52,7 @@ public class RegisterController {
 				
 				// Checking if username exists in the database
 				if(!userServices.isUserExistsByUsername(user.getUsername())) {
-					// User isn't exists
+					// User doesn't exist
 					userServices.createNewUser(user);
 					}
 				

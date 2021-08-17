@@ -38,9 +38,8 @@ public class ControlPanelServices {
 	}
 	
 	/**
-	 *  This method will create a list of List<ForumForm> to display additional information in conrtol Panel.
-	 * 
-	 *  @param List<Forum>*/
+	 *  This method will create a list of List<ForumForm> to display additional information in control Panel.
+	 */
 	public List<ForumForm> createForumDisplayList(List<Forum> forums){
 		
 		List<ForumForm> forumsForm = new ArrayList<ForumForm>();
@@ -99,17 +98,16 @@ public class ControlPanelServices {
 		return newForm;
 	}
 	
-	/** This method will update the priority of a two forums, higher priority and lower priority.
-	 * 	It will set the traget forum to the higher priority.
-	 * 	It will set :: targetForum.priority > lowerForum.priority
-	 * @param forum
-	 * @param priority
+	/** 
+	 * This method will update the priority of a two forums, higher priority and lower priority.
+	 * It will set the target forum to the higher priority.
+	 * It will set :: targetForum.priority > lowerForum.priority
 	 */
 	private void updatePriorityUp(Forum targetForum, Forum lowerForum) {
-		// Making sure that forums are exsits
+		// Making sure that forums exist
 		if(targetForum == null || lowerForum == null)
 			return;
-		// updating prioritys
+		// updating priorities
 		int tempPriority = targetForum.getPriority();
 		targetForum.setPriority(lowerForum.getPriority());
 		lowerForum.setPriority(tempPriority);
@@ -117,26 +115,26 @@ public class ControlPanelServices {
 		forumServices.save(targetForum);
 		forumServices.save(lowerForum);
 	}
-	/** This method will update the priority of a two forums, higher priority and lower priority.
-	 *  It will set the traget forum to the higher priority.
-	 *  
-	 *  @param int forumId
-	 * */
+	
+	/** 
+	 * This method will update the priority of a two forums, higher priority and lower priority.
+	 * It will set the target forum to the higher priority.
+	 */
 	public void updatePriorityUp(int forumId) {
 		Forum forum = forumServices.findFourmById(forumId);
 		this.updatePriorityUp(forum , forumServices.findForumByPriority(forum.getPriority() - 1));
 	}
-	/** This method will update the priority of a two forums, higher priority and lower priority.
-	 * 	It will set the traget forum to the higher priority.
-	 * 	It will set :: targetForum.priority < higherForum.priority
-	 * @param forum
-	 * @param priority
+	
+	/** 
+	 * This method will update the priority of a two forums, higher priority and lower priority.
+	 * It will set the target forum to the higher priority.
+	 * It will set :: targetForum.priority < higherForum.priority
 	 */
 	private void updatePriorityDown(Forum targetForum, Forum higherForum) {
-		// Making sure that forums are exsits
+		// Making sure that forums are exist
 		if(targetForum == null || higherForum == null)
 			return;
-		// updating prioritys
+		// updating priorities
 		int tempPriority = targetForum.getPriority();
 		targetForum.setPriority(higherForum.getPriority());
 		higherForum.setPriority(tempPriority);
@@ -144,11 +142,10 @@ public class ControlPanelServices {
 		forumServices.save(targetForum);
 		forumServices.save(higherForum);		
 	}
-	/** This method will update the priority of a two forums, higher priority and lower priority.
-	 *  It will set the traget forum to the lower priority.
-	 *  
-	 *  @param int forumId
-	 * */
+	/** 
+	 * This method will update the priority of a two forums, higher priority and lower priority.
+	 * It will set the target forum to the lower priority.
+	 */
 	public void updatePriorityDown(int forumId) {
 		Forum forum = forumServices.findFourmById(forumId);
 		this.updatePriorityDown(forum , forumServices.findForumByPriority(forum.getPriority() + 1));
@@ -162,7 +159,7 @@ public class ControlPanelServices {
 		EditUserForm editForm = new EditUserForm();
 		User user = userServices.findUserByUserId(id);
 		
-		// insert all relevent information
+		// insert all relevant information
 		editForm.setId(user.getId());
 		editForm.setUsername(user.getUsername());
 		editForm.setEmail(user.getEmail());
@@ -171,5 +168,4 @@ public class ControlPanelServices {
 		
 		return editForm;
 	}
-	
 }

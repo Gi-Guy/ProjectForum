@@ -3,9 +3,9 @@ package com.projectForum.topic;
 import javax.validation.constraints.Min;
 
 /**
- * This class is for new topic page only.
- * The topic controller need a way to keep a forum id.
- * */
+ * This class is for a new topic page only.
+ * TODO The topic controller needs a way to keep a forum id.
+ */
 public class NewTopicPageForm {
 	
 	private String title;
@@ -46,6 +46,4 @@ public class NewTopicPageForm {
 	public void setTopicId(int topicId) {
 		this.topicId = topicId;
 	}
-	
-	
 }

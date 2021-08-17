@@ -2,8 +2,8 @@ package com.projectForum.REST;
 
 
 /**
- * 	This class is used to add new User entity via REST Controller.
- * */
+ * 	This class is used to add a new User entity via REST Controller.
+ */
 
 public class AddUserForm {
 	
@@ -64,6 +64,4 @@ public class AddUserForm {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	
 }
