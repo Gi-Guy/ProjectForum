@@ -131,7 +131,7 @@ public class PostController {
 		if(post == null)
 			throw new EntityRequestException("Something went wrong, could not reload post :: '" + postId +"'");
 		
-		else if (!authentication.getName().equals(post.getUser().getUsername()) ||
+		else if (!authentication.getName().equals(post.getUser().getUsername()) &&
 				!userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			// User isn't allowed to delete Post
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "delete/" + post.getId());

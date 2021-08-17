@@ -244,7 +244,7 @@ public class TopicController {
 			throw new EntityRequestException("Something went wrong, could not reload topic for topic :: '" + topicId+"'");
 		//	Making sure that user's allowed to delete topic
 		else if(!authentication.getName().equals(topic.getUser().getUsername())
-				|| !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
+				&& !userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "delete/" + topicId);
 		
 		deleteService.deleteTopic(topic);
