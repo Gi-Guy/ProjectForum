@@ -30,7 +30,7 @@ import com.projectForum.Services.UserServices;
  * */
 
 @Controller
-@RequestMapping(value = "/post")
+@RequestMapping(value = "/post/")
 public class PostController {
 	
 	private PostServices	postServices;
@@ -71,7 +71,7 @@ public class PostController {
 		//newEditPost.setPostId(postId);
 		//model.addAttribute("editPost", newEditPost);
 		model.addAttribute("editPost", post);
-		return "edit_Post_Page";
+		return "edit_Post_page";
 	}
 	
 	/** This method will edit the original post object and save the new content of the post.*/
@@ -91,7 +91,7 @@ public class PostController {
 			throw new EntityRequestException("Could not edit post :: " + post.getId());
 		// making sure user is allowed to edit post or Admin
 		if(authentication.getName().equals(targetPost.getUser().getUsername())
-				&& userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {
+				|| userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN")) {
 			
 			// User or Admin allowed to update post
 			editServices.updatePost(targetPost, post);
@@ -105,7 +105,7 @@ public class PostController {
 	
 	/**
 	 * This method will return all Users posts*/
-	@GetMapping("/{username}")
+	@GetMapping("{username}")
 	public String getAllPostsByUsername(@PathVariable String username, Model model) {
 		
 		List<Post> posts = postServices.findPostsByUser(userServices.findUserByUsername(username));
