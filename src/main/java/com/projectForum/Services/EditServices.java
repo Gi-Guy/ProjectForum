@@ -58,6 +58,18 @@ public class EditServices {
 		
 		postServices.save(post);
 	}
+	/** This method will update exists target post with new Content.
+	 * 	In case that the content is blank, there will be no update.
+	 * @param target to update
+	 * @param post new Content*/
+	public void updatePost(Post target, Post post) {
+		
+		// Checking if there is a new content to update
+		if(!post.getContent().isBlank() && !target.getContent().equals(post.getContent())) 
+			target.setContent(post.getContent());
+		
+		postServices.save(target);
+	}
 	
 
 	/** This method will update exists topic with new Content and new Title.

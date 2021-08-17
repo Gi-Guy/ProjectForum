@@ -265,10 +265,10 @@ public class ControlPanelController {
 		// if user still admin, then return to control panel
 		if(userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
 			return "redirect:/a/controlPanel";
-		else
-			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "controlPanel");
 		
-		return "redirect:/";
+		// Otherwise (if they demoted themselves) log them out. 
+		else
+			return "redirect:/logout";
 	}
 	
 	/** This method will remove a User entity from database.
