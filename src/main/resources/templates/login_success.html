@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"> <!-- Declaring  XML using-->
+
+	<head th:replace="fragments.html :: headerfiles('התחברת בהצלחה')">
+	
+ 		<meta http-equiv="Refresh"
+       		 th:content="|0; url=${/}|" 
+       		 />
+
+	
+	</head>
+	
+	<body>
+		<h1>התחברת בהצלחה!</h1>
+		<h3 style="text-align: center">תועבר לדף הבית תוך 5 שניות...</h3>
+		<h3 style="text-align: center"><a th:href="@{/}">בחזרה לדף הבית</a></h3>
+	</body>
+</html>

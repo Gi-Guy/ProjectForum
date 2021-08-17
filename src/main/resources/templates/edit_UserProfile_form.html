@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html 	xmlns:th="http://www.thymeleaf.org"
+		lang="he"> <!-- Declaring  XML using-->
+    
+   	<head th:replace="fragments.html :: headerfiles('ערוך משתמש')"></head>
+	
+	<body>
+	
+		<div th:replace="fragments.html :: topnav"></div>
+    
+		<div align="center">
+	        <h1>ערוך משתמש</h1>
+	        <br />
+	        <form action="#" th:action="@{/user/editUser}" th:object="${user}"
+	            method="post">
+	 
+	            <table style ="max-width:600px;">
+	
+	                <tr>
+	                    <td>שם משתמש:</td>
+	                    <td><input type="text" th:field="*{username}" readonly="readonly" /></td>
+	                </tr>
+					<tr>
+	                    <td>שם פרטי:</td>
+	                    <td><input type="text" th:field="*{firstName}" required/></td>
+	                </tr>
+	   				<tr>
+	                    <td>שם משפחה:</td>
+	                    <td><input type="text" th:field="*{lastName}" required/></td>
+	                </tr>
+					<tr>
+	                    <td>אימייל:</td>
+	                    <td><input type="email" th:field="*{email}" required/></td>
+	                </tr>
+					<tr>
+	                    <td>סיסמה חדשה:</td>
+	                    <td><input type="password" th:field="*{password}"/></td>
+	                </tr>
+	                <tr>
+	                    <td><button class="button" type="submit">שמור שינויים</button> </td>
+	                </tr>
+	            </table>
+	        </form>
+	    </div>
+	</body>
+</html>

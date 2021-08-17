@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Declaring  XML using-->
+
+	<head th:replace="fragments.html :: headerfiles('רשימת כל הפורומים')"></head>
+	
+	<body>
+	
+		<div th:replace="fragments.html :: topnav"></div>
+		<h1 th:text = "${session.forumInformation.getName()}"></h1>
+		<h3 style="text-align: center"
+			th:text = "${session.forumInformation.getDescription()}"></h3>
+		<hr><br>
+		
+		<table class="table-striped stretch" border="1" style="text-align:right">
+			<thead>
+					<tr>
+						<th colspan="6">
+							<h2 style="text-align: center">רשימת כל הפורומים</h2>
+						</th>	
+					</tr>
+					<tr>
+						<th style="width:13%;">שם הפורום</th>
+						<th style="width:55%;">תקציר</th>
+						<th>מספר שרשורים</th>
+						<th>הודעה אחרונה ע"י</th>
+						<th>פעילות אחרונה</th>
+					</tr>
+			</thead>
+			<tbody>
+				<tr th:each = "forum : ${forums}">
+					<td><a th:href="@{/forum/} + ${forum.forum.id}" th:text="${forum.forum.name}"></a></td>
+					<td th:text = "${forum.forum.description}"></td>
+					<td th:text = "${forum.getNumOfTopics()}"></td>
+					<td>
+						<span th:if ="${forum.getLastUserActivity() == null}">אין תגובות</span>
+						<span th:unless ="${forum.getLastUserActivity() == null}">
+							<a	th:href="@{/user/} + ${forum.getLastUserActivity().username}"
+								th:text = "${forum.getLastUserActivity().username}"></a>
+						</span>
+					</td>			
+					<td>
+						<span th:if ="${forum.getNumOfTopics() == 0}">אין תגובות</span>
+						<span th:unless ="${forum.getNumOfTopics() == 0}" 
+					  		th:text = "${forum.getFormattedLastActivity()}"></span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="he"> <!-- Declaring  XML using-->
+
+	<head th:replace="fragments.html :: headerfiles('לוח בקרה')"></head>
+	
+	<body>
+	
+		<div th:replace="fragments.html :: topnav"></div>
+		
+		<div>
+		
+			<h1>לוח בקרה</h1>
+            <h2 style="color: red"> ברוך הבא <b>[[${#request.userPrincipal.principal.fullName}]]</b></h2>
+			<hr>
+			
+			<!-- Forums section  -->
+			<h2>ערוך ונהל את הפורום</h2>
+			
+			<table class = "table-striped stretch" border="1" style="text-align:right">
+				<thead>
+						<tr>
+							<th colspan="6">
+								<a th:href="@{/a/newForum}">הוסף פורום חדש</a>
+							</th>
+						</tr>
+						<tr>
+							<th>מספר</th>
+							<th>שם פורום</th>
+							<th>תקציר</th>
+							<th>מספר שרשורים</th>
+							<th>פעולות</th>
+							<th>הזז</th>
+						</tr>
+				</thead>
+				<tbody>
+					<th:block th:each = "form : ${forumForms}"> 
+						<tr th:id="${form.forum.getId()}">
+							<td th:text = "${form.forum.priority}"></td>
+							<td><a th:href="@{/forum/} + ${form.forum.id}" th:text = "${form.forum.name}"></a></td>
+							<td th:text = "${form.shortDescription}"></td>
+							<td th:text = "${form.numOfTopics}"></td>
+							<td>
+								<a th:href="@{/a/forum/delete/} + ${form.forum.id}">מחק</a>
+								&nbsp;&nbsp;
+								<a th:href="@{/a/forum/edit/} + ${form.forum.id}">ערוך</a>
+							</td>
+							<td>
+								<b><a th:href="@{/a/downPriority/} + ${form.forum.id}" style="font-size: 20px">&#8595;</a></b>
+								&nbsp;&nbsp;
+								<b><a th:href="@{/a/addPriority/} + ${form.forum.id}" style="font-size: 20px">&#8593;</a></b>
+							</td>
+						</tr>
+					</th:block>
+				</tbody>
+			</table>
+			
+			<!-- Users section -->
+			<hr>
+			
+			<h3>ערוך ונהל משתמשים</h3>
+			
+			<form th:action="@{/a/editUser}" >
+				<label>חפש משתמש:</label>
+				<input name="username" type="text" th:value="*{username}">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input class="button" type="submit" value="חפש וערוך" />
+			</form>
+
+			<a th:href="@{/a/list_users}">רשימת כל המשתמשים</a>
+
+			<!-- Forum control section -->
+			<hr>	
+			<h3>ערוך ונהל את הגדרות הפורום</h3>
+			<!-- forumInformation -->
+			<form action="#" th:action="@{/a/updateForumInformation/}" th:object="${forumInformation}"
+	            method="post">
+			<!-- Change forums Name & Description -->
+				<label>שם הפורום:</label>		
+				<input th:field="*{name}" type="text"><br><br>
+				<label>תיאור הפורום:</label><br>
+				<textarea th:field="*{description}"></textarea><br>
+				
+			<!-- Change delete timer -->
+				<label>מחק הודעות אחרי</label>
+				<input th:field="*{timeToDelete}" type="number">
+				<label>ימים</label><br>
+				
+				<input class="button" type="submit" value="שמור שינויים"/>
+			</form>		
+		</div>
+	</body>
+</html>

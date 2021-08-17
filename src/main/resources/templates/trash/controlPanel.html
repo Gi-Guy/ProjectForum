@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="he"> <!-- Declaring  XML using-->
+<head>
+    <meta charset="UTF-8">
+    <title>לוח בקרה</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+
+    
+</head>
+<!--  <body style = "background-color:LightGray" dir="rtl"> -->
+<body style = "background-color:LightGray">
+	<div class="container text-center" align="center">
+		<h1>לוח בקרה</h1>
+		<h2>ערוך ונהל את הפורום</h6>
+	    <div>
+        <form th:action="@{/logout}" method="post">
+            <p>
+                <b>[[${#request.userPrincipal.principal.fullName}]]</b> ברוך הבא  
+            </p>
+            <input type="submit" value="Sign Out" />
+            <a th:href="@{/index}" type="submit" >חזרה לדף הבית</a>
+        </form>
+    </div>
+	
+	
+		<!-- Forums section  -->
+		<hr>
+		<div style="text-align:right">
+			<h1>:פורומים</h1>
+			<h6>ערוך ונהל פורומים</h6>
+		</div>
+		<div>
+			<!--  <table class="table table-striped table-bordered">-->
+			<table border="1" style="text-align:right">
+				<!--  <thead class=thead-dark> -->
+				<thead>
+						<tr>
+						<th colspan="6">
+						
+							<a th:href="@{/a/newForum}">הוסף פורום חדש</a>
+							&nbsp;&nbsp;
+							<a>ייצא פורומים</a>
+							&nbsp;&nbsp;
+							<a>ייבא פורומים</a>
+						
+						</th>
+
+						</tr>
+						<tr>
+							<th>הזז</th>
+							<th>פעולות</th>
+							<th>מספר שרשורים</th>
+							<th>תקציר</th>
+							<th>שם פורום</th>
+							<th>מספר</th>
+						</tr>
+				</thead>
+				<tbody>
+					<tr th:each = "forum : ${forums}">
+						<td>
+							<a th:href="@{/a/addPriority/} + ${forum.forum.id}">למעלה</a>
+							&nbsp;&nbsp;
+							<a th:href="@{/a/downPriority/} + ${forum.forum.id}">למטה</a>
+						</td>
+						<td>
+							<a th:href="@{/a/forum/edit/} + ${forum.forum.id}">ערוך</a>
+							&nbsp;&nbsp;
+							<a th:href="@{/a/forum/delete/} + ${forum.forum.id}">מחק</a>
+						</td>
+						<td th:text = "${forum.numOfTopics}"></td>
+						<td th:text = "${forum.shortDescription}"></td>
+						<td>
+							<a th:href="@{/forum/} + ${forum.forum.id}" th:text = "${forum.forum.name}"></a></td>
+						<td th:text = "${forum.forum.priority}"></td>
+						
+					</tr>
+				</tbody>
+			</table>
+			
+		</div>
+		<!-- Users section  -->
+			<hr>
+		<div style="text-align:right">
+			<h1>:משתמשים</h1>
+			<h6>ערוך ונהל משתמשים</h6>
+		</div>
+		<div style="text-align:right">
+				<form th:action = "@{/a/searchUser/}" method = "get"
+				style ="max-width:600px; margin: 0 auto;"
+				th:object = "${searchUserForm}">
+			
+					<div class ="row">
+						<div class="input-field col s12">
+						<input class="btn btn-primary" type="submit" value="Submit" />
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="text" th:field="*{username}" class="validate" length="50"/>
+						<label>:חפש משתמש</label>
+						</div>
+					</div>
+				</form>
+			</div>
+	</div>
+		
+</body>
+</html>

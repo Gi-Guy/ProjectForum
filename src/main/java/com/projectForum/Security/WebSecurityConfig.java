@@ -12,6 +12,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.web.filter.CharacterEncodingFilter;
+
+import com.projectForum.Exceptions.CustomAccessDeniedHandler;
+
 
 @Configuration
 @EnableWebSecurity
@@ -32,8 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-	// TODO GET RID OF THIS
-	// Video 1:09:14 - watch again
+
 	@Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -47,21 +52,45 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(authenticationProvider());
 	}
+	
+	@Bean
+	public AccessDeniedHandler accessDeniedHandler(){
+	    return new CustomAccessDeniedHandler();
+	}
 
-	// This is the most important method.
-	// TODO Watch video 1:11:00
-	// Also explains again in 1:15:25
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-            .antMatchers("/list_users").authenticated()
-            .anyRequest().permitAll()
-            .and()
-            .formLogin()
-            .usernameParameter("email")
-            .defaultSuccessUrl("/list_users")
-            .permitAll()
-            .and()
-            .logout().logoutSuccessUrl("/").permitAll();
+    	 http.authorizeRequests()
+    	 .antMatchers(Path.getAuthorizedAccess()).hasAnyAuthority(Path.getAuthorityRoles())
+         .antMatchers(Path.getAdminAccess()).hasAnyAuthority(Path.getAdminRole())
+         .antMatchers(Path.getAllAccess()).permitAll()
+         .and()
+         .formLogin()
+         .loginPage("/login")
+         .usernameParameter("email")
+         .passwordParameter("password")	
+         .defaultSuccessUrl("/login_success", true)
+         .failureUrl("/loginError")
+         .usernameParameter("email")
+         .permitAll()
+         .and()
+         .rememberMe().tokenValiditySeconds(7 * 24 * 60 * 60) // will remember user for 7 days
+         .key("123456789")
+         .and()
+         .logout().logoutSuccessUrl("/").permitAll()
+         .and().exceptionHandling().accessDeniedHandler(accessDeniedHandler())
+         .and().csrf().disable();
+         
+    	 configureEncodingFilter(http);
+    	 
+    }
+    
+    //Trying to encode the web
+    private void configureEncodingFilter(HttpSecurity http) {
+        CharacterEncodingFilter filter = new CharacterEncodingFilter();
+        filter.setEncoding("UTF-8");
+        filter.setForceEncoding(true);
+
+        http.addFilterBefore(filter, CsrfFilter.class);
     }
 }

@@ -10,6 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+
 /**
  * A fourm is a collection of topics
  * A forum has a title and a description only.
@@ -23,6 +27,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "forums")
+@JsonIdentityInfo(
+		  generator = ObjectIdGenerators.PropertyGenerator.class, 
+		  property = "id")
 public class Forum {
 
 	@Id
@@ -37,6 +44,10 @@ public class Forum {
 	
 	@Column(updatable = false, nullable = false)
 	private LocalDateTime createdDate;
+	
+	@Column(updatable = true, nullable = false)
+	private int priority;
+	
 	
 	public Forum() {
 		
@@ -81,4 +92,60 @@ public class Forum {
 	public Forum getForum() {
 		return this;
 	}
+	public int getPriority() {
+		return priority;
+	}
+	public void setPriority(int priority) {
+		this.priority = priority;
+	}
+    //Auto generated 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((createdDate == null) ? 0 : createdDate.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + priority;
+		return result;
+	}
+    //Auto generated 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Forum other = (Forum) obj;
+		if (createdDate == null) {
+			if (other.createdDate != null)
+				return false;
+		} else if (!createdDate.equals(other.createdDate))
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (id != other.id)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (priority != other.priority)
+			return false;
+		return true;
+	}
+	@Override
+	public String toString() {
+		return "Forum [id=" + id + ", name=" + name + ", description=" + description + ", createdDate=" + createdDate
+				+ ", priority=" + priority + "]";
+	}
+	
+	
 }

@@ -1,11 +1,9 @@
 package com.projectForum.user;
 
-import java.time.LocalDateTime;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,19 +12,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.projectForum.Services.UserServices;
+
+
 /**
  * This Class manages all User registration process to the database and the web application */
 @Controller
 public class RegisterController {
 	
-	//@Autowired
-	private UserRepository userRepo;
-	private PasswordEncoder passwordEncoder;
+
+	private UserServices	userServices;
 	
 	@Autowired
-	public RegisterController(UserRepository userRepository , PasswordEncoder passwordEncoder ) {
-		this.userRepo = userRepository;
-		this.passwordEncoder = passwordEncoder;
+	public RegisterController(UserServices userServices) {
+
+		this.userServices = userServices;
 	}
 	
 	/**Mapping to register page
@@ -40,19 +40,19 @@ public class RegisterController {
 	/**
 	 * Creating new user in database. If success then moving to completed page*/
 	//TODO: Solve the issue with exists users. YOU HAVE TO NOTIFY THE USER IF ACCOUNT ALREADY EXIST.
+	// TODO fix this method.
 	@PostMapping("/register")
 	public String processRegistration(@Valid User user, BindingResult bindingResult) {
 		
 		if(!bindingResult.hasErrors()) {
 			
 			//Checking if Email is exist in database
-			if (userRepo.findByEmail(user.getEmail()) == null){
+			if (!userServices.isUserExistsByEmail(user.getEmail())){
 				
 				// Checking if username exists in the database
-				if(userRepo.findByUsername(user.getUsername()) == null) {
-					user.setPassword(passwordEncoder.encode(user.getPassword()));
-					user.setJoiningDate(LocalDateTime.now());
-					userRepo.save(user);	
+				if(!userServices.isUserExistsByUsername(user.getUsername())) {
+					// User isn't exists
+					userServices.createNewUser(user);
 					}
 				
 				// Username already exists.

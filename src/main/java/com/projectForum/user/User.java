@@ -1,27 +1,31 @@
 package com.projectForum.user;
 
-//import java.util.Collection;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-//import javax.management.relation.Role; //TODO: SOLVE THIS
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import com.projectForum.post.Post;
-import com.projectForum.topic.Topic;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.projectForum.Security.Role;
+import com.projectForum.general.Formatter;
 
-//import org.springframework.security.core.GrantedAuthority;
-//import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name =  "user")
-//public class User implements UserDetails{
 public class User {
 
 	private static final long serialVersionUID = 1L;
@@ -30,7 +34,7 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@Column (unique = true, nullable = false, length = 10)
+	@Column (unique = true, nullable = false, length = 15)
 	private String username;
 	
 	@Column (unique = true, nullable = false, length = 64)
@@ -48,18 +52,38 @@ public class User {
 	@Column(nullable = false, length = 4)
 	private boolean isActive = true;
 	
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OrderBy("role_id ASC")
+	@JoinTable(
+			name = "users_roles",
+			joinColumns = @JoinColumn(name = "user_id"),
+			inverseJoinColumns = @JoinColumn(name = "role_id")
+			)
+	@JsonManagedReference
+	private Set<Role> roles = new HashSet<>();
+	
+	
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+	
+	public void removeRole() {
+		this.roles.removeAll(roles);
+	}
+	
+	public void setRole(Role role) {
+		this.roles.add(role);
+	}
+
+	public Role getRole() {
+		return this.roles.iterator().next();
+	}
 	private LocalDateTime joiningDate;
 	private LocalDateTime lastLogin;
-	
-	/* Consider removing these */
-	/*@OneToMany(mappedBy = "user")
-	private List<Topic> topics;
-	
-	@OneToMany(mappedBy = "user")
-	private List<Post> posts;*/
-	
-	//TODO: ADD ROLE OPTION - FOR ADMINS
-	//TODO: Add private messages list
 	
 	public boolean isActive() {
 		return isActive;
@@ -113,14 +137,21 @@ public class User {
 		return joiningDate;
 	}
 	
+	public String getFormattedJoiningDate() {
+		return Formatter.toDate(joiningDate);
+	}
+	
 	public void setJoiningDate(LocalDateTime joiningDate) {
 		this.joiningDate = joiningDate;
 		this.setLastLogin(joiningDate);
 	}
 	
-	/** Return when last time user been login.*/
 	public LocalDateTime getLastLogin() {
 		return lastLogin;
+	}
+	
+	public String getFormattedLoginDate() {
+		return Formatter.toTimeDate(lastLogin);
 	}
 	
 	public void setLastLogin(LocalDateTime lastLogin) {
@@ -146,20 +177,96 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	/*
-	public List<Topic> getTopics() {
-		return topics;
+	
+	@PrePersist
+	 protected void onCreate() {
+		 this.joiningDate = LocalDateTime.now();
+		 this.lastLogin = LocalDateTime.now();
+	 }
+	
+	 @PreUpdate
+	protected void onUpdate() {
+		this.lastLogin = LocalDateTime.now();
 	}
 
-	public void setTopics(List<Topic> topics) {
-		this.topics = topics;
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", email=" + email + ", firstName=" + firstName
+				+ ", lastName=" + lastName + ", password=" + password + ", isActive=" + isActive + ", role=" + this.getRole().getName()
+				+ ", joiningDate=" + joiningDate + ", lastLogin=" + lastLogin + "]";
 	}
 
-	public List<Post> getPosts() {
-		return posts;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
+		result = prime * result + id;
+		result = prime * result + (isActive ? 1231 : 1237);
+		result = prime * result + ((joiningDate == null) ? 0 : joiningDate.hashCode());
+		result = prime * result + ((lastLogin == null) ? 0 : lastLogin.hashCode());
+		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
+		result = prime * result + ((roles == null) ? 0 : roles.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		return result;
 	}
 
-	public void setPosts(List<Post> posts) {
-		this.posts = posts;
-	}*/
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
+		if (firstName == null) {
+			if (other.firstName != null)
+				return false;
+		} else if (!firstName.equals(other.firstName))
+			return false;
+		if (id != other.id)
+			return false;
+		if (isActive != other.isActive)
+			return false;
+		if (joiningDate == null) {
+			if (other.joiningDate != null)
+				return false;
+		} else if (!joiningDate.equals(other.joiningDate))
+			return false;
+		if (lastLogin == null) {
+			if (other.lastLogin != null)
+				return false;
+		} else if (!lastLogin.equals(other.lastLogin))
+			return false;
+		if (lastName == null) {
+			if (other.lastName != null)
+				return false;
+		} else if (!lastName.equals(other.lastName))
+			return false;
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
+			return false;
+		if (roles == null) {
+			if (other.roles != null)
+				return false;
+		} else if (!getRole().getName().equals(other.getRole().getName()))
+			return false;
+		if (username == null) {
+			if (other.username != null)
+				return false;
+		} else if (!username.equals(other.username))
+			return false;
+		return true;
+	}
+
 }

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Declaring  XML using-->
+ 
+<head th:replace="fragments.html :: headerfiles(title='הודעות שלי')"></head>
+	
+	<body>
+	
+		<div th:replace="fragments.html :: topnav"></div>
+		 
+		<h1>הודעות שלי</h1>
+
+		<hr>
+		 
+		<table class="table-striped" border="1" cellpadding="10" style="text-align:right">
+			<thead>
+					<tr>
+						<th colspan="6">
+							<h2>כל ההודעות שלי</h2>
+						</th>	
+					</tr>
+					<tr>
+						<th>נושא</th>
+						<th>מאת</th>
+						<th>אל</th>
+					</tr>
+			</thead>
+			<tbody>
+				<tr th:each="conv : ${convs}">
+					<td><a th:href="@{/messages/id/} + ${conv.id}" th:text="${conv.title}"></a></td>
+					<td><a th:href="@{/user/} + ${conv.getSender().username}" th:text = "${conv.getSender().username}"></a></td>
+					<td><a th:href="@{/user/} + ${conv.getReceiver().username}" th:text = "${conv.getReceiver().username}"></a></td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
+</html>
