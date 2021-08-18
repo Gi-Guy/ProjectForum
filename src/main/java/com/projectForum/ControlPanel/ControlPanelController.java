@@ -29,7 +29,6 @@ import com.projectForum.Services.ForumInformationServices;
 import com.projectForum.Services.ForumServices;
 import com.projectForum.Services.RoleServices;
 import com.projectForum.Services.UserServices;
-import com.projectForum.forum.EditForumForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.user.User;
 

@@ -12,7 +12,6 @@ import com.projectForum.forum.EditForumForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.post.EditPostForm;
 import com.projectForum.post.Post;
-import com.projectForum.topic.NewTopicPageForm;
 import com.projectForum.topic.Topic;
 import com.projectForum.user.User;
 
