@@ -99,14 +99,33 @@ textarea {
 	width: 100%;
 }
 
-/* ----- */
-/* Posts */
-/* ----- */
+/* ------- */
+/* Content */
+/* ------- */
 
-.postContent{
+.postContent {
 	font-size: 200%;
 	border:1px black solid;
 	padding: 25px;
+	width: 60ch;
+}
+
+.title {
+	width: 25ch;
+}
+
+.summary {
+	width: 50ch;
+	color:black;
+}
+
+/* -------- */
+/* Overflow */
+/* -------- */
+
+.overflow {
+	word-wrap: break-word;
+	hyphens: auto;
 }
 
 /* -------- */
