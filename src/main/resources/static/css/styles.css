@@ -139,6 +139,19 @@ textarea {
 	border-radius: 15%;
 }
 
+
+/* ------ */
+/* Botnav */
+/* ------ */
+
+footer {
+	margin-top: 50px;
+	text-align: center;
+	padding: 3px;
+	color: white;
+	background-color:#333;
+}
+
 /* ------ */
 /* Topnav */
 /* ------ */

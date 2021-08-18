@@ -5,7 +5,7 @@
 	<head th:replace="fragments.html :: headerfiles('שרשור')"></head>
 	
 	<body>
-	
+		
 		<div th:replace="fragments.html :: topnav"></div>
 		
 		<br>
@@ -110,5 +110,8 @@
 				<h3><a th:href="@{/register}">הירשם</a> או <a th:href="@{/login}">התחבר</a> כדי להגיב</h3>
 	        </div>
 		</section>
+		
+		<div th:replace="fragments.html :: botnav"></div>
+		
 	</body>
 </html>

@@ -65,5 +65,6 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 	
         <a sec:authorize="isAuthenticated()" th:href="@{/topic/newTopic/} + ${forum.id}">צור שרשור חדש</a>
 
+		<div th:replace="fragments.html :: botnav"></div>
 	</body>
 </html>
