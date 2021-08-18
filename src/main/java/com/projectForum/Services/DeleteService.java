@@ -100,7 +100,7 @@ public class DeleteService {
 	 * any activity for more than ForumInformation.timeToDelete amount of time.
 	 * This method will run daily at midnight.
 	 */
-	@Scheduled(cron = "1 0 * * * ?") // Delete daily at 00:00
+	@Scheduled(cron = "0 1 0 * * ?") // Delete daily at 00:00
 	public void deleteOldConversations() {
 		ForumInformation forumInformation = forumInformationServices.getForumInformation();
 		int size = 0;
