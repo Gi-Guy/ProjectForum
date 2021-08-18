@@ -29,8 +29,8 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 			</thead>
 			<tbody>
 				<tr th:each = "forum : ${forums}">
-					<td><a th:href="@{/forum/} + ${forum.forum.id}" th:text="${forum.forum.name}"></a></td>
-					<td th:text = "${forum.forum.description}"></td>
+					<td><p class="title overflow" ><a th:href="@{/forum/} + ${forum.forum.id}" th:text="${forum.forum.name}"></a></p></td>
+					<td><p class="summary overflow" th:text = "${forum.forum.description}"></p></td>
 					<td th:text = "${forum.getNumOfTopics()}"></td>
 					<td>
 						<span th:if ="${forum.getLastUserActivity() == null}">אין תגובות</span>
@@ -47,5 +47,8 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 				</tr>
 			</tbody>
 		</table>
+		
+		<div th:replace="fragments.html :: botnav"></div>
+		
 	</body>
 </html>

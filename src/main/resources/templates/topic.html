@@ -5,7 +5,7 @@
 	<head th:replace="fragments.html :: headerfiles('שרשור')"></head>
 	
 	<body>
-	
+		
 		<div th:replace="fragments.html :: topnav"></div>
 		
 		<br>
@@ -23,7 +23,7 @@
 	        </colgroup>
 	        <tr>
 	        	<td colspan="5">
-					<h1 th:text = "${topicInfo.topic.getTitle()}"> Title:>Topic name</h1>
+					<h1 class="title overflow" th:text = "${topicInfo.topic.getTitle()}"> Title:>Topic name</h1>
 	        	</td>
 	        </tr>
 	        <tr>
@@ -38,7 +38,7 @@
 				</td>
 				<td colspan="4">
 					<p style="text-align: right" th:text = "'נוצר ב-:' + ${topicInfo.topic.getFormattedCreatedDate()}">Date</p>
-					<pre class="indented postContent" th:text = "${topicInfo.topic.getContent()}">Content</pre>
+					<pre class="indented postContent overflow" th:text = "${topicInfo.topic.getContent()}">Content</pre>
 				</td>
 			</tr>
 	        <tr th:if="${#authentication.name} eq ${topicInfo.topic.user.username} or ${isAdmin}">
@@ -80,7 +80,7 @@
 					</td>
 					<td colspan="4">
 						<p style="text-align: right" th:text = "'נכתב ב-:' + ${postInfo.post.getFormattedLastActivity()}">Date</p>
-						<pre class="indented postContent" th:text = "${postInfo.post.getContent()}">Content</pre>
+						<pre class="indented postContent overflow" th:text = "${postInfo.post.getContent()}">Content</pre>
 					</td>
 				</tr>
 				<tr th:if="${#authentication.name} eq ${postInfo.post.getUser().getUsername()} or ${isAdmin}">
@@ -110,5 +110,8 @@
 				<h3><a th:href="@{/register}">הירשם</a> או <a th:href="@{/login}">התחבר</a> כדי להגיב</h3>
 	        </div>
 		</section>
+		
+		<div th:replace="fragments.html :: botnav"></div>
+		
 	</body>
 </html>
