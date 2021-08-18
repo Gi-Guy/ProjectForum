@@ -1,6 +1,7 @@
 package com.projectForum.Services;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.forum.Forum;
+import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;
+import com.projectForum.topic.TopicAdditionalInformation;
 import com.projectForum.topic.TopicRepository;
 import com.projectForum.user.User;
 
@@ -24,6 +27,8 @@ public class TopicServices {
 	private TopicRepository	topicRepo;
 	@Autowired
 	private ForumServices	forumServices;
+	@Autowired
+	private PostServices	postServices;
 	
 	/**
 	 * This method will return a Topic by topicId
@@ -151,4 +156,36 @@ public class TopicServices {
 		List<Topic> topics = this.findTopicsOrderByLastActivity(forum);
 		return topics.get(0);
 	}
+
+	/**
+	 * 	This method will return an TopicAdditionalInformation object of Topic's author
+	 * 	@param Topic to convert
+	 */
+	public TopicAdditionalInformation getTopicAdditionalInformation(Topic topic) {
+		TopicAdditionalInformation topicAdditionalInformation = new TopicAdditionalInformation(
+																this.findTopicsByUser(topic.getUser()).size()
+																+ postServices.findPostsByUser(topic.getUser()).size()
+																, topic);
+		return topicAdditionalInformation;
+	}
+	
+	/**
+	 * 	This method will return a List<TopicAdditionalInformation> of converted posts.
+	 * 	@param List<Post> posts to convert.
+	 */
+	public List<TopicAdditionalInformation> getTopicAdditionalInformation(List<Post> posts) {
+		List<TopicAdditionalInformation> additionalInformation = new ArrayList<TopicAdditionalInformation>();
+		
+		if(!posts.isEmpty()) {
+			for (Post post : posts) {
+				TopicAdditionalInformation  additionalInfo = new TopicAdditionalInformation(
+																this.findTopicsByUser(post.getUser()).size()
+																+ postServices.findPostsByUser(post.getUser()).size()
+																, post);
+				additionalInformation.add(additionalInfo);
+			}
+		}
+		return additionalInformation;
+	}
+	
 }

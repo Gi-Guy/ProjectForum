@@ -2,6 +2,7 @@ package com.projectForum.topic;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -26,6 +27,7 @@ import com.projectForum.Services.PostServices;
 import com.projectForum.Services.TopicServices;
 import com.projectForum.Services.UserServices;
 import com.projectForum.post.Post;
+import com.projectForum.user.User;
 
 /**
  * This controller will handle the next actions:
@@ -81,10 +83,12 @@ public class TopicController {
 		topic.setViews(topic.getViews() + 1);
 		topicServices.save(topic);
 		
-		model.addAttribute("topic", topic);
+		//model.addAttribute("topic", topic);
+		model.addAttribute("topicInfo", topicServices.getTopicAdditionalInformation(topic));
 		
 		// Each topic can have 0 or more posts in it
-		model.addAttribute("posts", posts);
+		//model.addAttribute("posts", posts);
+		model.addAttribute("postsInfo", topicServices.getTopicAdditionalInformation(posts));
 		
 		// In each topic there is an option to create a new post
 		model.addAttribute("newPost", new Post());

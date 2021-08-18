@@ -10,7 +10,7 @@
 		
 		<br>
 		
-		<a th:href="@{/forum/} + ${topic.getForum().getId()}">חזרה לפורום</a>
+		<a th:href="@{/forum/} + ${topicInfo.topic.getForum().getId()}">חזרה לפורום</a>
 
 		<!-- TOPIC -->
 		<table class="stretch" border="3" style="text-align:right; border-color: red">
@@ -23,23 +23,27 @@
 	        </colgroup>
 	        <tr>
 	        	<td colspan="5">
-					<h1 th:text = "${topic.getTitle()}"> Title:>Topic name</h1>
+					<h1 th:text = "${topicInfo.topic.getTitle()}"> Title:>Topic name</h1>
 	        	</td>
 	        </tr>
 	        <tr>
 				<td colspan="1">
-					<h2><a th:href="@{/user/} + ${topic.getUser().getUsername()}" th:text = "${topic.getUser().getUsername()} + ':'">Topic author</a></h2>
+					<h2><a th:href="@{/user/} + ${topicInfo.topic.getUser().getUsername()}" th:text = "${topicInfo.topic.getUser().getUsername()} + ':'">Topic author</a></h2>
+					<label>נרשם בתאריך:</label>
+					<label th:text="${topicInfo.topic.getUser().getFormattedJoiningDate()}"></label><br>
+					<label>מספר הודעות:</label>
+					<label th:text="${topicInfo.getTotalOfPosts()}"></label><br>
 				</td>
 				<td colspan="4">
-					<p style="text-align: center" th:text = "'נוצר ב-:' + ${topic.getFormattedCreatedDate()}">Date</p>
-					<pre class="indented postContent" th:text = "${topic.getContent()}">Content</pre>
+					<p style="text-align: center" th:text = "'נוצר ב-:' + ${topicInfo.topic.getFormattedCreatedDate()}">Date</p>
+					<pre class="indented postContent" th:text = "${topicInfo.topic.getContent()}">Content</pre>
 				</td>
 			</tr>
-	        <tr th:if="${#authentication.name} eq ${topic.user.username} or ${isAdmin}">
+	        <tr th:if="${#authentication.name} eq ${topicInfo.topic.user.username} or ${isAdmin}">
 				<td colspan="5" style="text-align: left;">
-					<a th:if="${#authentication.name} eq ${topic.user.username}" 
-						th:href="@{/topic/edit/} + ${topic.getId()}" class = "button" >ערוך</a>
-					<a th:href="@{/topic/delete/} + ${topic.getId()}" class = "button" >מחק</a>
+					<a th:if="${#authentication.name} eq ${topicInfo.topic.user.username}" 
+						th:href="@{/topic/edit/} + ${topicInfo.topic.getId()}" class = "button" >ערוך</a>
+					<a th:href="@{/topic/delete/} + ${topicInfo.topic.getId()}" class = "button" >מחק</a>
 				</td>
 			</tr>
 		</table>
@@ -48,13 +52,13 @@
 		
 		<!-- Number of posts -->
 		<header>
-			<blockquote th:text="|תגובות: | + ${posts.size()}">מספר תגובות</blockquote>
+			<blockquote th:text="|תגובות: | + ${postsInfo.size()}">מספר תגובות</blockquote>
 		</header>
 		<hr>
 
 		<!-- displaying all posts -->
-		<div th:each = "post: ${posts}">
-			<table class="stretch" border="1" style="text-align:right" th:id="${post.getId()}">
+		<div th:each = "postInfo: ${postsInfo}">
+			<table class="stretch" border="1" style="text-align:right" th:id="${postInfo.post.getId()}">
 				<colgroup>
 			        <col width="20%">
 			        <col width="20%">
@@ -64,18 +68,22 @@
 		        </colgroup>
 				<tr>
 					<td colspan="1">
-						<h3><a th:href="@{/user/} + ${post.getUser().getUsername()}" th:text = "${post.getUser().getUsername()} + ':'">Post author</a></h3>
+						<h3><a th:href="@{/user/} + ${postInfo.post.getUser().getUsername()}" th:text = "${postInfo.post.getUser().getUsername()} + ':'">Post author</a></h3>
+						<label>נרשם בתאריך:</label>
+						<label th:text="${postInfo.post.getUser().getFormattedJoiningDate()}"></label><br>
+						<label>מספר הודעות:</label>
+						<label th:text="${postInfo.getTotalOfPosts()}"></label><br>
 					</td>
 					<td colspan="4">
-						<p style="text-align: center" th:text = "'נכתב ב-:' + ${post.getFormattedLastActivity()}">Date</p>
-						<pre class="indented postContent" th:text = "${post.getContent()}">Content</pre>
+						<p style="text-align: center" th:text = "'נכתב ב-:' + ${postInfo.post.getFormattedLastActivity()}">Date</p>
+						<pre class="indented postContent" th:text = "${postInfo.post.getContent()}">Content</pre>
 					</td>
 				</tr>
-				<tr th:if="${#authentication.name} eq ${post.getUser().getUsername()} or ${isAdmin}">
+				<tr th:if="${#authentication.name} eq ${postInfo.post.getUser().getUsername()} or ${isAdmin}">
 					<td colspan="5" style="text-align: left;">
-						<a th:if="${#authentication.name} eq ${post.getUser().getUsername()}" 
-							th:href="@{/post/edit/} + ${post.getId()}" class = "button" >ערוך</a>
-						<a th:href="@{/post/delete/} + ${post.getId()}" class = "button" >מחק</a>
+						<a th:if="${#authentication.name} eq ${postInfo.post.getUser().getUsername()}" 
+							th:href="@{/post/edit/} + ${postInfo.post.getId()}" class = "button" >ערוך</a>
+						<a th:href="@{/post/delete/} + ${postInfo.post.getId()}" class = "button" >מחק</a>
 					</td>
 				</tr>
 			</table>
@@ -88,9 +96,9 @@
 		<section>
 			<div sec:authorize="isAuthenticated()">
 				<h3>הוסף תגובה:</h3>
-				<form th:action="@{/topic/} + ${topic.getId()}" method="POST" th:object="${post}">
+				<form th:action="@{/topic/} + ${topicInfo.topic.getId()}" method="POST" th:object="${post}">
 					<textarea name="content" required></textarea>
-					<input type="hidden" name="id_topic" th:value="${topic.getId()}"/>
+					<input type="hidden" name="id_topic" th:value="${topicInfo.topic.getId()}"/>
 					<input class="button" type="submit" value="שלח" />
 				</form>
 			</div>
