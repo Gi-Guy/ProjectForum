@@ -75,25 +75,25 @@ public class EditServices {
 	}
 
 	/**
-	 * This method will update an existing topic with new Content and a new Title.
+	 * This method will update a target topic with new Content and a new Title.
 	 * In case that the Title or Content are blank, there will be no update.
-	 * @param Topic to update
-	 * @param NewTopicPageForm
+	 * @param editTopic - will update target by Topic id.
 	 */
-	public void updateTopic(Topic topic, NewTopicPageForm newTopic) {
-		
+	public void updateTopic(Topic editTopic) {
+		Topic target = topicServices.findTopicById(editTopic.getId());
 		// Checking id there is a new title to update
-		if(!newTopic.getTitle().isBlank())
-			topic.setTitle(newTopic.getTitle());
+		if(!editTopic.getTitle().isBlank())
+			target.setTitle(editTopic.getTitle());
 		
 		// Checking if there is new content to update
-		if (!newTopic.getContent().isBlank())
-			topic.setContent(newTopic.getContent());
+		if (!editTopic.getContent().isBlank())
+			target.setContent(editTopic.getContent());
 		
-		topicServices.save(topic);
+		topicServices.save(target);
 	}
 	
 	/** 
+	 * #REST#
 	 * This method will update an existing Forum with a new Name and New Description.
 	 * In case that the Name or Description are blank, there will be no update.
 	 * @param Forum to update
@@ -108,6 +108,22 @@ public class EditServices {
 			forum.setDescription(editForum.getDescription());
 		
 		forumServices.save(forum);
+	}
+	/** 
+	 * This method will update a target Forum with a new Name and New Description.
+	 * In case that the Name or Description are blank, there will be no update.
+	 * @param Forum to update
+	 */
+	public void updateForum(Forum editForum) {
+		Forum target = forumServices.findFourmById(editForum.getId());
+		// Checking if there is a new name or description to update
+		if(!editForum.getName().isBlank())
+			target.setName(editForum.getName());
+		
+		if(!editForum.getDescription().isBlank())
+			target.setDescription(editForum.getDescription());
+		
+		forumServices.save(target);
 	}
 	
 	/**	

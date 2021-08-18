@@ -16,6 +16,25 @@
 			<table>
 				<tr>
 					<td>
+						<label>מזהה פורום</label>
+					</td>
+					<td>
+						<input type="text" th:field="*{id}" class="validate" readonly="readonly"/>
+						<p th:if="${#fields.hasErrors('id')}" th:errors="*{id}">לא ניתן לערוך מזהה!</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label>מספר מיקום</label>
+					</td>
+					<td>
+						<input type="text" th:field="*{priority}" class="validate" readonly="readonly"/>
+						<p th:if="${#fields.hasErrors('priority')}" th:errors="*{priority}">לא ניתן לשנות מיקום!</p>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
 						<label>שם הפורום</label>
 					</td>
 					<td>
@@ -36,7 +55,6 @@
 			
 			<!-- Submit button -->
 			<div>
-				<input type="hidden" name = "forumId" th:value="${editForum.forumId}"/>
 				<input class="button" type="submit" value="עדכן" />
 			</div>
 			

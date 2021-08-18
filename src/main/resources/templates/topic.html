@@ -35,7 +35,7 @@
 					<label th:text="${topicInfo.getTotalOfPosts()}"></label><br>
 				</td>
 				<td colspan="4">
-					<p style="text-align: center" th:text = "'נוצר ב-:' + ${topicInfo.topic.getFormattedCreatedDate()}">Date</p>
+					<p style="text-align: right" th:text = "'נוצר ב-:' + ${topicInfo.topic.getFormattedCreatedDate()}">Date</p>
 					<pre class="indented postContent" th:text = "${topicInfo.topic.getContent()}">Content</pre>
 				</td>
 			</tr>

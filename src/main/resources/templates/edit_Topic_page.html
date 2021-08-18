@@ -36,7 +36,8 @@
 			
 			<!-- Submit button -->
 			<div>
-				<input type="hidden" name = "topicId" th:value="${editTopic.topicId}"/>
+				<input type="hidden" name = "id" th:field="*{id}" th:value="${editTopic.id}"/>
+				<input type="hidden" name = "user" th:field="*{user}" th:value="${editTopic.user}"/>
 				<input class="button" type="submit" value="עדכן" />
 			</div>
 			

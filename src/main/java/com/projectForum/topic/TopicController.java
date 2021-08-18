@@ -2,7 +2,6 @@ package com.projectForum.topic;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -27,7 +26,6 @@ import com.projectForum.Services.PostServices;
 import com.projectForum.Services.TopicServices;
 import com.projectForum.Services.UserServices;
 import com.projectForum.post.Post;
-import com.projectForum.user.User;
 
 /**
  * This controller will handle the next actions:
@@ -87,7 +85,6 @@ public class TopicController {
 		model.addAttribute("topicInfo", topicServices.getTopicAdditionalInformation(topic));
 		
 		// Each topic can have 0 or more posts in it
-		//model.addAttribute("posts", posts);
 		model.addAttribute("postsInfo", topicServices.getTopicAdditionalInformation(posts));
 		
 		// In each topic there is an option to create a new post
@@ -202,33 +199,31 @@ public class TopicController {
 			//	User isn't allowed to edit Topic
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "edit/" + topicId);
 			
-		// Using newTopicForm to keep the topicId while editing.
-		NewTopicPageForm editTopic = new NewTopicPageForm();
-		editTopic.setTopicId(topicId);
-		model.addAttribute("editTopic", editTopic);
+		// Sending Topic object
+		model.addAttribute("editTopic", topicServices.findTopicById(topicId));
 		return "edit_Topic_page";
 	}
 	
 	@PostMapping("editTopic")
-	public String editTopic(@Valid @ModelAttribute("editTopic") NewTopicPageForm editTopic, BindingResult bindingResult, Authentication authentication, Model model) {
+	public String editTopic(@Valid @ModelAttribute("editTopic") Topic editTopic, BindingResult bindingResult, Authentication authentication, Model model) {
 		
-		Topic topic = topicServices.findTopicById(editTopic.getTopicId());
+		//Topic topic = topicServices.findTopicById(editTopic.getTopicId());
 		
 		// Only register user allowed to do actions
 		if(authentication == null)
-				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "editTopic/" + editTopic.getTopicId());
+				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "editTopic/" + editTopic.getId());
 		else if(userServices.isUserBlocked(authentication.getName()))
-				accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "editTopic/" + editTopic.getTopicId());
+				accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "editTopic/" + editTopic.getId());
 		
 		// Approving admin or allowed user
-		if(authentication.getName().equals(topic.getUser().getUsername()) 
+		if(authentication.getName().equals(editTopic.getUser().getUsername()) 
 			|| userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
-			editService.updateTopic(topic, editTopic);
+			editService.updateTopic(editTopic);
 		else	
 			// User isn't allowed to edit this topic
-			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "editTopic" + editTopic.getTopicId());
+			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "editTopic" + editTopic.getId());
 
-		return "redirect:/topic/" + topic.getId();
+		return "redirect:/topic/" + editTopic.getId();
 	}
 	
 	/** 

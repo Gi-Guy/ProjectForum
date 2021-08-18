@@ -125,10 +125,10 @@ public class ControlPanelController {
 	/** This method will lead an Admin into the forum's editing page. */
 	@GetMapping("forum/edit/{forumId}")
 	public String editForum(@PathVariable int forumId, Model model) {
-		EditForumForm editForum = new EditForumForm();
-		editForum.setForumId(forumId);
-		
-		model.addAttribute("editForum", editForum);
+		//EditForumForm editForum = new EditForumForm();
+		//editForum.setForumId(forumId);
+		Forum forum = forumService.findFourmById(forumId);
+		model.addAttribute("editForum", forum);
 		return "edit_Forum_page";
 	}
 	
@@ -136,18 +136,18 @@ public class ControlPanelController {
 	 * This method will process the actions in the forum's editing page.
 	 */
 	@PostMapping("editForum")
-	public String editForum(@Valid @ModelAttribute("editForum") EditForumForm editForum,
+	public String editForum(@Valid @ModelAttribute("editForum") Forum editForum,
 							BindingResult bindingResult, Authentication authentication,
 							Model model) {
-		Forum forum = forumService.findFourmById(editForum.getForumId());
+		//Forum forum = forumService.findFourmById(editForum.getForumId());
 		
 		// Ensuring that the user trying to make the changes is an admin.
 		if(userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
-			editService.updateForum(forum, editForum);
+			editService.updateForum(editForum);
 		else
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "editForum");
 		
-		return "redirect:controlPanel" + '#' + forum.getId();
+		return "redirect:controlPanel" + '#' + editForum.getId();
 	}
 	
 	/**
