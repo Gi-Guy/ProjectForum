@@ -9,6 +9,9 @@
 		
 		<h1>הרשמה</h1>
 			
+		<p th:if="${emailExists}">כתובת אימייל כבר קיימת במערכת</p>
+		<p th:if="${userExists}">שם משתמש כבר קיים במערכת</p>
+			
 		<div>
 			<!-- Using form to specify our actions - url process 
 			th:action - our action
