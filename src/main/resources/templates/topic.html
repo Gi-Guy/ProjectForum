@@ -83,14 +83,16 @@
 						<pre class="indented postContent overflow" th:text = "${postInfo.post.getContent()}">Content</pre>
 					</td>
 				</tr>
-				<tr th:if="${#authentication.name} eq ${postInfo.post.getUser().getUsername()} or ${isAdmin}">
+				<tr>
 					<td colspan="5">
 						<div style="display: flex; flex-direction:row; justify-content: flex-end;">
 							<label th:text="${postInfo.post.getNumOfLikes()}"></label>
 							<a th:href="@{/post/like/} + ${postInfo.post.getId()}" class = "button">👍</a>
-							<a th:if="${#authentication.name} eq ${postInfo.post.getUser().getUsername()}" 
-								th:href="@{/post/edit/} + ${postInfo.post.getId()}" class = "button" >ערוך</a>
-							<a th:href="@{/post/delete/} + ${postInfo.post.getId()}" class = "button" >מחק</a>
+							<div th:if="${#authentication.name} eq ${postInfo.post.getUser().getUsername()} or ${isAdmin}">
+								<a th:if="${#authentication.name} eq ${postInfo.post.getUser().getUsername()}" 
+									th:href="@{/post/edit/} + ${postInfo.post.getId()}" class = "button" >ערוך</a>
+								<a th:href="@{/post/delete/} + ${postInfo.post.getId()}" class = "button" >מחק</a>
+							</div>
 						</div>
 					</td>
 				</tr>
