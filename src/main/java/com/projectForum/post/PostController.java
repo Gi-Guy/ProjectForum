@@ -93,7 +93,7 @@ public class PostController {
 		
 		// User or Admin allowed to update post
 		editServices.updatePost(targetPost, post);
-		return "redirect:/topic/" + targetPost.getTopic().getId();
+		return "redirect:/topic/" + targetPost.getTopic().getId() + "#" + targetPost.getId();
 	}
 	
 	/**
