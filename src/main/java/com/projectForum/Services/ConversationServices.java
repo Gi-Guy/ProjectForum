@@ -1,11 +1,13 @@
 package com.projectForum.Services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.PrivateMessages.Answer;
 import com.projectForum.PrivateMessages.Conversation;
 import com.projectForum.PrivateMessages.ConversationRepository;
@@ -22,7 +24,6 @@ public class ConversationServices {
 		@Autowired
 		public ConversationServices(UserServices userServices, AnswerServices answerServices,
 				ConversationRepository convRepo, DeleteService deleteServices) {
-			super();
 			this.userServices = userServices;
 			this.answerServices = answerServices;
 			this.convRepo = convRepo;
@@ -63,7 +64,7 @@ public class ConversationServices {
 		 */
 		public void addNewAnswer(int conversationId, Answer answer, Authentication authentication) {
 			Conversation conv = convRepo.findById(conversationId);
-			
+			conv.setLastActivity(LocalDateTime.now());
 			answer.setConversation(conv);
 			answer.setUser(userServices.findUserByUsername(authentication.getName()));
 			answerServices.save(answer);
@@ -138,7 +139,15 @@ public class ConversationServices {
 			return answerServices.findAnswersByConversation(conv);
 		}
 		
-		/*
-		 *	 TODO Repository services
-		 */
+		/**
+		 * 	This method will return a list of conversations of User,
+		 * 	Order by last activity date.
+		 * @param User to search*/
+		public List<Conversation> getAllConversationsByUserOrderByLastactivity(User user) throws EntityRequestException{
+			try {
+				return convRepo.findBySenderOrReceiverOrderByLastActivityDesc(user, user);
+			} catch (Exception e) {
+				throw new EntityRequestException("Could not reload user's conversations :: " + user.getUsername());
+			}
+		}
 }
