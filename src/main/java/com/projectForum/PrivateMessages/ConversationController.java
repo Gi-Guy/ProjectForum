@@ -52,7 +52,7 @@ public class ConversationController {
 		if(!user.getUsername().equals(authentication.getName()))
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + username);
 		
-		List<Conversation> convs = conversationServices.getAllConversationsByUser(user, authentication);
+		List<Conversation> convs = conversationServices.getAllConversationsByUserOrderByLastactivity(user);
 		if(convs.isEmpty() || convs == null)
 			mav.addObject("isEmpty", true);
 		else
@@ -180,10 +180,11 @@ public class ConversationController {
 	
 	/**
 	 * This method will delete a conversation
+	 * @throws AccessDeniedException 
 	 */
 	@GetMapping("delete/conversation/{conversationId}")
-	public String deleteConversation(@PathVariable int conversationId,Authentication authentication,
-										RedirectAttributes model) {
+	public ModelAndView deleteConversation(@PathVariable int conversationId,Authentication authentication,
+										RedirectAttributes model) throws AccessDeniedException {
 		// Finding conversation
 		Conversation conversation = conversationServices.getConversation(conversationId);
 		
@@ -195,11 +196,11 @@ public class ConversationController {
 			!conversation.getReceiver().getUsername().equals(authentication.getName())){
 			// User not allowed to remove this
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "delete/conversation/" + conversationId);
-			return "redirect:/messages/id/" + conversation.getId();
+			return this.displayAllUserMessages(authentication.getName(), authentication);
 		}
 		//	User allowed to remove conversation
 		conversationServices.deleteConversation(conversationId);
 		model.addFlashAttribute("message", "Conversation has been removed.");
-		return "redirect:/";
+		return this.displayAllUserMessages(authentication.getName(), authentication);
 	}
 }

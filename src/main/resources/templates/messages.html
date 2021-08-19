@@ -12,24 +12,38 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 
 		<hr>
 		 
-		<table class="table-striped" border="1" cellpadding="10" style="text-align:right">
+		<table class="table-striped stretch" border="1" cellpadding="10" style="text-align:center">
 			<thead>
 					<tr>
-						<th colspan="6">
+						<th colspan="6" style="text-align:right">
 							<h2>כל ההודעות שלי</h2>
+							<label>סך כל הודעות:</label>
+							<label th:unless ="${isEmpty}" th:text="${convs.size()}"></label>
+							<label th:if ="${isEmpty}" th:text="0"></label>
 						</th>	
 					</tr>
 					<tr>
 						<th>נושא</th>
 						<th>מאת</th>
-						<th>אל</th>
+						<th>נמען</th>
+						<th>נוצר</th>
+						<th>פעילות אחרונה</th>
+						<th>מחק</th>
 					</tr>
 			</thead>
 			<tbody>
-				<tr th:each="conv : ${convs}">
+				<tr th:if ="${isEmpty}">
+					<td colspan="6"><h2>אין הודעות האחרונות</h2></td>
+				</tr>
+				<tr th:unless ="${isEmpty}" th:each="conv : ${convs}">
 					<td><a th:href="@{/messages/id/} + ${conv.id}" th:text="${conv.title}"></a></td>
 					<td><a th:href="@{/user/} + ${conv.getSender().username}" th:text = "${conv.getSender().username}"></a></td>
 					<td><a th:href="@{/user/} + ${conv.getReceiver().username}" th:text = "${conv.getReceiver().username}"></a></td>
+					<td th:text ="${conv.getCreatedDate()}"></td>
+					<td th:text ="${conv.getLastActivity()}"></td>
+					<td style="text-align: center">
+						<a th:href="@{/messages/delete/conversation/} + ${conv.id}" class = "button" >מחק שיחה</a>
+					</td>
 				</tr>
 			</tbody>
 		</table>

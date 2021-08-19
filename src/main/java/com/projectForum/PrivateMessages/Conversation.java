@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.projectForum.general.Formatter;
 import com.projectForum.user.User;
 
 @Entity
@@ -102,16 +103,16 @@ public class Conversation {
 		this.receiver = receiver;
 	}
 
-	public LocalDateTime getCreatedDate() {
-		return createdDate;
+	public String getCreatedDate() {
+		return Formatter.toTimeDate(createdDate);
 	}
 
 	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
 	}
 
-	public LocalDateTime getLastActivity() {
-		return lastActivity;
+	public String getLastActivity() {
+		return Formatter.toTimeDate(lastActivity);
 	}
 
 	public void setLastActivity(LocalDateTime lastActivity) {
