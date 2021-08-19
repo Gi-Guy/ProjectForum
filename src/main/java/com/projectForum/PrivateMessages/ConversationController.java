@@ -196,13 +196,11 @@ public class ConversationController {
 			!conversation.getReceiver().getUsername().equals(authentication.getName())){
 			// User not allowed to remove this
 			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "delete/conversation/" + conversationId);
-			//return "redirect:/messages/id/" + conversation.getId();
 			return this.displayAllUserMessages(authentication.getName(), authentication);
 		}
 		//	User allowed to remove conversation
 		conversationServices.deleteConversation(conversationId);
 		model.addFlashAttribute("message", "Conversation has been removed.");
-		//return "redirect:/messages/" + authentication.getName();
 		return this.displayAllUserMessages(authentication.getName(), authentication);
 	}
 }
