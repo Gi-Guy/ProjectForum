@@ -1,70 +1,105 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Declaring  XML using-->
 
 	<head th:replace="fragments.html :: headerfiles('שרשור')"></head>
 	
 	<body>
-	
+		
 		<div th:replace="fragments.html :: topnav"></div>
 		
 		<br>
 		
 
 		<!-- conversation -->
-		<h1 th:text = "${conversation.getTitle()}"> Title:>conversation name</h1>
-		<hr>
-		
-		<section>
-			<p style="text-align: justify; display:block; white-space:pre-wrap"
-				th:text = "${conversation.getSender().getUsername()} + ': ' + ${conversation.getContent()}">Content</p>
+		<table class="stretch" border="3" style="text-align:right; border-color: black">
+			<colgroup>
+		        <col width="20%">
+		        <col width="20%">
+		        <col width="20%">
+		        <col width="20%">
+		        <col width="20%">
+	        </colgroup>
+	        <tr>
+	        	<td colspan="5">
+					<h1 th:text = "${conversation.getTitle()}"> Title:>conversation name</h1>
+	        	</td>
+	        </tr>
+	        <tr>
+				<td colspan="1">
+					<h3><a th:href="@{/user/} + ${conversation.getSender().getUsername()}" th:text = "${conversation.getSender().getUsername()}">Sender</a></h3>
+					<label>משתמש:</label>
+					<label th:text="${conversation.getSender().getRole().getName()}"></label><br>
+					<label>הצטרף בתאריך:</label>
+					<label th:text="${conversation.getSender().getFormattedJoiningDate()}"></label><br>
+				</td>
+				<td colspan="4">
+					<p style="text-align: right" th:text = "'נוצר ב-:' + ${conversation.getCreatedDate()}">Date</p>
+					<pre class="indented postContent overflow" th:text = "${conversation.getContent()}">Content</pre>
+				</td>
+			</tr>
+	        <tr th:if="${#authentication.name} eq ${conversation.getSender().username} or ${conversation.getReceiver().username}">
+				<td colspan="5" style="text-align: left;">
+					<a th:href="@{/messages/delete/conversation/} + ${conversation.id}" class = "button" >מחק שיחה</a>
+				</td>
+			</tr>
+		</table>
 			
-					<!-- DELETE conversation -->
-				 <a class="button" th:href="@{/messages/delete/conversation/} + ${conversation.id}">
-                       <i class="material-icons white black-text">מחק שיחה</i>
-                   </a>
-		</section>
+		<hr>
 		
 		<!-- Number of answers -->
 		<header>
-			<blockquote th:text="|תגובות: | + ${answers.size()}">מספר הודעות:</blockquote>
+			<blockquote th:text="|הודעות: | + ${answers.size()}">מספר הודעות</blockquote>
 		</header>
 		<hr>
-		
-		<!-- displaying all answers -->
-		
+
+		<!-- displaying all posts -->
 		<div th:each = "answer: ${answers}">
-			<!-- username -->
-			<section>
-				<p th:text = "${answer.getUser().getUsername()} + ':'">Answer author</p>
-			</section>
+			<table class="stretch" border="1" style="text-align:right" th:id="${answer.getId()}">
+				<colgroup>
+			        <col width="20%">
+			        <col width="20%">
+			        <col width="20%">
+			        <col width="20%">
+			        <col width="20%">
+		        </colgroup>
+				<tr>
+					<td colspan="1">
+						<h3><a th:href="@{/user/} + ${answer.getUser().getUsername()}" th:text = "${answer.getUser().getUsername()}">Answer author</a></h3>
+						<label>משתמש:</label>
+						<label th:text="${answer.getUser().getRole().getName()}"></label><br>
+						<label>הצטרף בתאריך:</label>
+						<label th:text="${answer.getUser().getFormattedJoiningDate()}"></label><br>
+					</td>
+					<td colspan="4">
+						<p style="text-align: right" th:text = "'נכתב ב-:' + ${answer.getCreatedDate()}">Date</p>
+						<pre class="indented postContent overflow" th:text = "${answer.getContent()}">Content</pre>
+					</td>
+				</tr>
+				<tr th:if="${#authentication.name} eq ${answer.getUser().getUsername()}">
+					<td colspan="5" style="text-align: left;">
+						<a th:href="@{/messages/delete/answer/} + ${answer.id}" class = "button" >מחק הודעה</a>
+					</td>
+				</tr>
+			</table>
 			
-			<!-- Answer -->
-			<section>
-				<p style="text-align: justify; display:block; white-space:pre-wrap"
-				th:text = "${answer.getContent()}"> Answer</p>
-			</section>
-			<hr>
-					<!-- DELETE ANSWER -->
-				 <a class="button" th:href="@{/messages/delete/answer/} + ${answer.id}">
-                       <i class="material-icons white black-text">מחק הודעה</i>
-                   </a>
-			<hr>
+			<br><br>
+			
 		</div>
 	
-		<!-- New Answer -->
-		<header>
-			<blockquote>הוסף תגובה:</blockquote>
-		</header>
-			
-		<div sec:authorize="isAuthenticated()">
-			<form th:action="@{/messages/} + ${conversation.getId()}" method="POST" th:object="${answer}">
-				<textarea  name="content" required></textarea>
-				<input type="hidden" name="id_conversation" th:value="${conversation.getId()}"/>
-				<input class="button" type="submit" value="שלח" />
-			</form>
-		</div>
+		<!-- New Reply -->
+		<section>
+			<div sec:authorize="isAuthenticated()">
+				<h3>הוסף תגובה:</h3>
+				<form th:action="@{/messages/} + ${conversation.getId()}" method="POST" th:object="${answer}">
+					<textarea name="content" required></textarea>
+					<input type="hidden" name="id_conversation" th:value="${conversation.getId()}"/>
+					<input class="button" type="submit" value="שלח" />
+				</form>
+			</div>
+		</section>
 		
 		<div th:replace="fragments.html :: botnav"></div>
+		
 	</body>
 </html>
