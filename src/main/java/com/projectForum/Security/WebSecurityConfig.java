@@ -1,5 +1,8 @@
 package com.projectForum.Security;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -10,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
@@ -19,6 +24,9 @@ import com.projectForum.Exceptions.CustomAccessDeniedHandler;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	@Autowired
+	DataSource dataSource;
 
 	// Creating the bean - spring framework automatically inject instance for autowired view
 	@Bean
@@ -66,11 +74,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          .failureUrl("/loginError")
          .usernameParameter("email")
          .permitAll()
+         .and().rememberMe().tokenRepository(persistentTokenRepository()).userDetailsService(userDetailsService())
          .and()
-         .rememberMe().tokenValiditySeconds(7 * 24 * 60 * 60) // will remember user for 7 days
-         .key("123456789")
-         .and()
-         .logout().logoutSuccessUrl("/").permitAll()
+         .logout().logoutSuccessUrl("/").invalidateHttpSession(true).deleteCookies("JSESSIONID")
          .and().exceptionHandling().accessDeniedHandler(accessDeniedHandler())
          .and().csrf().disable();
          
@@ -78,7 +84,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     	 
     }
     
-    // Trying to encode the web
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+    	JdbcTokenRepositoryImpl db = new JdbcTokenRepositoryImpl();
+        db.setDataSource(dataSource);
+        return db;
+	}
+
+	// Trying to encode the web
     private void configureEncodingFilter(HttpSecurity http) {
         CharacterEncodingFilter filter = new CharacterEncodingFilter();
         filter.setEncoding("UTF-8");
