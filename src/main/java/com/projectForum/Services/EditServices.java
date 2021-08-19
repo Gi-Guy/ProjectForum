@@ -15,7 +15,6 @@ import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;
 import com.projectForum.user.User;
 
-//TODO TEST THIS FILE
 /* ###########################################################
 * 		WARNING: THIS SERVICE FILE ISN'T TESTED YET!
 * ###########################################################*/
@@ -135,7 +134,6 @@ public class EditServices {
 		User targetUser = userServices.findUserByUserId(updateUser.getId());
 		
 		if (targetUser == null) {
-			// TODO add exception
 			System.err.println("ERROR: USER DOESN'T EXIST!");
 		}
 		

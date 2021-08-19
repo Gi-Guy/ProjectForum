@@ -73,10 +73,9 @@ public class Topic {
 		 this.lastActivity = LocalDateTime.now();
 	 }
 	
-	/* TODO @PreUpdate
 	protected void onUpdate() {
 		this.lastActivity = LocalDateTime.now();
-	}*/
+	}
 	 
 	public int getId() {
 		return id;
