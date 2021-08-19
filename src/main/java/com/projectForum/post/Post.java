@@ -1,13 +1,19 @@
 package com.projectForum.post;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -46,8 +52,17 @@ public class Post {
 	@JoinColumn(name = "id_topic")
 	@JsonManagedReference
 	 private Topic topic;
-	
 
+	// Many to many relationship between posts and users in terms of likes
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(
+			name = "likes",
+			joinColumns = @JoinColumn(name = "post_id"),
+			inverseJoinColumns = @JoinColumn(name = "user_id")
+			)
+	@JsonManagedReference
+	private Set<User> likes = new HashSet<>();
+	
 	@PrePersist
 	 protected void onCreate() {
 		 this.createdDate = LocalDateTime.now();
@@ -112,7 +127,27 @@ public class Post {
 		this.user = user;
 	}
 	
-    //Auto generated 
+    public Set<User> getLikes() {
+		return likes;
+	}
+
+	public void setLikes(Set<User> likes) {
+		this.likes = likes;
+	}
+	
+	public int getNumOfLikes() {
+		return likes.size();
+	}
+
+	public void removeLikeOfUser(User user) {
+		likes.remove(user);
+	}
+
+	public void addLikeOfUser(User user) {
+		likes.add(user);
+	}
+
+	//Auto generated 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
