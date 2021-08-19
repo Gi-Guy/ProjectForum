@@ -112,8 +112,21 @@ public class ConversationController {
 	 * 	This method will create a new Conversation between two users
 	 */
 	@GetMapping("newMessage/{receiverId}")
-	public String createNewConversation(@PathVariable int receiverId,Authentication authentication,
+	public String createNewConversation(@PathVariable int receiverId ,Authentication authentication,
 												Model model) {
+		
+		// Checking if receiver has reached to limit
+		if(conversationServices.isReachedToLimit(receiverId)) {
+			model.addAttribute("isSender", false);
+			return "inboxFull";
+		}
+		// Checking if sender has reached to limit
+		else if(conversationServices.isReachedToLimit(authentication.getName())) {
+			model.addAttribute("isSender", true);
+			return "inboxFull";
+		}
+		
+		// User isn't in limit
 		Conversation newConv = conversationServices.createNewConversation(receiverId
 							,conversationServices.getUserByUsername(authentication.getName()));
 		// Checking if user sending messages to itself

@@ -43,7 +43,8 @@ public class ProjectForumApplication extends SpringBootServletInitializer {
 			ForumInformation newForumInformation = 
 					new ForumInformation(configProperties.getForumName(), 
 							configProperties.getForumDescription(), 
-							configProperties.getCounterForDelete());
+							configProperties.getCounterForDelete(),
+							configProperties.getLimitOfPrivateMessages());
 			infoServices.save(newForumInformation);
 		}
 	}

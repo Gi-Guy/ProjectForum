@@ -27,15 +27,18 @@ public class ForumInformation {
 	@Column(nullable = false)
 	private int timeToDelete;
 	
+	@Column(nullable = false)
+	private int limitOfPrivateMessages;
 	
 	public ForumInformation() {
 		
 	}
 	
-	public ForumInformation(String name, String description, int timeToDelete) {
+	public ForumInformation(String name, String description, int timeToDelete, int limitOfPrivateMessages) {
 		this.name = name;
 		this.description = description;
 		this.timeToDelete = timeToDelete;
+		this.limitOfPrivateMessages = limitOfPrivateMessages;
 	}
 
 	public String getName() {
@@ -66,17 +69,26 @@ public class ForumInformation {
 		return id;
 	}
 	
+	public int getLimitOfPrivateMessages() {
+		return limitOfPrivateMessages;
+	}
+
+	public void setLimitOfPrivateMessages(int limitOfPrivateMessages) {
+		this.limitOfPrivateMessages = limitOfPrivateMessages;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + id;
+		result = prime * result + limitOfPrivateMessages;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + timeToDelete;
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -93,6 +105,8 @@ public class ForumInformation {
 			return false;
 		if (id != other.id)
 			return false;
+		if (limitOfPrivateMessages != other.limitOfPrivateMessages)
+			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -102,10 +116,14 @@ public class ForumInformation {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "ForumInformation [id=" + id + ", name=" + name + ", description=" + description + ", timeToDelete="
-				+ timeToDelete + "]";
+				+ timeToDelete + ", limitOfPrivateMessages=" + limitOfPrivateMessages + "]";
 	}
+
+
+	
+
 }

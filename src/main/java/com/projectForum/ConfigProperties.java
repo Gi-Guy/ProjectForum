@@ -19,6 +19,7 @@ public class ConfigProperties {
 	private String forumName;
 	private String forumDescription;
 	private	int counterForDelete;
+	private int limitOfPrivateMessages;
 	
 	public String getForumName() {
 		return forumName;
@@ -38,6 +39,10 @@ public class ConfigProperties {
 	public void setCounterForDelete(int counterForDelete) {
 		this.counterForDelete = counterForDelete;
 	}
-	
-	
+	public int getLimitOfPrivateMessages() {
+		return limitOfPrivateMessages;
+	}
+	public void setLimitOfPrivateMessages(int limitOfPrivateMessages) {
+		this.limitOfPrivateMessages = limitOfPrivateMessages;
+	}
 }
