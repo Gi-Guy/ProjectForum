@@ -87,6 +87,19 @@ public class ForumInformationServices {
 		else
 			throw new EntityRequestException("Could not update forum timeToDelete");
 	}
+	/**
+	 * This method will update the forum Limit Of Private Messages
+	 */
+	public void updateLimitOfPrivateMessages(int limitOfPrivateMessages) {
+		ForumInformation forumInformation = this.getForumInformation();
+		
+		if(forumInformation != null) {
+			forumInformation.setLimitOfPrivateMessages(limitOfPrivateMessages);
+			this.save(forumInformation);
+		}
+		else
+			throw new EntityRequestException("Could not update forum timeToDelete");
+	}
 	
 	public void updateForumInformation(ForumInformation updatedInformation) {
 		ForumInformation currentInformation = this.getForumInformation();
@@ -112,6 +125,10 @@ public class ForumInformationServices {
 		// Update Forum time to delete
 		if(currentInformation.getTimeToDelete() != updatedInformation.getTimeToDelete() && !(updatedInformation.getTimeToDelete() < 0)) {
 			this.updateTimeToDelete(updatedInformation.getTimeToDelete());
+		}
+		// Update Forum's Limit Of Private Messages
+		if(currentInformation.getLimitOfPrivateMessages() != updatedInformation.getLimitOfPrivateMessages() && !(updatedInformation.getLimitOfPrivateMessages() < 0)) {
+			this.updateLimitOfPrivateMessages(updatedInformation.getLimitOfPrivateMessages());
 		}
 	}
 	
@@ -166,6 +183,10 @@ public class ForumInformationServices {
 		// Update Forum's time to delete
 		if(currentInformation.getTimeToDelete() != updatedInformation.getTimeToDelete() && !(updatedInformation.getTimeToDelete() < 0)) {
 			currentInformation.setTimeToDelete(updatedInformation.getTimeToDelete());
+		}
+		// Update Forum's Limit Of Private Messages
+		if(currentInformation.getLimitOfPrivateMessages() != updatedInformation.getLimitOfPrivateMessages() && !(updatedInformation.getLimitOfPrivateMessages() < 0)) {
+			currentInformation.setLimitOfPrivateMessages(updatedInformation.getLimitOfPrivateMessages());
 		}
 		
 		return this.saveAndreturn(currentInformation);

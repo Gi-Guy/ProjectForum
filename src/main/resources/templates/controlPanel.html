@@ -84,7 +84,10 @@
 				<label>מחק הודעות אחרי</label>
 				<input th:field="*{timeToDelete}" type="number">
 				<label>ימים</label><br>
-				
+			<!-- Change private mesages limit -->
+				<label>הגבל מספר הודעות פרטיות למשתמש:  </label>
+				<input th:field="*{limitOfPrivateMessages}" type="number">
+					<br>
 				<input class="button" type="submit" value="שמור שינויים"/>
 			</form>		
 		</div>

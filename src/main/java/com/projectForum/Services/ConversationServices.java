@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.projectForum.ControlPanel.Configuration.ForumInformation;
 import com.projectForum.Exceptions.EntityRequestException;
 import com.projectForum.PrivateMessages.Answer;
 import com.projectForum.PrivateMessages.Conversation;
@@ -20,14 +21,17 @@ public class ConversationServices {
 		private AnswerServices			answerServices;
 		private	ConversationRepository 	convRepo;
 		private DeleteService			deleteServices;
+		private ForumInformationServices forumInformationServices;
 		
 		@Autowired
 		public ConversationServices(UserServices userServices, AnswerServices answerServices,
-				ConversationRepository convRepo, DeleteService deleteServices) {
+				ConversationRepository convRepo, DeleteService deleteServices,
+				ForumInformationServices forumInformationServices) {
 			this.userServices = userServices;
 			this.answerServices = answerServices;
 			this.convRepo = convRepo;
 			this.deleteServices = deleteServices;
+			this.forumInformationServices = forumInformationServices;
 		}
 
 		
@@ -149,5 +153,36 @@ public class ConversationServices {
 			} catch (Exception e) {
 				throw new EntityRequestException("Could not reload user's conversations :: " + user.getUsername());
 			}
+		}
+		/**	
+		 * 	This method will check if user has reached To private messages limit
+		 * @param 	string of user to check
+		 * @return 	true if user reached To limit*/
+		public boolean isReachedToLimit(String username) {
+			User user = userServices.findUserByUsername(username);
+			return this.isReachedToLimit(user);
+		}
+		
+		/**	
+		 * 	This method will check if user has reached To private messages limit
+		 * @param 	int of user ID to check
+		 * @return 	true if user reached To limit*/
+		public boolean isReachedToLimit(int userId) {
+			User user = userServices.findUserByUserId(userId);
+			return this.isReachedToLimit(user);
+		}
+		
+		/**	
+		 * 	This method will check if user has reached To private messages limit
+		 * @param 	User to check
+		 * @return 	true if user reached To limit*/
+		public boolean isReachedToLimit(User user) {
+			ForumInformation forumInformation = forumInformationServices.getForumInformation();
+			List<Conversation> conversations = this.getAllConversationsByUserOrderByLastactivity(user);
+			
+			if(conversations.size() < forumInformation.getLimitOfPrivateMessages())
+				return false;
+			
+			return true;
 		}
 }

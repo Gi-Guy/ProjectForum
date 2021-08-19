@@ -11,7 +11,6 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 		<h1 th:text="${forum.name}"></h1>
 		<h2 th:text="${forum.description}"></h2>
 		<hr>
-		<!-- multi checkbocx form -->
 		<table class="table-striped stretch" border="1" style="text-align:right">
 			<thead>
 					<tr>
@@ -35,7 +34,15 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 					</tr>
 			</thead>
 			<tbody>
-				<tr th:each="topic : ${topics}">
+				<tr th:if ="${topics.isEmpty()}" style="text-align:center">
+					<td colspan="8">
+						<h2>אין שרשורים חדשים...</h2>
+						<h3 sec:authorize="isAuthenticated()">
+							<a th:href="@{/topic/newTopic/} + ${forum.id}">צור שרשור חדש</a>
+						</h3>
+					</td>
+				</tr>
+				<tr th:unless ="${topics.isEmpty()}" th:each="topic : ${topics}">
 					<td><p class="title overflow"><a th:href="@{/topic/} + ${topic.topic.id}" th:text="${topic.topic.title}"></a></p></td>
 					<td><p class="summary overflow" th:text = "${topic.summary}"></p></td>
 					<td><a th:href="@{/user/} + ${topic.topic.user.username}" th:text = "${topic.topic.user.username}"></a></td>

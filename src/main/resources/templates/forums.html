@@ -28,7 +28,10 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"> <!-- Decl
 					</tr>
 			</thead>
 			<tbody>
-				<tr th:each = "forum : ${forums}">
+				<tr th:if ="${forums.isEmpty()}" style="text-align:center">
+					<td colspan="6"><h2>אין עדיין פורומים להצגה</h2></td>
+				</tr>
+				<tr th:unless ="${forums.isEmpty()}" th:each = "forum : ${forums}">
 					<td><p class="title overflow" ><a th:href="@{/forum/} + ${forum.forum.id}" th:text="${forum.forum.name}"></a></p></td>
 					<td><p class="summary overflow" th:text = "${forum.forum.description}"></p></td>
 					<td th:text = "${forum.getNumOfTopics()}"></td>
