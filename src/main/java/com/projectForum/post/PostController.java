@@ -22,7 +22,6 @@ import com.projectForum.Services.DeleteService;
 import com.projectForum.Services.EditServices;
 import com.projectForum.Services.PostServices;
 import com.projectForum.Services.UserServices;
-import com.projectForum.user.User;
 
 /**
  * This controller will handle the next actions:
@@ -49,39 +48,6 @@ public class PostController {
 		this.userServices = userServices;
 		this.deleteService = deleteService;
 		this.editServices = editServices;
-	}
-	
-	/**
-	 * This method will toggle on/off whether the user likes the post.
-	 * The method will redirect back to the same post. 
-	 */
-	@GetMapping("like/{postId}")
-	public String likePost(@PathVariable int postId, Model model, Authentication authentication) {
-		Post post = postServices.findPostById(postId);
-		
-		// Unregistered and blocked users can not like or remove likes on posts.
-		if(authentication == null)
-				accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "like/" + postId);
-		else if(userServices.isUserBlocked(authentication.getName()))
-				accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "like/" + postId);
-		
-		User user = userServices.findUserByUsername(authentication.getName());
-		
-		// TODO Add / remove user from the set of those who liked the post
-		User found = null;
-		for(User u : post.getLikes())
-			if (u.getId() == user.getId())
-				found = u;
-		
-		if (found != null)
-			post.removeLikeOfUser(found);
-		else
-			post.addLikeOfUser(user);
-		postServices.save(post);
-		
-		// Flag returned of whether the user currently likes the post or not.
-		model.addAttribute("liked", found==null);
-		return "redirect:/topic/" + post.getTopic().getId() + "#" + post.getId();
 	}
 
 	/** This method will give the user the option to edit the post content */

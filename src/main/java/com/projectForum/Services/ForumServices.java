@@ -26,6 +26,7 @@ public class ForumServices {
 	private TopicServices topicServices;
 	@Autowired
 	private PostServices	postServices;
+
 	
 	/**
 	 * This method will return a Forum by forumId

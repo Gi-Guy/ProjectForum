@@ -22,7 +22,7 @@ public class PostServices {
 	@Autowired	
 	private PostRepository	postRepo;
 	@Autowired
-	TopicServices	topicServices;
+	private TopicServices	topicServices;
 	
 	public Post findPostById(int postId) throws EntityRequestException{
 		Post post = null;
