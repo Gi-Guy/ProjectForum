@@ -1,8 +1,5 @@
 package com.projectForum.Security;
 
-import javax.sql.DataSource;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -13,8 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
@@ -25,9 +20,6 @@ import com.projectForum.Exceptions.CustomAccessDeniedHandler;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
-	@Autowired
-	DataSource dataSource;
-
 	// Creating the bean - spring framework automatically inject instance for autowired view
 	@Bean
     public UserDetailsService userDetailsService() {
@@ -74,22 +66,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          .failureUrl("/loginError")
          .usernameParameter("email")
          .permitAll()
-         .and().rememberMe().tokenRepository(persistentTokenRepository()).userDetailsService(userDetailsService())
          .and()
-         .logout().logoutSuccessUrl("/").invalidateHttpSession(true).deleteCookies("JSESSIONID")
+         .logout().logoutSuccessUrl("/")
          .and().exceptionHandling().accessDeniedHandler(accessDeniedHandler())
          .and().csrf().disable();
          
     	 configureEncodingFilter(http);
     	 
     }
-    
-    @Bean
-    public PersistentTokenRepository persistentTokenRepository() {
-    	JdbcTokenRepositoryImpl db = new JdbcTokenRepositoryImpl();
-        db.setDataSource(dataSource);
-        return db;
-	}
 
 	// Trying to encode the web
     private void configureEncodingFilter(HttpSecurity http) {
