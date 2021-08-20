@@ -76,7 +76,8 @@ public class PostController {
 		if (found != null)
 			post.removeLikeOfUser(found);
 		else
-			post.addLikeOfUser(found);
+			post.addLikeOfUser(user);
+		postServices.save(post);
 		
 		// Flag returned of whether the user currently likes the post or not.
 		model.addAttribute("liked", found==null);
