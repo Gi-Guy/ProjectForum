@@ -87,7 +87,8 @@
 					<td colspan="5">
 						<div style="display: flex; flex-direction:row; justify-content: flex-end;">
 							<label th:text="${postInfo.post.getNumOfLikes()}"></label>
-							<a th:href="@{/post/like/} + ${postInfo.post.getId()}" class = "button">👍</a>
+							<a  sec:authorize="isAnonymous()" th:href="@{/post/like/} + ${postInfo.post.getId()}" class = "button" style="pointer-events: none; cursor: default;">👍</a>
+							<a sec:authorize="isAuthenticated()" th:href="@{/post/like/} + ${postInfo.post.getId()}" class = "button">👍</a>
 							<div th:if="${#authentication.name} eq ${postInfo.post.getUser().getUsername()} or ${isAdmin}">
 								<a th:if="${#authentication.name} eq ${postInfo.post.getUser().getUsername()}" 
 									th:href="@{/post/edit/} + ${postInfo.post.getId()}" class = "button" >ערוך</a>
