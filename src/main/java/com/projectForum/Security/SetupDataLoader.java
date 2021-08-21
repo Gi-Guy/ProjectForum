@@ -1,7 +1,6 @@
 package com.projectForum.Security;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -45,7 +44,7 @@ public class SetupDataLoader implements
 	/**
 	 * defining final information
 	 */
-	private final List<String> roles = Arrays.asList("ADMIN", "USER", "BLOCKED");
+	private final List<String> roles = Path.getAllRoles();
 	
 	
 	@Override

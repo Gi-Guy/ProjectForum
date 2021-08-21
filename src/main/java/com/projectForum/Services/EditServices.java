@@ -10,7 +10,6 @@ import com.projectForum.ControlPanel.EditUserForm;
 import com.projectForum.REST.EditForumForm;
 import com.projectForum.Security.Role;
 import com.projectForum.forum.Forum;
-import com.projectForum.post.EditPostForm;
 import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;
 import com.projectForum.user.User;
@@ -38,22 +37,6 @@ public class EditServices {
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	
-	/** 
-	 * This method will update an existing post with new Content.
-	 * In case that the content is blank, there will be no update.
-	 * @param Post to update
-	 * @param EditPostForm new Content
-	 */
-	public void updatePost(Post post, EditPostForm editPostForm) {
-		
-		// Checking if there is a new content to update
-		if(!editPostForm.getContent().isBlank()) 
-			post.setContent(editPostForm.getContent());
-		
-		postServices.save(post);
-	}
-	
 	/** 
 	 * This method will update an existing post with new Content.
 	 * In case that the content is blank, there will be no update.
