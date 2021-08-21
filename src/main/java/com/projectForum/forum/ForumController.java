@@ -3,17 +3,12 @@ package com.projectForum.forum;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import com.projectForum.Exceptions.AccessDeniedRequestException;
 import com.projectForum.Exceptions.EntityRequestException;
@@ -85,51 +80,4 @@ public class ForumController {
 		model.addAttribute("topics", topics);
 		return "forum";
 	}
-	
-	/** 
-	 * This method will lead user to create a new forum page.
-	 * This should be only in Control panel.
-	 */
-	@GetMapping("/forum/newForum")
-	public String createNewForum(Model model, Authentication authentication) {
-		
-		if(!userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
-			// User not allowed to access this page
-			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "newForum");
-			
-		model.addAttribute("newForum", new Forum());		
-		return "new_Forum_page";
-	}
-	
-	/** This method will create a new forum according to the request of a user */
-	@PostMapping("/forum/newForum")
-	public String proccesNewForum(@Valid @ModelAttribute Forum forum, BindingResult bindingResult, Authentication authentication, Model model) {
-		
-		if(authentication == null)
-			accessDeniedRequestException.throwNewAccessDenied("unknown", localUrl + "newForum");
-		
-		if(!userServices.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
-			accessDeniedRequestException.throwNewAccessDenied(authentication.getName(), localUrl + "newForum");
-		
-		if(bindingResult.hasErrors()) {
-			System.err.println("ERROR :: Forum Controller - proccesNewForum (POST)");
-			return "new_Forum_page";
-		}
-		
-		// Checking if title or description are blanked
-		if(forum.getName().isBlank() || forum.getDescription().isBlank())
-			return "new_Forum_page";
-		
-		//Each forum must have a priority value, 1 is the lowest.
-		List<Forum> forums = forumServices.findAll();
-		if(forums.isEmpty()) {
-			forum.setPriority(1);	
-		}
-		else {
-			forum.setPriority(forums.size() + 1);	
-		}
-		forumServices.save(forum);
-		return "redirect:/forum/" + forum.getId();
-	}
-
 }	

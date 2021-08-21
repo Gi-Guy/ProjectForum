@@ -1,5 +1,8 @@
 package com.projectForum.Security;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Path {
     /** In this area we defines all of Access Rules for all Roles*/
     private static final String[] ALL_ACCESS = {
@@ -33,6 +36,7 @@ public class Path {
     final static String adminRole		=	"ADMIN";
     final static String userRole		=	"USER";
     final static String undrfinedRole	=	"UNDEFINED_USER";
+    final static String blocked			=	"BLOCKED";
 
 	public static String[] getAllAccess() {
 		return ALL_ACCESS;
@@ -53,6 +57,10 @@ public class Path {
 	public static String getUserRole() {
 		return userRole;
 	}
+	
+	public static String getBlockedRole() {
+		return blocked;
+	}
 
 	public static String getUndrfinedRole() {
 		return undrfinedRole;
@@ -62,7 +70,8 @@ public class Path {
 		return adminRole + "," + userRole;
 		
 	}
-    public static String getAllRoles() {
-    	return adminRole + "," +  userRole + "," + undrfinedRole;
+    public static List<String> getAllRoles() {
+    	final List<String> roles = Arrays.asList(getAdminRole(), getUserRole(), getBlockedRole());
+    	return roles;
     }
 }

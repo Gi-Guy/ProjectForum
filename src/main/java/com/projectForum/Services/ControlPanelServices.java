@@ -14,11 +14,6 @@ import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;
 import com.projectForum.user.User;
 
-/* ###########################################################
- * 		WARNING: THIS SERVICE FILE ISN'T TESTED YET!
- * ###########################################################*/
-
-
 @Service
 public class ControlPanelServices {
 

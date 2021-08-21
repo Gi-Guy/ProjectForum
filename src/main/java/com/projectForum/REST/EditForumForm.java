@@ -1,4 +1,4 @@
-package com.projectForum.forum;
+package com.projectForum.REST;
 
 import javax.validation.constraints.Min;
 
