@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.projectForum.ControlPanel.Configuration.ForumInformation;
 import com.projectForum.Services.RestServices;
-import com.projectForum.forum.EditForumForm;
 import com.projectForum.forum.Forum;
 import com.projectForum.post.Post;
 import com.projectForum.topic.Topic;

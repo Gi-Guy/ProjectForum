@@ -16,7 +16,6 @@ public class DisplayTopicForm {
 	private Post lastPost;
 	private String summary = "";
 	private LocalDateTime lastActivity;
-	private boolean toDelete = false;
 	
 	public DisplayTopicForm() {
 		
@@ -84,13 +83,5 @@ public class DisplayTopicForm {
 
 	public void setLastActivity(LocalDateTime lastActivity) {
 		this.lastActivity = lastActivity;
-	}
-	
-	public boolean isToDelete() {
-		return this.toDelete;
-	}
-	
-	public void setDelete() {
-		this.toDelete = true;
 	}
 }
