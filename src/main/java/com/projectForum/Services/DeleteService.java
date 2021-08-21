@@ -414,7 +414,6 @@ public class DeleteService {
 	 * This method will delete all the forums + Topics + Posts in database.
 	 * @warning THIS CAN'T BE UNDONE
 	 * 
-	 * TODO There is a bug in this method, it isn't working.
 	 */
 	public void deleteAllForums() {
 		

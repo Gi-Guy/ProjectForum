@@ -132,7 +132,6 @@ public class ConversationController {
 		// Checking if user sending messages to itself
 		if(newConv.getSender().equals(newConv.getReceiver())) {
 			// User can't create a new conversation with itself!
-			// TODO return error message
 			return "redirect:" + localUrl;
 		}
 		model.addAttribute("newConv",newConv);

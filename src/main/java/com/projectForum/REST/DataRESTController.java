@@ -170,7 +170,6 @@ public class DataRESTController {
 	
 	@GetMapping("/addForum/example")
 	public ResponseEntity<String> giveForumExample() {
-		// TODO solve how to send JSON and not String.
 		return new ResponseEntity<String>(restService.getExampleForum(), HttpStatus.OK);
 	}
 	
@@ -259,7 +258,7 @@ public class DataRESTController {
 	}
 	
 	@GetMapping("getPostById/{postId}")
-	public ResponseEntity<Post> getPosyById(@PathVariable("postId") int postId) {
+	public ResponseEntity<Post> getPostById(@PathVariable("postId") int postId) {
 		Post post = restService.getPostById(postId);
 		
 		if (post == null)
