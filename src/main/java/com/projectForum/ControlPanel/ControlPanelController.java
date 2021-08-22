@@ -255,9 +255,9 @@ public class ControlPanelController {
 			deleteService.deleteUser(editUser);
 		}
 		
-		// if the user making the changes is still an admin then return to control panel
+		// if the user making the changes is still an admin then return to users page
 		if(userService.findUserByUsername(authentication.getName()).getRole().getName().equals("ADMIN"))
-			return "redirect:/a/controlPanel";
+			return "redirect:/a/list_users";
 		
 		// Otherwise (if they demoted themselves) log them out. 
 		else
