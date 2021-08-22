@@ -4,9 +4,11 @@
 	<head th:replace="fragments.html :: headerfiles('הרשמה הושלמה')"></head>
 	
 	<body>
+		<div th:replace="fragments.html :: topnav"></div>
+	
 		<h1>הרשמה בוצעה בהצלחה!</h1>
-		<h3 style="text-align: center"><a th:href="@{/}">בחזרה לרשימת הפורומים</a></h3>
-		<h3 style="text-align: center"><a th:href="@{/login}">להתחבר</a></h3>
+		
+		<div th:replace="fragments.html :: botnav"></div>
 	</body>
 	
 </html>
