@@ -41,3 +41,14 @@ This project has been developed in Hebrew, Which means all HTML pages are built 
 - Admins can change delete time for old topics & posts (topics will be deleted if they will inactive for X days)
 - Admins can limit users private messages inbox for X conversations.
 
+
+#### Scheduled Methods
+In DeleteService class there are two scheduled methods that are running daily, Each method will delete any inactive Topics or inactive Private Conversations.
+- Admins can set the 'time to delete' value in the control panel.
+- Admins can't turn this off by setting value 0, However they can shut it off by removing "<task:annotation-driven>" in application properties file.
+
+#### Known bugs
+- There are some security issues.
+- Rest API is open for all users and not only for admins, We didn't had time to add JWT tokens.
+- Remember me isn't working well, We have tried to create a table of tokens but it isn't finished.
+- There are some issues with LocalDateTime, it giving wrong times.
