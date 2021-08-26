@@ -52,3 +52,5 @@ In DeleteService class there are two scheduled methods that are running daily, E
 - Rest API is open for all users and not only for admins, We didn't had time to add JWT tokens.
 - Remember me isn't working well, We have tried to create a table of tokens but it isn't finished.
 - There are some issues with LocalDateTime, it giving wrong times.
+
+![](https://github.com/Gi-Guy/ProjectForum/blob/main/ForumHomePage.png?raw=true)
